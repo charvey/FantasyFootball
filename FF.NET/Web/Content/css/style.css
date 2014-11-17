@@ -1,0 +1,21 @@
+#main-content {
+	overflow-x: auto;
+}
+
+.bar text {
+	fill: #fff
+}
+
+#draft-table td{
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.tt-suggestions {
+    background-color:#fff;
+}
+
+.tt-suggestion.tt-cursor {
+    background-color: #333;
+    color: #fff;
+}

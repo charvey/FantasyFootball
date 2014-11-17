@@ -1,0 +1,14 @@
+﻿@model Web.Models.LeagueViewModel<IEnumerable<Objects.Team>>
+@{
+    Layout = "~/Views/Shared/_LeagueLayout.cshtml";
+    ViewBag.Title = "Detail";
+}
+
+<h3>Teams</h3>
+
+<ul>
+    @foreach (Objects.Team team in Model.PageModel)
+    {
+        <li>@team.Name</li>
+    }
+</ul>

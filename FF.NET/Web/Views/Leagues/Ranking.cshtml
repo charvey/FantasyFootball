@@ -1,0 +1,11 @@
+﻿@model Web.Models.LeagueViewModel<Objects.Ranking>
+@{
+    Layout = "~/Views/Shared/_LeagueLayout.cshtml";
+    ViewBag.Title = "Detail";
+}
+
+<h3>Rankings</h3>
+
+<h4>@Model.PageModel.Name</h4>
+
+@Html.Raw(Model.PageModel.Data.toTable())

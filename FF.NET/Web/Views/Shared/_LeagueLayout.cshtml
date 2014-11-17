@@ -1,0 +1,16 @@
+﻿@model Web.Models.LeagueViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>@Model.League.Name</h2>
+
+<div class="navbar">
+    <ul class="nav navbar-nav">
+        <li>@Html.ActionLink("Teams", "Teams", new { id = Model.League.Id })</li>
+        <!--<li><a>Schedule</a></li>-->
+        <li>@Html.ActionLink("Rankings", "Rankings", new { id = Model.League.Id })</li>
+        <li>@Html.ActionLink("Draft", "Draft", new { id = Model.League.Id })</li>
+    </ul>
+</div>
+
+@RenderBody()

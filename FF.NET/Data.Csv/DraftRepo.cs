@@ -1,15 +1,15 @@
-﻿using Objects;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Objects.Fantasy;
 
-namespace Data
+namespace Data.Csv
 {
-    public static class DraftRepo
+    public class DraftRepo : IDraftRepo
     {
-        public static IEnumerable<DraftPick> GetDraftPicks()
+        public IEnumerable<DraftPick> GetDraftPicks()
         {
-            var dataset = DataSet.fromCSV(Path.Combine(Config.DIR, "drafts.csv"));
+            var dataset = DataSetCsvReaderWriter.fromCSV(Path.Combine(Config.DIR, "drafts.csv"));
 
             return dataset.Rows.Select(r => new DraftPick
             {
@@ -19,9 +19,9 @@ namespace Data
             });
         }
 
-        public static string Get(string teamid, int round)
+        public string Get(string teamid, int round)
         {
-            var dataset=DataSet.fromCSV(Path.Combine(Config.DIR, "drafts.csv"));
+	        var dataset = DataSetCsvReaderWriter.fromCSV(Path.Combine(Config.DIR, "drafts.csv"));
 
             string id = teamid + "-" + round;
 
@@ -36,11 +36,11 @@ namespace Data
             }
         }
 
-        public static void Set(string teamid, int round, string playerid)
+        public void Set(string teamid, int round, string playerid)
         {
             string filename = Path.Combine(Config.DIR, "drafts.csv");
 
-            var dataset = DataSet.fromCSV(filename);
+            var dataset = DataSetCsvReaderWriter.fromCSV(filename);
 
             string id = teamid + "-" + round;
             int foundRow=-1;
@@ -60,7 +60,7 @@ namespace Data
 
             dataset[foundRow, "Pick"] = playerid;
 
-            dataset.toCSV(filename);
+	        DataSetCsvReaderWriter.toCSV(dataset, filename);
         }
     }
 }

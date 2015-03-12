@@ -1,10 +1,9 @@
-﻿using Objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Data.Csv;
+using Objects;
 
 namespace Terminal.Modules.Players
 {
@@ -26,7 +25,7 @@ namespace Terminal.Modules.Players
                 var pfrPlayers = (DependencyModules["PFRPlayers"] as PFRPlayers).Players;
                 var yffPlayers = (DependencyModules["YFFPlayers"] as YFFPlayers).Players;
 
-                var manualPlayerMaps = DataSet.fromCSV("ManualPlayerMaps.csv");
+                var manualPlayerMaps = DataSetCsvReaderWriter.fromCSV("ManualPlayerMaps.csv");
 
                 DataSet playerTable = new DataSet();
 
@@ -103,7 +102,7 @@ namespace Terminal.Modules.Players
                     throw new Exception("YFF count is incorrect");
                 }
 
-                playerTable.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(playerTable, filename);
             }
         }
 
@@ -111,7 +110,7 @@ namespace Terminal.Modules.Players
         {
             get
             {
-                DataSet players = DataSet.fromCSV("PlayerTable.csv");
+                DataSet players = DataSetCsvReaderWriter.fromCSV("PlayerTable.csv");
 
                 return players.Rows;
             }

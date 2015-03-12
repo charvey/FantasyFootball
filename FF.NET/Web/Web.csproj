@@ -157,9 +157,21 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Data.Csv\Data.Csv.csproj">
+      <Project>{e0137eb6-b9d2-4a0a-bd1d-ff166e0f3bfd}</Project>
+      <Name>Data.Csv</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{43101ac5-6f05-4b9a-adfb-1ed28a2c5ac1}</Project>
       <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Objects.Fantasy\Objects.Fantasy.csproj">
+      <Project>{c59b8e66-48a8-4e06-b76d-dbcffec7ceeb}</Project>
+      <Name>Objects.Fantasy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Objects.Football\Objects.Football.csproj">
+      <Project>{28bcf451-3bee-4577-989d-c206676f952b}</Project>
+      <Name>Objects.Football</Name>
     </ProjectReference>
     <ProjectReference Include="..\Objects\Objects.csproj">
       <Project>{9995557d-edbf-4cfa-92d4-6aeda2182e33}</Project>

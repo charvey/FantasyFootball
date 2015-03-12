@@ -1,18 +1,18 @@
-﻿using Objects;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Objects.Fantasy;
 
-namespace Data
+namespace Data.Csv
 {
-    public static class TeamRepo
+    public class TeamRepo : ITeamRepo
     {
-        private static List<Team> _teams;
-        public static IEnumerable<Team> GetTeams()
+        private List<Team> _teams;
+        public IEnumerable<Team> GetTeams()
         {
             if (_teams == null)
             {
-                var dataset = DataSet.fromCSV(Path.Combine(Config.DIR, "teams.csv"));
+                var dataset = DataSetCsvReaderWriter.fromCSV(Path.Combine(Config.DIR, "teams.csv"));
                 _teams = dataset.Rows.Select(d => new Team
                 {
                     Id = d["Id"],

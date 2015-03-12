@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Objects;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Data.Csv;
 using Terminal.Models;
 
 namespace Terminal.Modules
@@ -29,7 +27,7 @@ namespace Terminal.Modules
         {
             get
             {
-                DataSet statCategories = DataSet.fromCSV("StatCategories.csv");
+                DataSet statCategories = DataSetCsvReaderWriter.fromCSV("StatCategories.csv");
 
                 return statCategories.Rows.Select(r => new StatCategory
                 {
@@ -73,7 +71,7 @@ namespace Terminal.Modules
                     statCategories[row, "Position"] = pos;
                 }
 
-                statCategories.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(statCategories, filename);
             }
         }
 
@@ -98,7 +96,7 @@ namespace Terminal.Modules
                     statModifiers[row, "Value"] = value;
                 }
 
-                statModifiers.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(statModifiers, filename);
             }
         }
 
@@ -123,7 +121,7 @@ namespace Terminal.Modules
                     rosterPositions[row, "Count"] = count;
                 }
 
-                rosterPositions.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(rosterPositions, filename);
             }
         }
     }

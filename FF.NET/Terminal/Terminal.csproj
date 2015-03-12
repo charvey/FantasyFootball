@@ -96,6 +96,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Data.Csv\Data.Csv.csproj">
+      <Project>{e0137eb6-b9d2-4a0a-bd1d-ff166e0f3bfd}</Project>
+      <Name>Data.Csv</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{43101ac5-6f05-4b9a-adfb-1ed28a2c5ac1}</Project>
       <Name>Data</Name>

@@ -1,6 +1,7 @@
 ﻿using Objects;
 using System.Collections.Generic;
 using System.IO;
+using Data.Csv;
 
 namespace Terminal.Modules
 {
@@ -33,7 +34,7 @@ namespace Terminal.Modules
                 foreach (string path in gamePaths)
                 {
                     var gameId = Path.GetFileNameWithoutExtension(path);
-                    var game = DataSet.fromCSV(path);
+                    var game = DataSetCsvReaderWriter.fromCSV(path);
 
                     foreach (var player in game.Rows)
                     {
@@ -49,7 +50,7 @@ namespace Terminal.Modules
                     }
                 }
 
-                playerStats.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(playerStats, filename);
             }
         }
 
@@ -57,7 +58,7 @@ namespace Terminal.Modules
         {
             get
             {
-                DataSet stats = DataSet.fromCSV("PlayerStats.csv");
+                DataSet stats = DataSetCsvReaderWriter.fromCSV("PlayerStats.csv");
 
                 return stats.Rows;
             }

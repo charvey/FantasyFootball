@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Data.Csv;
 using Terminal.Models;
 using Terminal.Modules.Players;
 
@@ -46,7 +47,7 @@ namespace Terminal.Modules
                     }
                 }
 
-                yyfPlayerStats.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(yyfPlayerStats, filename);
             }
         }
     }

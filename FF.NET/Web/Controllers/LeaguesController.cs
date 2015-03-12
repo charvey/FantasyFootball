@@ -1,16 +1,21 @@
-﻿using Data;
-using Objects;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using Data;
+using Data.Csv;
+using Objects;
+using Objects.Fantasy;
 using Web.Models;
 
 namespace Web.Controllers
 {
     public class LeaguesController : Controller
     {
+		private IDraftRepo draftRepo = new DraftRepo();
+		private ILeagueRepo leagueRepo = new LeagueRepo();
+		private IRankingRepo rankingRepo = new RankingRepo();
+		private ITeamRepo teamRepo = new TeamRepo();
+
         // GET: Leagues
         public ActionResult Index()
         {
@@ -19,15 +24,15 @@ namespace Web.Controllers
 
         public ActionResult Detail(string id)
         {
-            return View(new LeagueViewModel { League = LeagueRepo.GetLeague(id) });
+			return View(new LeagueViewModel { League = leagueRepo.GetLeague(id) });
         }
 
         public ActionResult Teams(string id)
         {
             LeagueViewModel<IEnumerable<Team>> lvm = new LeagueViewModel<IEnumerable<Team>>
             {
-                League = LeagueRepo.GetLeague(id),
-                PageModel = TeamRepo.GetTeams().Where(t => t.LeagueId == id)
+				League = leagueRepo.GetLeague(id),
+				PageModel = teamRepo.GetTeams().Where(t => t.LeagueId == id)
             };
 
             return View(lvm);
@@ -37,7 +42,7 @@ namespace Web.Controllers
         {
             LeagueViewModel lvm = new LeagueViewModel
             {
-                League = LeagueRepo.GetLeague(id)
+				League = leagueRepo.GetLeague(id)
             };
 
             return View(lvm);
@@ -47,8 +52,8 @@ namespace Web.Controllers
         {
             LeagueRankingsViewModel llvm = new LeagueRankingsViewModel
             {
-                League = LeagueRepo.GetLeague(id),
-                Rankings = RankingRepo.GetRankings()
+				League = leagueRepo.GetLeague(id),
+				Rankings = rankingRepo.GetRankings()
             };
 
             return View(llvm);
@@ -57,9 +62,9 @@ namespace Web.Controllers
         [Route("/Leagues/{id}/Ranking/{rankingId}")]
         public ActionResult Ranking(string id, string rankingId)
         {
-            HashSet<string> playerIds = new HashSet<string>(DraftRepo.GetDraftPicks().Select(dp => dp.PlayerId));
+			HashSet<string> playerIds = new HashSet<string>(draftRepo.GetDraftPicks().Select(dp => dp.PlayerId));
 
-            Ranking ranking = RankingRepo.GetRanking(rankingId);
+			Ranking ranking = rankingRepo.GetRanking(rankingId);
 
             for (int i = ranking.Data.Rows.Count() - 1; i >= 0; i--)
             {
@@ -70,7 +75,7 @@ namespace Web.Controllers
 
             LeagueViewModel<Ranking> lvm = new LeagueViewModel<Ranking>
             {
-                League = LeagueRepo.GetLeague(id),
+				League = leagueRepo.GetLeague(id),
                 PageModel = ranking
             };
 

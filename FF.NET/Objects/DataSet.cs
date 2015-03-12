@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Objects
@@ -8,7 +7,7 @@ namespace Objects
     public class DataSet
     {
         private Dictionary<string, List<string>> data;
-        private int Count { get; set; }
+        public int Count { get; private set; }
 
         #region Public Fields
 
@@ -75,49 +74,6 @@ namespace Objects
         }
 
         #region CSV
-
-        public void toCSV(string path)
-        {
-            File.Delete(path);
-
-            using (var file = File.AppendText(path))
-            {
-                file.WriteLine(string.Join(",", data.Select(c => c.Key)));
-
-                foreach (int row in Enumerable.Range(0, Count))
-                {
-                    file.WriteLine(string.Join(",", data.Select(c => c.Value[row])));
-                }
-            }
-        }
-
-        public static DataSet fromCSV(string path)
-        {
-            DataSet dataSet = new DataSet();
-
-            var lines = File.ReadLines(path);
-
-            string[] headers = lines.First().Split(',');
-            dataSet.data = headers.ToDictionary(h => h, h => new List<string>());
-            foreach (string line in lines.Skip(1))
-            {
-                string[] cells = line.Split(',');
-
-                if (cells.Length != headers.Length)
-                {
-                    throw new Exception("Cell count doesn't match header count.");
-                }
-
-                int row = dataSet.Add();
-
-                for (int i = 0; i < cells.Length; i++)
-                {
-                    dataSet.data[headers[i]][row] = cells[i];
-                }
-            }
-
-            return dataSet;
-        }
 
         public string toTable()
         {

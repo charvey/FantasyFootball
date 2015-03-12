@@ -1,5 +1,5 @@
 ﻿
-namespace Data
+namespace Data.Csv
 {
     internal static class Config
     {

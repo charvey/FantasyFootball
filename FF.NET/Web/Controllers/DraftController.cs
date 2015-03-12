@@ -1,26 +1,29 @@
-﻿using Data;
-using Objects;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Results;
+using Data;
+using Data.Csv;
+using Objects.Fantasy;
 using Web.Models;
 
 namespace Web.Controllers
 {
     public class DraftController : ApiController
     {
+	    private IDraftRepo draftRepo = new DraftRepo();
+	    private ILeagueRepo leagueRepo = new LeagueRepo();
+	    private IPlayerRepo playerRepo = new PlayerRepo();
+	    private ITeamRepo teamRepo = new TeamRepo();
+
         [HttpGet]
         public JsonResult<DraftViewModel> Detail(string id)
         {
-            League league = LeagueRepo.GetLeague(id);
+			League league = leagueRepo.GetLeague(id);
 
             DraftViewModel dvm = new DraftViewModel
             {
-                Teams = TeamRepo.GetTeams().Where(t => t.LeagueId == league.Id).ToArray(),
+				Teams = teamRepo.GetTeams().Where(t => t.LeagueId == league.Id).ToArray(),
                 Rounds = 15
             };
 
@@ -30,11 +33,11 @@ namespace Web.Controllers
         [HttpGet]
         public JsonResult<Player> Get(string teamid, int round)
         {
-            string pickId = DraftRepo.Get(teamid, round);
+            string pickId = draftRepo.Get(teamid, round);
             Player player = null;
             try
             {
-                player = PlayerRepo.GetPlayer(pickId);
+                player = playerRepo.GetPlayer(pickId);
             }
             catch (InvalidOperationException) { }
 
@@ -44,7 +47,7 @@ namespace Web.Controllers
         [HttpGet]
         public void Set(string teamid, int round, string playerid)
         {
-            DraftRepo.Set(teamid, round, playerid);
+			draftRepo.Set(teamid, round, playerid);
         }
     }
 }

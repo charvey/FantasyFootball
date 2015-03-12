@@ -1,5 +1,5 @@
 ﻿
-namespace Objects
+namespace Objects.Fantasy
 {
     public class League
     {

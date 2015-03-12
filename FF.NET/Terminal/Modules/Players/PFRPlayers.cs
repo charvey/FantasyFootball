@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Data.Csv;
 using Objects;
 
 namespace Terminal.Modules.Players
@@ -56,7 +57,7 @@ namespace Terminal.Modules.Players
                     }
                 }
 
-                players.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(players, filename);
             }
         }
 
@@ -122,7 +123,7 @@ namespace Terminal.Modules.Players
         {
             get
             {
-                var dataset = DataSet.fromCSV("PFRPlayers.csv");
+                var dataset = DataSetCsvReaderWriter.fromCSV("PFRPlayers.csv");
 
                 return dataset.Rows.ToDictionary(r => r["Id"], r => r["Name"]);
             }

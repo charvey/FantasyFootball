@@ -1,12 +1,11 @@
-﻿using HtmlAgilityPack;
-using Objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Data.Csv;
+using HtmlAgilityPack;
+using Objects;
 
 namespace Terminal.Modules
 {
@@ -64,7 +63,7 @@ namespace Terminal.Modules
                 //ProcessKickStats(doc, data, getPlayerRow);
                 ProcessPlays(doc, data, getPlayerRow);
 
-                data.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(data, filename);
             }
         }
 

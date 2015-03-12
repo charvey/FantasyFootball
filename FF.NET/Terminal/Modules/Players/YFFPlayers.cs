@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json;
-using Objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Data.Csv;
+using Newtonsoft.Json;
+using Objects;
 
 namespace Terminal.Modules.Players
 {
@@ -66,7 +65,7 @@ namespace Terminal.Modules.Players
                     }
                 }
 
-                playerDataSet.toCSV(filename);
+	            DataSetCsvReaderWriter.toCSV(playerDataSet, filename);
             }
         }
 
@@ -74,7 +73,7 @@ namespace Terminal.Modules.Players
         {
             get
             {
-                var dataset = DataSet.fromCSV("YFFPlayers.csv");
+                var dataset = DataSetCsvReaderWriter.fromCSV("YFFPlayers.csv");
 
                 return dataset.Rows.ToDictionary(r => r["Id"], r => r["Name"]);
             }

@@ -1,0 +1,7 @@
+bin
+obj
+**/packages/*
+!**/packages/repositories.config
+*.sln.ide/
+*.suo
+*.user

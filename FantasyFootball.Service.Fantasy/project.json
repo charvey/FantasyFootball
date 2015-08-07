@@ -10,12 +10,11 @@
     "System.Collections": "4.0.10-beta-23019",
     "System.Linq": "4.0.0-beta-23019",
     "System.Threading": "4.0.10-beta-23019",
-    "System.Runtime": "4.0.10-beta-23019",
     "Microsoft.CSharp": "4.0.0-beta-23019",
     "EntityFramework.SQLite": "7.0.0-beta6"
   },
 
   "frameworks": {
-    "dotnet": { }
+    "dnxcore50": { }
   }
 }

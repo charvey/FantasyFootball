@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace FantasyFootball.Service.Fantasy
 {
-    public class League
+    public class DraftPick
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public IEnumerable<Team> Teams { get; set; }
+        public Team Team { get; set; }
     }
 }

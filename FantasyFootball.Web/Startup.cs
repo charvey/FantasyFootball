@@ -12,6 +12,7 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
 using Microsoft.Framework.Runtime;
+using FantasyFootball.Service.Fantasy;
 
 namespace FantasyFootball.Web
 {
@@ -24,6 +25,11 @@ namespace FantasyFootball.Web
                 .AddJsonFile("config.json")
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            using (var fantasyContext = new FantasyContext())
+            {
+                fantasyContext.Database.EnsureCreated();
+            }
         }
 
         public IConfiguration Configuration { get; set; }
@@ -51,7 +57,7 @@ namespace FantasyFootball.Web
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
-                app.UseErrorPage(ErrorPageOptions.ShowAll);
+                app.UseErrorPage();
             }
             else
             {

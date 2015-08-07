@@ -12,6 +12,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FantasyFootball.Terminal", "FantasyFootball.Terminal\FantasyFootball.Terminal.xproj", "{67D7E694-DE22-4ACE-B060-2B460768B8CB}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FantasyFootball.Service.Football", "FantasyFootball.Service.Football\FantasyFootball.Service.Football.xproj", "{6EA6939E-6FE3-4BB1-8CA6-698064A87351}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FantasyFootball.Service.Fantasy", "FantasyFootball.Service.Fantasy\FantasyFootball.Service.Fantasy.xproj", "{40A85453-4FB2-480A-B446-2184FB1518BB}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FantasyFootball.Web", "FantasyFootball.Web\FantasyFootball.Web.xproj", "{84935FBC-F20E-4371-ADCF-D27DD12C423D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +32,18 @@ Global
 		{67D7E694-DE22-4ACE-B060-2B460768B8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67D7E694-DE22-4ACE-B060-2B460768B8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67D7E694-DE22-4ACE-B060-2B460768B8CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EA6939E-6FE3-4BB1-8CA6-698064A87351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EA6939E-6FE3-4BB1-8CA6-698064A87351}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EA6939E-6FE3-4BB1-8CA6-698064A87351}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EA6939E-6FE3-4BB1-8CA6-698064A87351}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A85453-4FB2-480A-B446-2184FB1518BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A85453-4FB2-480A-B446-2184FB1518BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A85453-4FB2-480A-B446-2184FB1518BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A85453-4FB2-480A-B446-2184FB1518BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84935FBC-F20E-4371-ADCF-D27DD12C423D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84935FBC-F20E-4371-ADCF-D27DD12C423D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84935FBC-F20E-4371-ADCF-D27DD12C423D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84935FBC-F20E-4371-ADCF-D27DD12C423D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

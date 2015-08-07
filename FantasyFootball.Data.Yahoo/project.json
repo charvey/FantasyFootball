@@ -8,18 +8,16 @@
 
   "dependencies": {
     "System.Collections": "4.0.10-beta-23019",
+        "System.Console": "4.0.0-beta-23019",
+    "System.Diagnostics.Process": "4.0.0-beta-23019",
     "System.Linq": "4.0.0-beta-23019",
+    "System.IO.FileSystem": "4.0.0",
     "System.Net.Http": "4.0.0-beta-23019",
     "System.Threading": "4.0.10-beta-23019",
-    "System.Runtime": "4.0.20",
+    "System.Runtime": "4.0.20",    
+    "System.Xml.XmlSerializer": "4.0.10-beta-23019",
     "Microsoft.CSharp": "4.0.0-beta-23019",
-    "System.IO.FileSystem": "4.0.0",
-    "xunit": "2.1.0-beta3-build3029",
-    "xunit.runner.visualstudio": "2.1.0-beta3-build1069",
-    "System.Diagnostics.Process": "4.0.0-beta-23019",
-    "System.Console": "4.0.0-beta-23019",
-    "Newtonsoft.Json": "6.0.6",
-    "System.Xml.XmlSerializer": "4.0.10-beta-23019"
+    "Newtonsoft.Json": "6.0.6"
   },
 
   "frameworks": {

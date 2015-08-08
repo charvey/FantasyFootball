@@ -13,8 +13,6 @@ namespace FantasyFootball.Service.Fantasy
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<League>().Key(l => l.Id);
-            builder.Entity<Team>().Key(t => t.Id);
             base.OnModelCreating(builder);
         }
     }

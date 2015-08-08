@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace FantasyFootball.Service.Fantasy
 {
@@ -10,5 +7,6 @@ namespace FantasyFootball.Service.Fantasy
         public string Id { get; set; }
         public string Name { get; set; }
         public League League { get; set; }
+        public IEnumerable<Player> Players { get; set; }
     }
 }

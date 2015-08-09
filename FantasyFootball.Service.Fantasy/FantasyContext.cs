@@ -6,10 +6,11 @@ namespace FantasyFootball.Service.Fantasy
     public class FantasyContext : DbContext
     {
         public DbSet<League> Leagues { get; set; }
+        public DbSet<Player> Players { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.UseSqlite(@"Data Source=C:\_Projects\FantasyFootball\Data\Fantasy.db;");
+            builder.UseSqlite(ConnectionString.DataSource);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

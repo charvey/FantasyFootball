@@ -1,5 +1,5 @@
 ﻿
-namespace FantasyFootball.Service.Fantasy
+namespace FantasyFootball.Service.Fantasy.Models
 {
     public class DraftPick
     {

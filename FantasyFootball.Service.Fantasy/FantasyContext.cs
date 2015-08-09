@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Entity;
+﻿using FantasyFootball.Service.Fantasy.Models;
+using Microsoft.Data.Entity;
 
 namespace FantasyFootball.Service.Fantasy
 {

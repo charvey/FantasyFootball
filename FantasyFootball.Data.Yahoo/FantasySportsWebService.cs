@@ -13,7 +13,7 @@ namespace FantasyFootball.Data.Yahoo
 
         private static DateTime WaitUntil = DateTime.MinValue;
 
-        private Task<string> MakeCall(string url)
+        private Task<string> MakeCall(string url,string format="json")
         {
             while (DateTime.Now < WaitUntil)
             {
@@ -24,7 +24,7 @@ namespace FantasyFootball.Data.Yahoo
             }
             WaitUntil = DateTime.Now.AddSeconds(1);
 
-            var request = new HttpRequestMessage(HttpMethod.Get, url + "?format=json");
+            var request = new HttpRequestMessage(HttpMethod.Get, url + "?format="+format);
             request.Headers.Add("Authorization", "Bearer " +AccessToken);
             return client.SendAsync(request).Result.Content.ReadAsStringAsync();
         }
@@ -39,6 +39,27 @@ namespace FantasyFootball.Data.Yahoo
         public string Games(params string[] gameId)
         {
             var url = BaseUrl + "/games;game_keys=" + string.Join(",", gameId);
+
+            return MakeCall(url).Result;
+        }
+
+        public string League(string league_key)
+        {
+            var url = BaseUrl + "/league/" + league_key;
+
+            return MakeCall(url).Result;
+        }
+
+        public string Leagues(string game_key)
+        {
+            var url = BaseUrl + "/leagues;game_key=nfl";
+
+            return MakeCall(url).Result;
+        }
+
+        public string Leagues(params string[] league_keys)
+        {
+            var url = BaseUrl + "/league;league_keys=" + string.Join(",", league_keys);
 
             return MakeCall(url).Result;
         }

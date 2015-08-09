@@ -73,14 +73,16 @@ namespace FantasyFootball.Data.Yahoo
             }
         }
 
-        private DateTime accessTokenExpires;
+        private DateTime? accessTokenExpires;
         private DateTime AccessTokenExpires
         {
             get
             {
                 if (accessTokenExpires == null && File.Exists("AccessTokenExpires"))
                     accessTokenExpires = DateTime.Parse(File.ReadAllText("AccessTokenExpires"));
-                return DateTime.MinValue;
+                if (accessTokenExpires == null)
+                    accessTokenExpires = DateTime.MinValue;
+                return accessTokenExpires.Value;
             }
             set
             {

@@ -7,7 +7,7 @@ namespace FantasyFootball.Service.Fantasy.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public IEnumerable<Team> Teams { get; set; }
-        public IEnumerable<Player> Players { get; set; }
+        public ICollection<Player> Players { get; set; }
         public ISet<DraftPick> DraftPicks { get; set; }
     }
 }

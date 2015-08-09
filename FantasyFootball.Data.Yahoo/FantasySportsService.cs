@@ -1,11 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+using FantasyFootball.Data.Yahoo.Models;
+using Newtonsoft.Json;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -19,15 +15,20 @@ namespace FantasyFootball.Data.Yahoo
             {
                 var json = webService.Games();
                 Debugger.Break();
-                return JsonConvert.DeserializeObject<FantasyContentWrapper>(json).fantasy_content.game;
+                return JsonConvert.DeserializeObject<WebServiceResponse>(json).fantasy_content.game;
             }
+        }
+
+        public IEnumerable<Game> Game(string gameId)
+        {
+            var json = webService.Game(gameId);
+            return JsonConvert.DeserializeObject<WebServiceResponse>(json).fantasy_content?.game;
         }
 
         public IEnumerable<Player> Players(string game_key)
         {
             var json = webService.Players(game_key);
-            Debugger.Break();
-            return JsonConvert.DeserializeObject<FantasyContentWrapper>(json).fantasy_content.player;
+            return JsonConvert.DeserializeObject<WebServiceResponse>(json).fantasy_content.player;
         }
     }
 }

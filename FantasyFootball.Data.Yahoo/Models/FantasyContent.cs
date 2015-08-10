@@ -2,12 +2,20 @@
 
 namespace FantasyFootball.Data.Yahoo.Models
 {
-    [XmlType("fantasy_content")]
     public class FantasyContent
     {
         public Game[] game;
         public League[] league;
         public Player[] player;
+        public Team[] team;
+    }
+
+    [XmlType("fantasy_content")]
+    public class FantasyContentXml
+    {
+        public Game game;
+        public League league;
+        public Player player;
         public Team team;
     }
 }

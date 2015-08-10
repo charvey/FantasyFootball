@@ -43,9 +43,9 @@ namespace FantasyFootball.Data.Yahoo
 
         public string League(string league_key)
         {
-            var url = BaseUrl + "/league/" + league_key;
+            var url = BaseUrl + "/league/" + league_key + "/settings";
 
-            return MakeCall(url).Result;
+            return MakeCall(url, "xml").Result;
         }
 
         public string Leagues(string game_key = "nfl")

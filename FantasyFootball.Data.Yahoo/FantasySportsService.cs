@@ -35,8 +35,8 @@ namespace FantasyFootball.Data.Yahoo
 
         public League League(string league_key)
         {
-            var json = webService.League(league_key);
-            return JsonConvert.DeserializeObject<WebServiceResponse>(json).fantasy_content?.league.Single();
+            var xml = webService.League(league_key);
+            return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league;
         }
 
         public IEnumerable<League> Leagues()
@@ -61,7 +61,7 @@ namespace FantasyFootball.Data.Yahoo
         public Team Team(string team_key)
         {
             var xml = webService.Team(team_key);
-            return XmlConvert.Deserialize<FantasyContent>(xml)?.team;
+            return XmlConvert.Deserialize<FantasyContentXml>(xml)?.team;
         }
 
         public IEnumerable<Team> Teams()

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNet.Mvc;
 using FantasyFootball.Service.Fantasy;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace FantasyFootball.Web.Controllers
 {
@@ -20,9 +15,12 @@ namespace FantasyFootball.Web.Controllers
             }
         }
 
-        public IActionResult Detail(string leagueId)
+        public IActionResult Detail(string id)
         {
-            return View();
+            using (var fantasyContext = new FantasyContext())
+            {
+                return View(fantasyContext.Leagues.Single(l => l.Id == id));
+            }
         }
 
         public IActionResult Draft(string leagueId)

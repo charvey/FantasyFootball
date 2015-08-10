@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 using FantasyFootball.Data.Yahoo.Actions;
 using FantasyFootball.Data.Yahoo.Models;
 using Newtonsoft.Json;
@@ -54,6 +55,27 @@ namespace FantasyFootball.Data.Yahoo
         {
             var json = webService.Players(game_key);
             return JsonConvert.DeserializeObject<WebServiceResponse>(json).fantasy_content.player;
+        }
+
+        public Team Team(string team_key)
+        {
+            var xml = webService.Team(team_key);
+            return XmlConvert.Deserialize<FantasyContent>(xml)?.team;
+        }
+
+        public IEnumerable<Team> Teams()
+        {
+            var league = Leagues().Single(l => l.season == DateTime.Now.Year);
+            var xml = webService.Teams(league.league_key);
+            var doc = XDocument.Parse(xml);
+            var teams = doc.Root.Elements().Single().Elements().Single().Elements().ElementAt(23).Elements();
+            var keys = teams.Select(t => t.Elements().First().Value);
+            return keys.Select(Team);
+        }
+
+        public IEnumerable<Team> Teams(params string[] team_keys)
+        {
+            return team_keys.Select(Team);
         }
     }
 }

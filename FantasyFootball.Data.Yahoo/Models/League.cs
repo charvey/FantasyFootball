@@ -9,5 +9,6 @@ namespace FantasyFootball.Data.Yahoo.Models
         public string url;
         public string draft_status;
         public int num_teams;
+        public int season;
     }
 }

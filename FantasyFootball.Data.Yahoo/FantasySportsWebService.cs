@@ -13,7 +13,7 @@ namespace FantasyFootball.Data.Yahoo
 
         private static DateTime WaitUntil = DateTime.MinValue;
 
-        private Task<string> MakeCall(string url,string format="json")
+        private Task<string> MakeCall(string url, string format = "json")
         {
             while (DateTime.Now < WaitUntil)
             {
@@ -24,8 +24,8 @@ namespace FantasyFootball.Data.Yahoo
             }
             WaitUntil = DateTime.Now.AddSeconds(1);
 
-            var request = new HttpRequestMessage(HttpMethod.Get, url + "?format="+format);
-            request.Headers.Add("Authorization", "Bearer " +AccessToken);
+            var request = new HttpRequestMessage(HttpMethod.Get, url + "?format=" + format);
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
             return client.SendAsync(request).Result.Content.ReadAsStringAsync();
         }
 
@@ -50,9 +50,9 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url).Result;
         }
 
-        public string Leagues(string game_key)
+        public string Leagues(string game_key = "nfl")
         {
-            var url = BaseUrl + "/leagues;game_key=nfl";
+            var url = BaseUrl + "/leagues;game_key=" + game_key;
 
             return MakeCall(url).Result;
         }
@@ -67,6 +67,27 @@ namespace FantasyFootball.Data.Yahoo
         public string Players(string gameKey)
         {
             var url = string.Format(BaseUrl + "/games;game_keys={0}/players", gameKey);
+
+            return MakeCall(url).Result;
+        }
+
+        public string Team(string team_key)
+        {
+            var url = BaseUrl + "/team/" + team_key;
+
+            return MakeCall(url, "xml").Result;
+        }
+
+        public string Teams(string league_key)
+        {
+            var url = BaseUrl + "/leagues;league_keys=" + league_key + "/teams";
+
+            return MakeCall(url, "xml").Result;
+        }
+
+        public string Teams(params string[] team_keys)
+        {
+            var url = BaseUrl + "/teams;team_keys=" + string.Join(",", team_keys);
 
             return MakeCall(url).Result;
         }

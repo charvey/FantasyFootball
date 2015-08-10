@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using FantasyFootball.Data.Yahoo.Actions;
 using FantasyFootball.Data.Yahoo.Models;
 using Newtonsoft.Json;
+using System.Xml.XPath;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -66,11 +67,15 @@ namespace FantasyFootball.Data.Yahoo
         public IEnumerable<Team> Teams()
         {
             var league = Leagues().Single(l => l.season == DateTime.Now.Year);
-            var xml = webService.Teams(league.league_key);
+            return Teams(league.league_key);
+        }
+
+        public IEnumerable<Team> Teams(string league_key)
+        {
+            var xml = webService.Teams(league_key);
             var doc = XDocument.Parse(xml);
-            var teams = doc.Root.Elements().Single().Elements().Single().Elements().ElementAt(23).Elements();
-            var keys = teams.Select(t => t.Elements().First().Value);
-            return keys.Select(Team);
+            var teams = doc.XPathSelectElements("//*[local-name() = 'team']");
+            return teams.Select(t => XmlConvert.Deserialize<Team>(t.ToString()));
         }
 
         public IEnumerable<Team> Teams(params string[] team_keys)

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +20,7 @@ namespace FantasyFootball.Data.Yahoo
                     wait = TimeSpan.Zero;
                 Thread.Sleep(wait);
             }
-            WaitUntil = DateTime.Now.AddSeconds(1);
+            WaitUntil = DateTime.Now.AddSeconds(0.25);
 
             var request = new HttpRequestMessage(HttpMethod.Get, url + "?format=" + format);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);

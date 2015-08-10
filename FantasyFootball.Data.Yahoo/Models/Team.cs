@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Xml.Serialization;
 
 namespace FantasyFootball.Data.Yahoo.Models
 {
+    [XmlType("team")]
     public class Team
     {
         public string team_key;

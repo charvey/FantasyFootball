@@ -6,4 +6,4 @@ obj
 *.suo
 *.user
 .vs
-.lock.json
+*.lock.json

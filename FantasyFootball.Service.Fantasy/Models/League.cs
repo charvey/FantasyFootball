@@ -6,8 +6,8 @@ namespace FantasyFootball.Service.Fantasy.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Team> Teams { get; set; }
-        public ICollection<Player> Players { get; set; }
-        public ICollection<DraftPick> DraftPicks { get; set; }
+        public virtual ICollection<Team> Teams { get; set; }
+        public virtual ICollection<Player> Players { get; set; }
+        public virtual ICollection<DraftPick> DraftPicks { get; set; }
     }
 }

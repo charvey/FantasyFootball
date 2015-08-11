@@ -5,7 +5,7 @@ namespace FantasyFootball.Service.Fantasy.Models
     {
         public string Id { get; set; }
         public int Round { get; set; }
-        public Player Player { get; set; }
-        public Team Team { get; set; }
+        public virtual Player Player { get; set; }
+        public virtual Team Team { get; set; }
     }
 }

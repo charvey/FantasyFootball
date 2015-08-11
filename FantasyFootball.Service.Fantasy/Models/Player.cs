@@ -6,7 +6,7 @@ namespace FantasyFootball.Service.Fantasy.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public ICollection<League> Leagues { get; set; }
-        public ICollection<Team> Teams { get; set; }
+        public virtual ICollection<League> Leagues { get; set; }
+        public virtual ICollection<Team> Teams { get; set; }
     }
 }

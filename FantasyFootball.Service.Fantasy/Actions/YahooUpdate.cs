@@ -28,8 +28,15 @@ namespace FantasyFootball.Service.Fantasy.Actions
                         League = league
                     });
                     league.Teams = new HashSet<Team>(teams);
+                    var players = yahoo.Players(l.league_key).Select(p => new Player
+                    {
+                        Id = p.player_key,
+                        Name = p.name.full
+                    });
+                    league.Players = new HashSet<Player>(players);
 
                     fantasyContext.Leagues.Add(league);
+                    fantasyContext.Players.AddRange(players);
                     fantasyContext.Teams.AddRange(teams);
                 }
                 fantasyContext.SaveChanges(true);

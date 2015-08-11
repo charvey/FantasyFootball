@@ -62,9 +62,22 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url).Result;
         }
 
-        public string Players(string gameKey)
+        public string Player(string player_key)
         {
-            var url = string.Format(BaseUrl + "/games;game_keys={0}/players", gameKey);
+            var url = BaseUrl + "/player/" + player_key;
+
+            return MakeCall(url).Result;
+        }
+
+        public string Players(string game_key = "nfl",int start=0)
+        {
+            var url = BaseUrl + "/games;game_keys=" + game_key + "/players;start=" + start;
+            return MakeCall(url, "xml").Result;
+        }
+
+        public string Players(params string[] player_keys)
+        {
+            var url = BaseUrl + "/players;player_keys=" + string.Join(",", player_keys);
 
             return MakeCall(url).Result;
         }

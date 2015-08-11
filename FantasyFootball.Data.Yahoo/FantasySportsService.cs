@@ -52,10 +52,30 @@ namespace FantasyFootball.Data.Yahoo
             return league_keys.Select(League);
         }
 
+        public Player Player(string player_key)
+        {
+            var json = webService.Player(player_key);
+            return XmlConvert.Deserialize<WebServiceResponse>(json)?.fantasy_content.player.Single();
+        }
+
         public IEnumerable<Player> Players(string game_key)
         {
-            var json = webService.Players(game_key);
-            return JsonConvert.DeserializeObject<WebServiceResponse>(json).fantasy_content.player;
+            int start = 0;
+            const int size = 25;
+            while (true)
+            {
+                var xml = webService.Players(game_key, start);
+                var players = XDocument.Parse(xml).XPathSelectElement("//*[local-name() = 'players']");
+
+                foreach (var player in players.Elements())
+                    yield return XmlConvert.Deserialize<Player>(player.ToString());
+
+                var count = players.Attribute("count");
+                if (count == null || int.Parse(count.Value) < size)
+                    break;
+
+                start += size;
+            }
         }
 
         public Team Team(string team_key)

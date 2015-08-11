@@ -66,12 +66,13 @@ namespace FantasyFootball.Data.Yahoo
         {
             var url = BaseUrl + "/player/" + player_key;
 
-            return MakeCall(url).Result;
+            return MakeCall(url, "xml").Result;
         }
 
-        public string Players(string game_key = "nfl",int start=0)
+        public string Players(string game_key = "nfl", int start = 0)
         {
             var url = BaseUrl + "/games;game_keys=" + game_key + "/players;start=" + start;
+
             return MakeCall(url, "xml").Result;
         }
 

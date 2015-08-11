@@ -54,8 +54,8 @@ namespace FantasyFootball.Data.Yahoo
 
         public Player Player(string player_key)
         {
-            var json = webService.Player(player_key);
-            return XmlConvert.Deserialize<WebServiceResponse>(json)?.fantasy_content.player.Single();
+            var xml = webService.Player(player_key);
+            return XmlConvert.Deserialize<FantasyContentXml>(xml)?.player;
         }
 
         public IEnumerable<Player> Players(string game_key)

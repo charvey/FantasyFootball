@@ -1,19 +1,18 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "15.1.0-*",
   "description": "FantasyFootball.Terminal Console Application",
-  "authors": [ "Chris" ],
+  "authors": [ "Chris Harvey" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
 
   "dependencies": {
-    "System.Collections": "4.0.10-beta-23019",
-    "System.Console": "4.0.0-beta-23019",
-    "System.Linq": "4.0.0-beta-23019",
-    "System.Net.Http": "4.0.0-beta-23019",
-    "System.Threading": "4.0.10-beta-23019",
-    "Microsoft.CSharp": "4.0.0-beta-23019",
-    "FantasyFootball.Data.Yahoo": "1.0.0-*"    
+    "FantasyFootball.Data.Yahoo": "15.1.0-*",
+    "FantasyFootball.Service.Fantasy": "15.1.0-*",
+    "Microsoft.CSharp": "4.0.0",
+    "System.Collections": "4.0.10",
+    "System.Console": "4.0.0-beta-23123",
+    "System.Runtime": "4.0.20"
   },
 
   "commands": {

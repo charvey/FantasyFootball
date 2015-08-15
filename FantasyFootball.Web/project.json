@@ -1,6 +1,7 @@
 ﻿{
   "webroot": "wwwroot",
-  "version": "1.0.0-*",
+  "version": "15.0.0-*",
+  "authors": ["Chris Harvey"],
 
   "dependencies": {
     "Microsoft.AspNet.Diagnostics": "1.0.0-beta6",
@@ -14,7 +15,7 @@
     "Microsoft.Framework.Logging": "1.0.0-beta6",
     "Microsoft.Framework.Logging.Console": "1.0.0-beta6",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta6",
-    "FantasyFootball.Service.Fantasy": "1.0.0-*"
+    "FantasyFootball.Service.Fantasy": "15.1.0-*"
   },
 
   "commands": {

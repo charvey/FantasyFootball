@@ -1,7 +1,7 @@
 {
-  "version": "1.0.0-*",
+  "version": "15.1.0-*",
   "description": "FantasyFootball.Service.Football Class Library",
-  "authors": [ "Chris" ],
+  "authors": [ "Chris Harvey" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",

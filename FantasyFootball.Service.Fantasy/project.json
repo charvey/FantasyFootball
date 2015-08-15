@@ -1,14 +1,14 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "15.1.0-*",
   "description": "FantasyFootball.Service.Fantasy Class Library",
-  "authors": [ "Chris" ],
+  "authors": [ "Chris Harvey" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
 
   "dependencies": {
-    "FantasyFootball.Data.Yahoo": "1.0.0-*",
-    "EntityFramework.Sqlite": "7.0.0-beta6"
+    "EntityFramework.Sqlite": "7.0.0-beta6",
+    "FantasyFootball.Data.Yahoo": "15.1.0-*"
   },
 
   "frameworks": {

@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tests</title>
+    <style>
+    </style>
+    <script src="/js/common.js"></script>
+    <script src="/js/pages/tests.js"></script>
+  </head>
+  <body>
+    <span id="title"></span><br/>
+    <textarea id="functions">
+      preFilter:function(player){
+        return true;
+      },
+      mapPlayer:function(player){
+        var ret=[player.Id,player.Name];
+        return ret;
+      },
+      postFilter:function(player){
+        return true;
+      }
+    </textarea><br/>
+    <button id="run">Run</button>
+  	<div id="data"></div>
+  </body>
+</html>

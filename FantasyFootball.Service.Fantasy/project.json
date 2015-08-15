@@ -7,12 +7,8 @@
   "licenseUrl": "",
 
   "dependencies": {
-    "System.Collections": "4.0.10-beta-23019",
-    "System.Linq": "4.0.0-beta-23019",
-    "System.Threading": "4.0.10-beta-23019",
-    "Microsoft.CSharp": "4.0.0-beta-23019",
-    "EntityFramework.SQLite": "7.0.0-beta6",
-    "FantasyFootball.Data.Yahoo": "1.0.0-*"
+    "FantasyFootball.Data.Yahoo": "1.0.0-*",
+    "EntityFramework.Sqlite": "7.0.0-beta6"
   },
 
   "frameworks": {

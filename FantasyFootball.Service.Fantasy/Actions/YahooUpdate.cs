@@ -21,6 +21,9 @@ namespace FantasyFootball.Service.Fantasy.Actions
                         Id = l.league_key,
                         Name = l.name
                     };
+                    fantasyContext.Leagues.Add(league);
+                    fantasyContext.SaveChanges(true);
+
                     var teams = yahoo.Teams(l.league_key).Select(t => new Team
                     {
                         Id = t.team_key,
@@ -28,16 +31,29 @@ namespace FantasyFootball.Service.Fantasy.Actions
                         League = league
                     });
                     league.Teams = new HashSet<Team>(teams);
+                    fantasyContext.Teams.AddRange(teams);
+                    fantasyContext.SaveChanges(true);
+
+                    var positions = l.settings.roster_positions.Select(rp => new RosterPosition
+                    {
+                        Id = league.Id + ":" + rp.position,
+                        Position = rp.position,
+                        EligiblePositions = new[] { rp.position_type },
+                        Count = rp.count,
+                        League = league
+                    });
+                    league.RosterPositions = new HashSet<RosterPosition>(positions);
+                    fantasyContext.RosterPositions.AddRange(positions);
+                    fantasyContext.SaveChanges(true);
+
                     var players = yahoo.Players(l.league_key).Select(p => new Player
                     {
                         Id = p.player_key,
                         Name = p.name.full
                     });
                     league.Players = new HashSet<Player>(players);
-
-                    fantasyContext.Leagues.Add(league);
                     fantasyContext.Players.AddRange(players);
-                    fantasyContext.Teams.AddRange(teams);
+                    fantasyContext.SaveChanges(true);
                 }
                 fantasyContext.SaveChanges(true);
             }

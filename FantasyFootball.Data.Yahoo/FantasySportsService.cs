@@ -7,6 +7,7 @@ using FantasyFootball.Data.Yahoo.Actions;
 using FantasyFootball.Data.Yahoo.Models;
 using Newtonsoft.Json;
 using System.Xml.XPath;
+using FantasyFootball.Config;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -22,9 +23,10 @@ namespace FantasyFootball.Data.Yahoo
 
         public IEnumerable<Game> Games()
         {
-            if (!File.Exists("Year_GameId"))
-                new YearGameIdMapBuilder().Build();
-            var ids = File.ReadAllLines("Year_GameId").Select(x => x.Split(':')[1]);
+            var filepath = DataDirectory.FilePath("GameKeys");
+            if (!File.Exists(filepath))
+                new YearGameIdMapBuilder(filepath).Build();
+            var ids = File.ReadAllLines(filepath).Select(x => x.Split(':')[1]);
             return Games(ids.ToArray());
         }
 
@@ -41,9 +43,10 @@ namespace FantasyFootball.Data.Yahoo
 
         public IEnumerable<League> Leagues()
         {
-            if (!File.Exists("LeagueKeys"))
+            var filepath = DataDirectory.FilePath("LeagueKeys");
+            if (!File.Exists(filepath))
                 throw new NotImplementedException();
-            var keys = File.ReadAllLines("LeagueKeys");
+            var keys = File.ReadAllLines(filepath);
             return Leagues(keys.ToArray());
         }
 

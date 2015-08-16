@@ -8,6 +8,13 @@ namespace FantasyFootball.Data.Yahoo.Actions
 {
     public class YearGameIdMapBuilder
     {
+        private string filepath;
+
+        public YearGameIdMapBuilder(string filepath)
+        {
+            this.filepath = filepath;
+        }
+
         public void Build()
         {
             var map = new Dictionary<int, string>();
@@ -28,7 +35,7 @@ namespace FantasyFootball.Data.Yahoo.Actions
                 {
                 }
             }
-            File.WriteAllLines("Year_GameId", map.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Key + ":" + kvp.Value));
+            File.WriteAllLines(filepath, map.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value));
         }
     }
 }

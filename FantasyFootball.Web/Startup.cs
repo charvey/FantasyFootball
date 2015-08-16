@@ -25,11 +25,6 @@ namespace FantasyFootball.Web
                 .AddJsonFile("config.json")
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-
-            using (var fantasyContext = new FantasyContext())
-            {
-                fantasyContext.Database.EnsureCreated();
-            }
         }
 
         public IConfiguration Configuration { get; set; }

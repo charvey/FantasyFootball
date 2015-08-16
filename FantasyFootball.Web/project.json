@@ -1,7 +1,7 @@
 ﻿{
   "webroot": "wwwroot",
-  "version": "15.0.0-*",
-  "authors": ["Chris Harvey"],
+  "version": "15.1.0-*",
+  "authors": [ "Chris Harvey" ],
 
   "dependencies": {
     "Microsoft.AspNet.Diagnostics": "1.0.0-beta6",
@@ -23,7 +23,7 @@
   },
 
   "frameworks": {
-    "dnxcore50": { }
+    "dnx451": { }
   },
 
   "exclude": [

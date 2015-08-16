@@ -1,0 +1,18 @@
+{
+  "version": "15.1.0-*",
+  "description": "FantasyFootball.Config Class Library",
+  "authors": [ "Chris Harvey" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "dependencies": {
+    "Newtonsoft.Json": "7.0.1",
+    "System.Net.Primitives": "4.0.10"
+  },
+
+  "frameworks": {
+    "dnx451": { },
+    "dnxcore50": { }
+  }
+}

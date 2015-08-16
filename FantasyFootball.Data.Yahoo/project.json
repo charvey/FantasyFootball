@@ -1,36 +1,36 @@
 {
-  "version": "15.1.0-*",
-  "description": "FantasyFootball.Data.Yahoo Class Library",
-  "authors": [ "Chris Harvey" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+    "version": "15.1.0-*",
+    "description": "FantasyFootball.Data.Yahoo Class Library",
+    "authors": [ "Chris Harvey" ],
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
 
-  "dependencies": {
-    "Newtonsoft.Json": "7.0.1"
-  },
-
-  "frameworks": {
-    "dnx451": {
-      "dependencies": {
-        "Microsoft.Net.Http": "2.2.29"
-      },
-      "frameworkAssemblies": {
-        "System.Runtime": "",
-        "System.Xml": "",
-        "System.Xml.Linq": ""
-      }
+    "dependencies": {
+        "Newtonsoft.Json": "7.0.1",
+        "FantasyFootball.Config": "15.1.0-*"
     },
-    "dnxcore50": {
-      "dependencies": {
-        "Microsoft.CSharp": "4.0.0",
-        "System.Net.Http": "4.0.0",
-        "System.Reflection": "4.1.0-beta-23213",
-        "System.Runtime": "4.0.20",
-        "System.Threading.Thread": "4.0.0-beta-23123",
-        "System.Xml.XmlSerializer": "4.0.10",
-        "System.Xml.XPath.XDocument": "4.0.0"
-      }
+
+    "frameworks": {
+        "dnx451": {
+            "dependencies": {
+                "Microsoft.Net.Http": "2.2.29"
+            },
+            "frameworkAssemblies": {
+                "System.Runtime": "",
+                "System.Xml": "",
+                "System.Xml.Linq": ""
+            }
+        },
+        "dnxcore50": {
+            "dependencies": {
+                "Microsoft.CSharp": "4.0.0",
+                "System.Net.Http": "4.0.0",
+                "System.Runtime": "4.0.20",
+                "System.Threading.Thread": "4.0.0-beta-23123",
+                "System.Xml.XmlSerializer": "4.0.10",
+                "System.Xml.XPath.XDocument": "4.0.0"
+            }
+        }
     }
-  }
 }

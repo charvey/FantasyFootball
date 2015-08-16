@@ -23,7 +23,7 @@ namespace FantasyFootball.Data.Yahoo
             WaitUntil = DateTime.Now.AddSeconds(0.25);
 
             var request = new HttpRequestMessage(HttpMethod.Get, url + "?format=" + format);
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            request.Headers.Add("Authorization", BearerAuthorizationHeader);
             return client.SendAsync(request).Result.Content.ReadAsStringAsync();
         }
 

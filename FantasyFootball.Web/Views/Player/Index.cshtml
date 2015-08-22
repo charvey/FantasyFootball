@@ -1,0 +1,11 @@
+﻿@model IEnumerable<FantasyFootball.Service.Football.Models.Player>
+@{
+    ViewBag.Title = "Players";
+}
+
+<ul>
+    @foreach (var player in Model)
+    {
+        <li><img src="@player.Image" />@player.Name</li>
+    }
+</ul>

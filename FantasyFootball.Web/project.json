@@ -15,7 +15,10 @@
     "Microsoft.Framework.Logging": "1.0.0-beta6",
     "Microsoft.Framework.Logging.Console": "1.0.0-beta6",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta6",
-    "FantasyFootball.Service.Fantasy": "15.1.0-*"
+    "FantasyFootball.Service.Fantasy": "15.1.0-*",
+
+    "EntityFramework.Sqlite": "7.0.0-beta6",
+"FantasyFootball.Service.Football": "15.1.0-*"
   },
 
   "commands": {

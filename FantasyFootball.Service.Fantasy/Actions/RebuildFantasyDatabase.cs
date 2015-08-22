@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace FantasyFootball.Service.Fantasy.Actions
 {
-    public class FantasyUpdater
+    public class RebuildFantasyDatabase
     {
-        public void Update()
+        public void Rebuild()
         {
             var yahoo = new FantasySportsService();
             using (var fantasyContext = new FantasyContext())
@@ -46,10 +46,12 @@ namespace FantasyFootball.Service.Fantasy.Actions
                     fantasyContext.RosterPositions.AddRange(positions);
                     fantasyContext.SaveChanges(true);
 
-                    var players = yahoo.Players(l.league_key).Select(p => new Player
+                    var players = yahoo.Players(l.league_key).Take(15).Select(p => new Player
                     {
                         Id = p.player_key,
-                        Name = p.name.full
+                        PlayerId = p.player_id,
+                        ByeWeek = p.bye_weeks.Single().value,
+                        League = league
                     });
                     league.Players = new HashSet<Player>(players);
                     fantasyContext.Players.AddRange(players);

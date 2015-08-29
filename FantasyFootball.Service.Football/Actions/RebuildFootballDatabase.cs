@@ -15,6 +15,8 @@ namespace FantasyFootball.Service.Football.Actions
                 {
                     Id = p.player_id,
                     Name = p.name.full,
+                    Position = p.display_position,
+                    Team = p.editorial_team_abbr,
                     Image = p.image_url
                 });
                 footballContext.AddRange(players);

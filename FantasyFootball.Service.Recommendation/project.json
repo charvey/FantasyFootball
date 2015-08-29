@@ -1,0 +1,19 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "FantasyFootball.Service.Recommendation Class Library",
+  "authors": [ "Chris" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "dependencies": {
+    "FantasyFootball.Service.Football": "15.1.0-*",
+    "FantasyFootball.Service.Prediction": "15.1.0-*",
+    "FantasyFootball.Service.Fantasy": "15.1.0-*"
+  },
+
+  "frameworks": {
+    "dnx451": { },
+    "dnxcore50": { }
+  }
+}

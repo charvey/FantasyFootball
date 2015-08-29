@@ -8,7 +8,6 @@ namespace FantasyFootball.Service.Prediction.Models
         public double Value { get; set; }
         public int Week { get; set; }
         public string PlayerId { get; set; }
-        public string Model { get; set; }
-        public string Run { get; set; }
+        public Run Run { get; set; }
     }
 }

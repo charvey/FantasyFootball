@@ -27,6 +27,34 @@ namespace FantasyFootball.Data.Yahoo
             return client.SendAsync(request).Result.Content.ReadAsStringAsync();
         }
 
+        public string all(string gameId = "nfl")
+        {
+            var url = BaseUrl + "/game/" + gameId + ";out=position_types,stat_categories,roster_positions";
+
+            return MakeCall(url).Result;
+        }
+
+        public string position_types(string gameId = "nfl")
+        {
+            var url = BaseUrl + "/game/" + gameId + ";out=position_types";
+
+            return MakeCall(url).Result;
+        }
+
+        public string stat_categories(string gameId = "nfl")
+        {
+            var url = BaseUrl + "/game/" + gameId + "/stat_categories";
+
+            return MakeCall(url).Result;
+        }
+
+        public string roster_positions(string gameId = "nfl")
+        {
+            var url = BaseUrl + "/game/" + gameId + "/roster_positions";
+
+            return MakeCall(url).Result;
+        }
+
         public string Game(string gameId = "nfl")
         {
             var url = BaseUrl + "/game/" + gameId;

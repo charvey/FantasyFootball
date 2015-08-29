@@ -7,7 +7,7 @@ namespace FantasyFootball.Service.Fantasy.Models
         public League()
         {
             Teams = new HashSet<Team>();
-            Players = new HashSet<Player>();
+            Players = new HashSet<LeaguePlayer>();
             DraftPicks = new HashSet<DraftPick>();
             RosterPositions = new HashSet<RosterPosition>();
         }
@@ -15,7 +15,7 @@ namespace FantasyFootball.Service.Fantasy.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
-        public virtual ICollection<Player> Players { get; set; }
+        public virtual ICollection<LeaguePlayer> Players { get; set; }
         public virtual ICollection<DraftPick> DraftPicks { get; set; }
         public virtual ICollection<RosterPosition> RosterPositions { get; set; }
     }

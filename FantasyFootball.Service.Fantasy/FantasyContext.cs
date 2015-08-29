@@ -6,7 +6,8 @@ namespace FantasyFootball.Service.Fantasy
     public class FantasyContext : DbContext
     {
         public DbSet<League> Leagues { get; set; }
-        public DbSet<Player> Players { get; set; }
+        public DbSet<LeaguePlayer> LeaguePlayers { get; set; }
+        public DbSet<PlayerPosition> PlayerPosition { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<RosterPosition> RosterPositions { get; set; }
 

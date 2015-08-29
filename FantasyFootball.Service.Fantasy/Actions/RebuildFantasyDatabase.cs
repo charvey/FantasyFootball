@@ -3,7 +3,6 @@ using FantasyFootball.Service.Fantasy.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FantasyFootball.Service.Fantasy.Actions
 {
@@ -38,7 +37,6 @@ namespace FantasyFootball.Service.Fantasy.Actions
                     {
                         Id = league.Id + ":" + rp.position,
                         Position = rp.position,
-                        EligiblePositions = new[] { rp.position_type },
                         Count = rp.count,
                         League = league
                     });
@@ -46,15 +44,33 @@ namespace FantasyFootball.Service.Fantasy.Actions
                     fantasyContext.RosterPositions.AddRange(positions);
                     fantasyContext.SaveChanges(true);
 
-                    var players = yahoo.Players(l.league_key).Take(15).Select(p => new Player
-                    {
-                        Id = p.player_key,
-                        PlayerId = p.player_id,
-                        ByeWeek = p.bye_weeks.Single().value,
-                        League = league
+                    var players = yahoo.Players(l.league_key).Take(15).Select(p => {
+                        var player = new LeaguePlayer
+                        {
+                            Id = p.player_key,
+                            PlayerId = p.player_id,
+                            ByeWeek = p.bye_weeks.Single().value,
+                            Positions = new HashSet<PlayerPosition>(),
+                            Teams = new HashSet<Team>(),
+                            League = league
+                        };
+
+                        foreach(var ep in p.eligible_positions)
+                        {
+                            var pp = new PlayerPosition
+                            {
+                                Id = Guid.NewGuid(),
+                                Player = player,
+                                Position = positions.Single(pos => pos.Position == ep.value)
+                            };
+                            //player.Positions.Add(pp);
+                            fantasyContext.PlayerPosition.Add(pp);
+                        }
+
+                        return player;
                     });
-                    league.Players = new HashSet<Player>(players);
-                    fantasyContext.Players.AddRange(players);
+                    league.Players = new HashSet<LeaguePlayer>(players);
+                    fantasyContext.LeaguePlayers.AddRange(players);
                     fantasyContext.SaveChanges(true);
                 }
                 fantasyContext.SaveChanges(true);

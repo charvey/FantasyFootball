@@ -1,9 +1,10 @@
 ﻿using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Players;
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 
-namespace FantasyFootball.Core.Analysis.WinSeason
+namespace FantasyFootball.Core.Simulation
 {
     public static class GeneralExtensions
     {
@@ -23,21 +24,22 @@ namespace FantasyFootball.Core.Analysis.WinSeason
                 .Sum(p => universe.GetScore(p, week));
         }
 
+        private static ConcurrentDictionary<Guid, ScoreProjection> scoreProjections = new ConcurrentDictionary<Guid, ScoreProjection>();
         public static double GetScore(this Universe universe, Player player, int week)
         {
-            return universe.Facts.OfType<SetScore>()
-                .Single(f => f.Player.Id == player.Id && f.Week == week).Score;
+            return scoreProjections.GetOrAdd(universe.Id, _ => new ScoreProjection(universe)).GetScore(player, week);
         }
 
+        private static ConcurrentDictionary<Guid, RosterProjection> rosterProjections = new ConcurrentDictionary<Guid, RosterProjection>();
         public static Player[] GetRoster(this Universe universe, Team team, int week)
         {
-            return universe.Facts.OfType<SetRoster>()
-                .Single(f => f.Team.Id == team.Id && f.Week == week).Players;
+            return rosterProjections.GetOrAdd(universe.Id, _ => new RosterProjection(universe)).GetRoster(team, week);
         }
 
+        private static ConcurrentDictionary<Guid, TeamProjection> teamProjections = new ConcurrentDictionary<Guid, TeamProjection>();
         public static Team[] GetTeams(this Universe universe)
         {
-            return universe.Facts.OfType<AddTeam>().Select(f => f.Team).ToArray();
+            return teamProjections.GetOrAdd(universe.Id, _ => new TeamProjection(universe)).GetTeams();
         }
     }
 }

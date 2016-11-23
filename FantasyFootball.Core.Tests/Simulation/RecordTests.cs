@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-using FantasyFootball.Core.Analysis.WinSeason;
 using Xunit;
 
-namespace FantasyFootball.Core.Tests.Analysis.WinSeason
+namespace FantasyFootball.Core.Simulation
 {    
     public class RecordTests
     {

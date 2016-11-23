@@ -1,10 +1,9 @@
 ﻿using FantasyFootball.Core.Draft;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace FantasyFootball.Core.Analysis.WinSeason
+namespace FantasyFootball.Core.Simulation
 {
     public static class StandingsExtensions
     {        

@@ -1,6 +1,6 @@
 ﻿using FantasyFootball.Core.Draft;
 
-namespace FantasyFootball.Core.Analysis.WinSeason
+namespace FantasyFootball.Core.Simulation
 {
     public static class PlayoffExtensions
     {

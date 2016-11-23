@@ -1,14 +1,11 @@
-﻿using FantasyFootball.Core;
-using FantasyFootball.Core.Analysis;
-using FantasyFootball.Core.Analysis.WinSeason;
+﻿using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Players;
 using FantasyFootball.Core.Rosters;
+using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,7 +22,7 @@ namespace FantasyFootball.Terminal
 
             while (true)
             {
-                Console.WriteLine("Enter a key: a/b/p/d/j/x");
+                Console.WriteLine("Enter a key: a/s/b/p/d/j/y/x");
                 var key = Console.ReadKey();
                 Console.Clear();
                 if (key.KeyChar == 'a')
@@ -47,7 +44,7 @@ namespace FantasyFootball.Terminal
                     //    File.WriteAllLines($"analysis-{position}.csv", datapoints.Select(d => d.Item1 + "," + d.Item2));
                     //}
                 }
-                else if (key.KeyChar == 'u')
+                else if (key.KeyChar == 's')
                 {
                     new WinnerPredicter().PredictWinners();
                 }

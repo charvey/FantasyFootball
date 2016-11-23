@@ -1,11 +1,10 @@
 ﻿using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Players;
-using FantasyFootball.Data.Yahoo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FantasyFootball.Core.Analysis.WinSeason
+namespace FantasyFootball.Core.Simulation
 {
     public class Universe
     {
@@ -14,7 +13,7 @@ namespace FantasyFootball.Core.Analysis.WinSeason
         private readonly List<Fact> facts;
         public IReadOnlyList<Fact> Facts { get { return facts; } }
 
-        public Universe():this(new List<Fact>())
+        public Universe() : this(new List<Fact>())
         {
         }
 

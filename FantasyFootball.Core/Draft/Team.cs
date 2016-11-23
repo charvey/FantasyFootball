@@ -22,9 +22,16 @@ namespace FantasyFootball.Core.Draft
             return otherTeam.Id == this.Id;
         }
 
+        private static List<Team> allTeams;
+        private static DateTime lastModified = DateTime.MinValue;
         public static IEnumerable<Team> All()
         {
-            return JsonConvert.DeserializeObject<List<Team>>(File.ReadAllText("teams.json"));
+            if (new FileInfo("teams.json").LastWriteTime > lastModified)
+            {
+                allTeams = JsonConvert.DeserializeObject<List<Team>>(File.ReadAllText("teams.json"));
+                lastModified = new FileInfo("data.csv").LastWriteTime;
+            }
+            return allTeams;
         }
 
         public static Team Get(int id)

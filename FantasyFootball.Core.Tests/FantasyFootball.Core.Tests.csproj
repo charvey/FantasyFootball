@@ -62,7 +62,6 @@
   <ItemGroup>
     <Compile Include="Analysis\FooTest.cs" />
     <Compile Include="Analysis\WinSeason\RecordTests.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Preseason\PreseasonHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -5,8 +5,9 @@ using System.Linq;
 using FantasyFootball.Core.Players;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using FantasyFootball.Core.Analysis;
 
-namespace FantasyFootball.Core.Analysis.WinSeason
+namespace FantasyFootball.Core.Simulation
 {
     public class CandidateScoreProvider : ScoreProvider
     {
@@ -28,7 +29,7 @@ namespace FantasyFootball.Core.Analysis.WinSeason
     public class WinnerPredicter
     {
         private const string league_key = "359.l.48793";
-        private const int CurrentWeek = 10;
+        private const int CurrentWeek = 11;
         private readonly FantasySportsService service = new FantasySportsService();
         private readonly CandidateScoreProvider scoreProvider;
 
@@ -43,7 +44,7 @@ namespace FantasyFootball.Core.Analysis.WinSeason
 
         public void PredictWinners()
         {
-            const int trials = 1000;
+            const int trials = 10;
             var universe = new Universe();
             StartSeason(universe);
 
@@ -147,7 +148,7 @@ namespace FantasyFootball.Core.Analysis.WinSeason
             foreach (var team in universe.GetTeams())
             {
                 var allPlayers = service.TeamRoster($"{league_key}.t.{team.Id}", week).players.Select(Players.Player.From);
-                var roster = new RosterPicker(scoreProvider).PickRoster(allPlayers, week);
+                var roster = new RosterPicker(new DataCsvScoreProvider()).PickRoster(allPlayers, week);
                 universe.AddFact(new SetRoster
                 {
                     Team = team,

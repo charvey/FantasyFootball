@@ -5,3 +5,5 @@ obj
 *.sln.ide/
 *.suo
 *.user
+.vs
+*.lock.json

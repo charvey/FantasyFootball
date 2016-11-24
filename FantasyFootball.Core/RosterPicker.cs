@@ -52,7 +52,7 @@ namespace FantasyFootball.Core
 
         private Player Pick(IEnumerable<Player> players, int week, params string[] positions)
         {
-            players = players.Where(p => positions.Contains(p.Position));
+            players = players.Where(p => positions.Intersect(p.Positions).Any());
             players = players.OrderByDescending(p => scoreProvider.GetScore(p, week));
             return players.FirstOrDefault();
         }

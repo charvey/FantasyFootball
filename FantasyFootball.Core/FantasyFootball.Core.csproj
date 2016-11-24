@@ -59,7 +59,6 @@
     <Compile Include="Simulation\StandingsExtensions.cs" />
     <Compile Include="Simulation\Universe.cs" />
     <Compile Include="Simulation\WinnerPredicter.cs" />
-    <Compile Include="Calculators\RegularSeasonWinsCalculator.cs" />
     <Compile Include="Draft\DraftDataWriter.cs" />
     <Compile Include="Draft\DraftExtensions.cs" />
     <Compile Include="Draft\Scores.cs" />

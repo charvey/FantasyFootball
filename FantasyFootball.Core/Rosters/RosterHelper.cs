@@ -15,7 +15,7 @@ namespace FantasyFootball.Core.Rosters
             var roster = rosterPicker.PickRoster(team, week);
             foreach(var player in roster)
             {
-                output.WriteLine(player.Name + " " + player.Position);
+                output.WriteLine(player.Name + " " + player.Positions);
             }
             output.WriteLine(roster.Sum(p => Scores.GetScore(p, week)));
         }

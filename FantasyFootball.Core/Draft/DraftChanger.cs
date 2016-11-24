@@ -15,16 +15,16 @@ namespace FantasyFootball.Core.Draft
             {
                 Console.Clear();
                 foreach (var p in players.Take(30))
-                    Console.WriteLine(p.Id + " " + p.Name + " " + p.Position + " " + p.Team);
+                    output.WriteLine(p.Id + " " + p.Name + " " + p.Positions + " " + p.Team);
 
-                Console.WriteLine();
-                Console.WriteLine(team.Owner + " is picking");
-                Console.WriteLine("Enter a filter:");
-                var filter = Console.ReadLine().ToLower();
-                players = players.Where(p => (p.Id + " " + p.Name + " " + p.Position + " " + p.Team).ToLower().Contains(filter));
+                output.WriteLine();
+                output.WriteLine(team.Owner + " is picking");
+                output.WriteLine("Enter a filter:");
+                var filter = input.ReadLine().ToLower();
+                players = players.Where(p => (p.Id + " " + p.Name + " " + p.Positions + " " + p.Team).ToLower().Contains(filter));
             }
             var player = players.Single();
-            Console.WriteLine(team.Owner + " picks " + player.Name + " from " + player.Team + " as " + player.Position);
+            output.WriteLine(team.Owner + " picks " + player.Name + " from " + player.Team + " as " + player.Positions);
             draft.Pick(team, draft.GetNextDraftRound().Value, player);            
         }
     }

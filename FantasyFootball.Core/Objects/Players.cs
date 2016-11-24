@@ -15,16 +15,13 @@ namespace FantasyFootball.Core.Objects
             if (new FileInfo(filename).LastWriteTime > lastModified)
             {
                 var lines = File.ReadAllLines(filename).Select(l => l.Split(','));
-
-                //Temporary filter
-                //lines = lines.Where(l => !l[3].Contains('/'));
-
+                
                 all = lines.Select(l => new Player
                 {
                     Id = l[0],
                     Name = l[1],
                     Team = l[2],
-                    Position = l[3]
+                    Positions = l[3].Split('/')
                 });
                 lastModified = new FileInfo(filename).LastWriteTime;
             }
@@ -39,7 +36,7 @@ namespace FantasyFootball.Core.Objects
         public static Player From(Data.Yahoo.Models.Player player)
         {
             if (player.display_position == "DEF")
-                return Players.All().Single(x => x.Position == "DEF" && x.Team == player.editorial_team_abbr);
+                return Players.All().Single(x => x.Positions.All(p => p == "DEF") && x.Team == player.editorial_team_abbr);
             else
                 return Players.Get(player.player_id);
         }

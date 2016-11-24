@@ -1,7 +1,6 @@
 ﻿using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace FantasyFootball.Core.Draft
@@ -55,7 +54,7 @@ namespace FantasyFootball.Core.Draft
     public class PositionMeasure : Measure
     {
         public override string Name => "Position";
-        public override IComparable Compute(Player player) => player.Position;
+        public override IComparable Compute(Player player) => string.Join("/", player.Positions);
         public override int Width => 3;
     }
 
@@ -89,7 +88,8 @@ namespace FantasyFootball.Core.Draft
     public class VBDMeasure : Measure
     {
         private static Dictionary<string, double> replacement = Players.All()
-            .GroupBy(p => p.Position).ToDictionary(g => g.Key, ComputeReplacement);
+            .SelectMany(p => p.Positions.Select(pos => Tuple.Create(pos, p)))
+            .GroupBy(p => p.Item1, p => p.Item2).ToDictionary(g => g.Key, ComputeReplacement);
 
         private static double ComputeReplacement(IGrouping<string,Player> group)
         {
@@ -116,21 +116,21 @@ namespace FantasyFootball.Core.Draft
         public override int Width => 8;
         public override IComparable Compute(Player player)
         {
-            return (Scores.GetTotalScore(player) - replacement[player.Position]);
+            return (Scores.GetTotalScore(player) - player.Positions.Min(p => replacement[p]));
         }
     }
 
     public class FlexVBDMeasure : Measure
     {
         private static double replacement = Players.All()
-            .Where(p => p.Position == "RB" || p.Position == "WR" || p.Position == "TE")
+            .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())
             .Select(Scores.GetTotalScore).OrderByDescending(x => x).Skip(12 * 6 - 1).First();
 
         public override string Name => "Flex VBD";
         public override int Width => 10;
         public override IComparable Compute(Player player)
         {
-            if (player.Position == "QB" || player.Position == "K" || player.Position == "DEF")
+            if (player.Positions.Intersect(new[] { "QB", "K", "DEF" }).Any())
                 return 0.0;
             return Scores.GetTotalScore(player) - replacement;
         }

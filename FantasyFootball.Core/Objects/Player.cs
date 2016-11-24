@@ -4,7 +4,7 @@
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Position { get; set; }
+        public string[] Positions { get; set; }
         public string Team { get; set; }
 
         public override bool Equals(object obj)

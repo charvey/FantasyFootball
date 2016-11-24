@@ -182,7 +182,7 @@ namespace FantasyFootball.Core.Analysis
     public class ByPositionHistoricalGroupSpecifier : HistoricalGroupSpecifier
     {
         public string Name => "By Position";
-        public string GetHistoricalGroup(string player) => Players.Get(player).Position;
+        public string GetHistoricalGroup(string player) => string.Join("/", Players.Get(player).Positions);
     }
 
     public class ByPlayerHistoricalGroupSpecifier : HistoricalGroupSpecifier

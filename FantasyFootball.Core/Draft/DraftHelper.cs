@@ -1,4 +1,4 @@
-﻿using FantasyFootball.Core.Players;
+﻿using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,8 +8,6 @@ namespace FantasyFootball.Core.Draft
 {
 	public class DraftHelper
 	{
-        private readonly PlayerProvider playerProvider = new FilePlayerProvider();
-
 		public void Analyze(TextWriter output)
 		{
 			var choices = AnalyzeChoices();
@@ -25,7 +23,7 @@ namespace FantasyFootball.Core.Draft
 		{
 			var currentTeam = GetCurrentTeam();
 			var baseScore = GetTotalScore(currentTeam.Players);
-			foreach (var player in playerProvider.GetPlayers())
+			foreach (var player in Players.All())
 			{
                 yield return new DraftPickRecommendation
                 {
@@ -51,9 +49,9 @@ namespace FantasyFootball.Core.Draft
                 .PickRoster(players, week).Sum(p => Scores.GetScore(p, week));
 		}
 
-		private Team GetCurrentTeam()
+		private DraftTeam GetCurrentTeam()
 		{
-            return new Team();
+            return new DraftTeam();
 		}
 	}
 

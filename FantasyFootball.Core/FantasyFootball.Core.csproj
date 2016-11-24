@@ -49,6 +49,9 @@
     <Compile Include="Analysis\HistoricalDataFilters.cs" />
     <Compile Include="Analysis\ProbabilityDistribution.cs" />
     <Compile Include="Analysis\ProbabilityDistributionAnalysis.cs" />
+    <Compile Include="Draft\DraftTeam.cs" />
+    <Compile Include="Objects\Matchup.cs" />
+    <Compile Include="Objects\Teams.cs" />
     <Compile Include="Simulation\GeneralExtensions.cs" />
     <Compile Include="Simulation\PlayoffExtensions.cs" />
     <Compile Include="Simulation\Projection.cs" />
@@ -60,16 +63,15 @@
     <Compile Include="Draft\DraftDataWriter.cs" />
     <Compile Include="Draft\DraftExtensions.cs" />
     <Compile Include="Draft\Scores.cs" />
-    <Compile Include="Draft\Team.cs" />
+    <Compile Include="Objects\Team.cs" />
     <Compile Include="Draft\DraftChanger.cs" />
     <Compile Include="Draft\Draft.cs" />
     <Compile Include="Draft\DraftWriter.cs" />
-    <Compile Include="Matchups.cs" />
+    <Compile Include="Objects\Matchups.cs" />
     <Compile Include="PlayerProjections.cs" />
     <Compile Include="Draft\DraftHelper.cs" />
-    <Compile Include="Players\FilePlayerProvider.cs" />
-    <Compile Include="Players\Player.cs" />
-    <Compile Include="Players\PlayerProvider.cs" />
+    <Compile Include="Objects\Players.cs" />
+    <Compile Include="Objects\Player.cs" />
     <Compile Include="Preseason\PreseasonHelper.cs" />
     <Compile Include="DumpData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,6 +88,7 @@
       <Name>FantasyFootball.Data.Yahoo</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

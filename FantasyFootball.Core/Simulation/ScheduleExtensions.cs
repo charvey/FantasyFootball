@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using FantasyFootball.Core.Objects;
+using System.Linq;
 
 namespace FantasyFootball.Core.Simulation
 {
     public static class ScheduleExtensions
     {
-        public static Core.Matchup[] GetMatchups(this Universe universe, int week)
+        public static Matchup[] GetMatchups(this Universe universe, int week)
         {
             return universe.Facts.OfType<AddMatchup>()
                 .Select(f => f.Matchup)

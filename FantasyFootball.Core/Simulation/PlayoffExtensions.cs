@@ -1,4 +1,4 @@
-﻿using FantasyFootball.Core.Draft;
+﻿using FantasyFootball.Core.Objects;
 
 namespace FantasyFootball.Core.Simulation
 {
@@ -6,7 +6,7 @@ namespace FantasyFootball.Core.Simulation
     {
         public static Team GetChampionshipWinner(this Universe universe)
         {
-            return universe.GetWinner(new Core.Matchup
+            return universe.GetWinner(new Matchup
             {
                 TeamA = universe.GetSemifinalAWinner(),
                 TeamB = universe.GetSemifinalBWinner(),
@@ -16,7 +16,7 @@ namespace FantasyFootball.Core.Simulation
 
         public static Team GetSemifinalAWinner(this Universe universe)
         {
-            return universe.GetWinner(new Core.Matchup
+            return universe.GetWinner(new Matchup
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(1),
                 TeamB = universe.GetQuarterFinalAWinner(),
@@ -26,7 +26,7 @@ namespace FantasyFootball.Core.Simulation
 
         public static Team GetSemifinalBWinner(this Universe universe)
         {
-            return universe.GetWinner(new Core.Matchup
+            return universe.GetWinner(new Matchup
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(2),
                 TeamB = universe.GetQuarterFinalBWinner(),
@@ -36,7 +36,7 @@ namespace FantasyFootball.Core.Simulation
 
         public static Team GetQuarterFinalAWinner(this Universe universe)
         {
-            return universe.GetWinner(new Core.Matchup
+            return universe.GetWinner(new Matchup
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(4),
                 TeamB = universe.GetTeamInPlaceAtEndOfSeason(5),
@@ -46,7 +46,7 @@ namespace FantasyFootball.Core.Simulation
 
         public static Team GetQuarterFinalBWinner(this Universe universe)
         {
-            return universe.GetWinner(new Core.Matchup
+            return universe.GetWinner(new Matchup
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(3),
                 TeamB = universe.GetTeamInPlaceAtEndOfSeason(6),

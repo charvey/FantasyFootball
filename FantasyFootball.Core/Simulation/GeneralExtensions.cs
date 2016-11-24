@@ -1,5 +1,4 @@
-﻿using FantasyFootball.Core.Draft;
-using FantasyFootball.Core.Players;
+﻿using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -8,7 +7,7 @@ namespace FantasyFootball.Core.Simulation
 {
     public static class GeneralExtensions
     {
-        public static Team GetWinner(this Universe universe, Core.Matchup matchup)
+        public static Team GetWinner(this Universe universe, Matchup matchup)
         {
             var teamAScore = universe.GetScore(matchup.TeamA, matchup.Week);
             var teamBScore = universe.GetScore(matchup.TeamB, matchup.Week);

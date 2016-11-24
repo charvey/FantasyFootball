@@ -1,11 +1,11 @@
-﻿using FantasyFootball.Core.Draft;
+﻿using FantasyFootball.Core.Analysis;
+using FantasyFootball.Core.Draft;
+using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
 using System;
 using System.Linq;
-using FantasyFootball.Core.Players;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using FantasyFootball.Core.Analysis;
 
 namespace FantasyFootball.Core.Simulation
 {
@@ -44,7 +44,7 @@ namespace FantasyFootball.Core.Simulation
 
         public void PredictWinners()
         {
-            const int trials = 10;
+            const int trials = 100;
             var universe = new Universe();
             StartSeason(universe);
 
@@ -76,7 +76,7 @@ namespace FantasyFootball.Core.Simulation
 
         private void StartSeason(Universe universe)
         {
-            foreach (var team in Draft.Team.All())
+            foreach (var team in Teams.All())
                 universe.AddFact(new AddTeam { Team = team });
 
             for (int week = 1; week <= CurrentWeek; week++)
@@ -104,7 +104,7 @@ namespace FantasyFootball.Core.Simulation
 
         private void RecordWeek(Universe universe, int week)
         {
-            foreach (var player in Player.All())
+            foreach (var player in Players.All())
             {
                 universe.AddFact(new SetScore
                 {
@@ -114,7 +114,7 @@ namespace FantasyFootball.Core.Simulation
                 });
             }
 
-            foreach (var matchup in Core.Matchup.Matchups(week))
+            foreach (var matchup in Matchups.GetByWeek(week))
                 universe.AddFact(new AddMatchup { Matchup = matchup });
 
             foreach (var team in universe.GetTeams())
@@ -125,14 +125,14 @@ namespace FantasyFootball.Core.Simulation
                     Week = week,
                     Players = service.TeamRoster($"{league_key}.t.{team.Id}", week).players
                         .Where(p => p.selected_position.position != "BN")
-                        .Select(Players.Player.From).ToArray()
+                        .Select(Players.From).ToArray()
                 });
             }
         }
 
         private void PredictWeek(Universe universe, int week)
         {
-            foreach(var player in Player.All())
+            foreach(var player in Players.All())
             {
                 universe.AddFact(new SetScore
                 {
@@ -142,12 +142,12 @@ namespace FantasyFootball.Core.Simulation
                 });
             }
 
-            foreach (var matchup in Core.Matchup.Matchups(week))
+            foreach (var matchup in Matchups.GetByWeek(week))
                 universe.AddFact(new AddMatchup { Matchup = matchup });
 
             foreach (var team in universe.GetTeams())
             {
-                var allPlayers = service.TeamRoster($"{league_key}.t.{team.Id}", week).players.Select(Players.Player.From);
+                var allPlayers = service.TeamRoster($"{league_key}.t.{team.Id}", week).players.Select(Players.From);
                 var roster = new RosterPicker(new DataCsvScoreProvider()).PickRoster(allPlayers, week);
                 universe.AddFact(new SetRoster
                 {

@@ -1,4 +1,4 @@
-﻿using FantasyFootball.Core.Players;
+﻿using FantasyFootball.Core.Objects;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace FantasyFootball.Core.Draft
         public void Change(TextWriter output, TextReader input, Draft draft)
         {
             var team = draft.GetNextDraftTeam();
-            var players = Player.All().Except(draft.PickedPlayers);
+            var players = Players.All().Except(draft.PickedPlayers);
             while (players.Count() > 1)
             {
                 Console.Clear();

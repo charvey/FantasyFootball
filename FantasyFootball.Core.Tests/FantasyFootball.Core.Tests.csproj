@@ -60,8 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analysis\FooTest.cs" />
-    <Compile Include="Analysis\WinSeason\RecordTests.cs" />
+    <Compile Include="Simulation\RecordTests.cs" />
     <Compile Include="Preseason\PreseasonHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

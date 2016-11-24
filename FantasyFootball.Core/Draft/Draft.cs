@@ -1,4 +1,4 @@
-﻿using FantasyFootball.Core.Players;
+﻿using FantasyFootball.Core.Objects;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -74,10 +74,10 @@ namespace FantasyFootball.Core.Draft
             var file = JsonConvert.DeserializeObject<DraftFileEntry>(json);
             var draft= new Draft
             {
-                Teams = file.DraftOrder.Select(Team.Get).ToList()
+                Teams = file.DraftOrder.Select(Objects.Teams.Get).ToList()
             };
             foreach (var p in file.Picks)
-                draft.Pick(Team.Get(p.TeamId), p.Round, Player.Get(p.PlayerId));
+                draft.Pick(Objects.Teams.Get(p.TeamId), p.Round, Players.Get(p.PlayerId));
 
             return draft;
         }

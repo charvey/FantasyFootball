@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FantasyFootball.Core.Objects;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace FantasyFootball.Core.Analysis
 
         private static IEnumerable<Situation> AllSituations()
         {
-            return Players.Player.All().SelectMany(p => Enumerable.Range(1, CurrentWeek).Select(w => new Situation(p.Id, w)));
+            return Players.All().SelectMany(p => Enumerable.Range(1, CurrentWeek).Select(w => new Situation(p.Id, w)));
         }
 
         private static bool CanBeEvaluated(Situation situation) => DumpData.GetActualScore(situation.Player, situation.Week).HasValue;
@@ -149,7 +150,7 @@ namespace FantasyFootball.Core.Analysis
 
         protected IEnumerable<Situation> GetHistoricalSituations()
         {
-            return Players.Player.All().CrossJoin(Enumerable.Range(1, ProbabilityDistributionAnalysis.CurrentWeek),
+            return Players.All().CrossJoin(Enumerable.Range(1, ProbabilityDistributionAnalysis.CurrentWeek),
                 (p, w) => new Situation(p.Id, w)).Where(CanBeTestedOn);
         }
 
@@ -181,7 +182,7 @@ namespace FantasyFootball.Core.Analysis
     public class ByPositionHistoricalGroupSpecifier : HistoricalGroupSpecifier
     {
         public string Name => "By Position";
-        public string GetHistoricalGroup(string player) => Players.Player.Get(player).Position;
+        public string GetHistoricalGroup(string player) => Players.Get(player).Position;
     }
 
     public class ByPlayerHistoricalGroupSpecifier : HistoricalGroupSpecifier

@@ -1,6 +1,5 @@
-﻿using FantasyFootball.Core;
-using FantasyFootball.Core.Draft;
-using FantasyFootball.Core.Players;
+﻿using FantasyFootball.Core.Draft;
+using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;

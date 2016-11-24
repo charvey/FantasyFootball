@@ -1,6 +1,6 @@
 ﻿using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Draft;
-using FantasyFootball.Core.Players;
+using FantasyFootball.Core.Objects;
 using FantasyFootball.Core.Rosters;
 using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
@@ -70,7 +70,7 @@ namespace FantasyFootball.Terminal
                 else if (key.KeyChar == 'w')
                 {
                     var draft = Draft.FromFile();
-                    var players = Player.All().Except(draft.PickedPlayers);
+                    var players = Players.All().Except(draft.PickedPlayers);
                     var measure = new Measure[] {
                         new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
                     };

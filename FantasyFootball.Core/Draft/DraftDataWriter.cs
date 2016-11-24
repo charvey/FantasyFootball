@@ -1,4 +1,4 @@
-﻿using FantasyFootball.Core.Players;
+﻿using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,7 @@ namespace FantasyFootball.Core.Draft
                 ,new FlexVBDMeasure(),new ValueAddedMeasure(draft.PickedPlayersByTeam(new Team {Id=7 }))
             };
 
-            var players = Player.All().Except(draft.PickedPlayers);
+            var players = Players.All().Except(draft.PickedPlayers);
 
 
             players = players.OrderByDescending(p => measure[5].Compute(p));
@@ -88,7 +88,7 @@ namespace FantasyFootball.Core.Draft
 
     public class VBDMeasure : Measure
     {
-        private static Dictionary<string, double> replacement = Player.All()
+        private static Dictionary<string, double> replacement = Players.All()
             .GroupBy(p => p.Position).ToDictionary(g => g.Key, ComputeReplacement);
 
         private static double ComputeReplacement(IGrouping<string,Player> group)
@@ -122,7 +122,7 @@ namespace FantasyFootball.Core.Draft
 
     public class FlexVBDMeasure : Measure
     {
-        private static double replacement = Player.All()
+        private static double replacement = Players.All()
             .Where(p => p.Position == "RB" || p.Position == "WR" || p.Position == "TE")
             .Select(Scores.GetTotalScore).OrderByDescending(x => x).Skip(12 * 6 - 1).First();
 

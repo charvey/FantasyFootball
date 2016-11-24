@@ -1,4 +1,4 @@
-﻿using FantasyFootball.Core.Draft;
+﻿using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;

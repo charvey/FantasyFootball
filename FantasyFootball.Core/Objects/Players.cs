@@ -2,30 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FantasyFootball.Core.Players
+namespace FantasyFootball.Core.Objects
 {
-    public class Player
+    public static class Players
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string Position { get; set; }
-        public string Team { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            var otherPlayer = obj as Player;
-            if (otherPlayer == null) return false;
-            return otherPlayer.Id == this.Id;
-        }
-
-        public override int GetHashCode()
-        {
-            return this.Id.GetHashCode();
-        }
-
         private const string filename = "data.csv";
         private static IEnumerable<Player> all;
         private static DateTime lastModified = DateTime.MinValue;
@@ -58,9 +39,9 @@ namespace FantasyFootball.Core.Players
         public static Player From(Data.Yahoo.Models.Player player)
         {
             if (player.display_position == "DEF")
-                return Player.All().Single(x => x.Position == "DEF" && x.Team == player.editorial_team_abbr);
+                return Players.All().Single(x => x.Position == "DEF" && x.Team == player.editorial_team_abbr);
             else
-                return Player.Get(player.player_id);
+                return Players.Get(player.player_id);
         }
     }
 }

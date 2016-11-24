@@ -1,4 +1,5 @@
 ﻿using FantasyFootball.Core.Draft;
+using FantasyFootball.Core.Objects;
 using System.IO;
 using System.Linq;
 

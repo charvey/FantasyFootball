@@ -1,5 +1,4 @@
-﻿using FantasyFootball.Core.Draft;
-using FantasyFootball.Core.Players;
+﻿using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
 
@@ -46,13 +45,13 @@ namespace FantasyFootball.Core.Simulation
             scores = new Dictionary<Tuple<string, int>, double>();
         }
 
-        public double GetScore(Players.Player player, int week)
+        public double GetScore(Player player, int week)
         {
             Synchronize();
             return scores[Tuple.Create(player.Id, week)];
         }
 
-        private void SetScore(Players.Player player, int week, double score)
+        private void SetScore(Player player, int week, double score)
         {
             scores[Tuple.Create(player.Id, week)] = score;
         }

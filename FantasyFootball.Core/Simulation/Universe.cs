@@ -1,5 +1,4 @@
-﻿using FantasyFootball.Core.Draft;
-using FantasyFootball.Core.Players;
+﻿using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +38,7 @@ namespace FantasyFootball.Core.Simulation
     }
     public class AddMatchup : Fact
     {
-        public Core.Matchup Matchup { get; set; }
+        public Matchup Matchup { get; set; }
     }
     public class SetScore : Fact
     {

@@ -4,15 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace FantasyFootball.Core
+namespace FantasyFootball.Core.Objects
 {
-    public class Matchup
+    public static class Matchups
     {
-        public Team TeamA { get; set; }
-        public Team TeamB { get; set; }
-        public int Week { get; set; }
-
-        public static IEnumerable<Matchup> Matchups(int week)
+        public static IEnumerable<Matchup> GetByWeek(int week)
         {
             var service = new FantasySportsService();
             var scoreboard = service.LeagueScoreboard("359.l.48793", week);
@@ -21,8 +17,8 @@ namespace FantasyFootball.Core
                 Debug.Assert(m.teams.Length == 2);
                 return new Matchup
                 {
-                    TeamA = Team.Get(int.Parse(m.teams.First().team_id)),
-                    TeamB = Team.Get(int.Parse(m.teams.Last().team_id)),
+                    TeamA = Teams.Get(int.Parse(m.teams.First().team_id)),
+                    TeamB = Teams.Get(int.Parse(m.teams.Last().team_id)),
                     Week = m.week
                 };
             });

@@ -1,5 +1,5 @@
 ﻿using FantasyFootball.Core.Draft;
-using FantasyFootball.Core.Players;
+using FantasyFootball.Core.Objects;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,9 +11,7 @@ namespace FantasyFootball.Core.Trade
         public void Help(TextWriter output)
         {
             var draft = Draft.Draft.FromFile();
-            var teams = Team.All();
-            foreach (var team in teams)
-                team.Players = draft.PickedPlayersByTeam(team);
+            var teams = Teams.All().Select(t => DraftTeam.GetWithDraftPlayers(t.Id));
 
             var trades = GetAllPossibleTrades(teams.Single(t => t.Id == 7), teams.Where(t => t.Id != 7)).ToList();
 
@@ -58,7 +56,7 @@ namespace FantasyFootball.Core.Trade
             return draftHelper.GetTotalScore(playersAfterTrade) - draftHelper.GetTotalScore(playersBeforeTrade);
         }
 
-        public IEnumerable<Trade> GetAllPossibleTrades(Team source, IEnumerable<Team> otherTeams)
+        public IEnumerable<Trade> GetAllPossibleTrades(DraftTeam source, IEnumerable<DraftTeam> otherTeams)
         {
             foreach(var player in source.Players)
             {
@@ -82,8 +80,8 @@ namespace FantasyFootball.Core.Trade
     public class Trade
     {
         public Player PlayerA { get; set; }
-        public Team TeamA { get; set; }
+        public DraftTeam TeamA { get; set; }
         public Player PlayerB { get; set; }
-        public Team TeamB { get; set; }
+        public DraftTeam TeamB { get; set; }
     }
 }

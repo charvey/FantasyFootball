@@ -8,7 +8,7 @@ namespace FantasyFootball.Core.Analysis
 {
     public class ProbabilityDistributionAnalysis
     {
-        public static int CurrentWeek = 10;
+        public static int CurrentWeek = SeasonWeek.Current;
 
         public static void Analyze(TextWriter @out)
         {

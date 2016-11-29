@@ -29,7 +29,7 @@ namespace FantasyFootball.Core.Simulation
     public class WinnerPredicter
     {
         private const string league_key = "359.l.48793";
-        private const int CurrentWeek = 11;
+        private int CurrentWeek = SeasonWeek.Current;
         private readonly FantasySportsService service = new FantasySportsService();
         private readonly CandidateScoreProvider scoreProvider;
 

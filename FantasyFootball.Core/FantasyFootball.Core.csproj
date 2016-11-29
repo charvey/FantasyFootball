@@ -55,6 +55,7 @@
     <Compile Include="Objects\Matchup.cs" />
     <Compile Include="Objects\Teams.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
+    <Compile Include="SeasonWeek.cs" />
     <Compile Include="Simulation\GeneralExtensions.cs" />
     <Compile Include="Simulation\PlayoffExtensions.cs" />
     <Compile Include="Simulation\Projection.cs" />

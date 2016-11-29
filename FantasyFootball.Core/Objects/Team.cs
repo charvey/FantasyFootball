@@ -10,7 +10,6 @@
         {
             var otherTeam = obj as Team;
             if (otherTeam == null) return false;
-
             return otherTeam.Id == this.Id;
         }
 

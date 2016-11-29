@@ -151,7 +151,7 @@ namespace FantasyFootball.Core.Analysis
 
         protected IEnumerable<Situation> GetHistoricalSituations()
         {
-            return Players.All().CrossJoin(Enumerable.Range(1, ProbabilityDistributionAnalysis.CurrentWeek),
+            return Players.All().CrossJoin(Enumerable.Range(1, ProbabilityDistributionAnalysis.CurrentWeek - 1),
                 (p, w) => new Situation(p.Id, w)).Where(CanBeTestedOn);
         }
 

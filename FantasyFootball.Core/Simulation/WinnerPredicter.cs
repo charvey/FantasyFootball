@@ -79,7 +79,7 @@ namespace FantasyFootball.Core.Simulation
             foreach (var team in Teams.All())
                 universe.AddFact(new AddTeam { Team = team });
 
-            for (int week = 1; week <= CurrentWeek; week++)
+            for (int week = 1; week < CurrentWeek; week++)
             {
                 Console.WriteLine($"Recording Week #{week}");
                 RecordWeek(universe, week);
@@ -88,7 +88,7 @@ namespace FantasyFootball.Core.Simulation
 
         private void FinishSeason(Universe universe)
         {
-            for (int week = CurrentWeek + 1; week <= 13; week++)
+            for (int week = CurrentWeek; week <= 13; week++)
             {
                 Console.WriteLine($"Predicting Week #{week}");
                 PredictWeek(universe, week);

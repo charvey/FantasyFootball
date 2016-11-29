@@ -87,8 +87,8 @@ namespace FantasyFootball.Core.Trade
 
         private double GetWeekScore(IEnumerable<Player> players, int week)
         {
-            return new RosterPicker(new DataCsvScoreProvider())
-                .PickRoster(players, week).Sum(p => Scores.GetScore(p, week));
+            return new RosterPicker(new DumpCsvScoreProvider())
+                .PickRoster(players, week).Sum(p => DumpData.GetScore(p, week));
         }
 
         private IEnumerable<Trade> GetAllPossibleTrades(TeamPlayers source, IEnumerable<TeamPlayers> otherTeams)

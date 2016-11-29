@@ -148,7 +148,7 @@ namespace FantasyFootball.Core.Simulation
             foreach (var team in universe.GetTeams())
             {
                 var allPlayers = service.TeamRoster($"{league_key}.t.{team.Id}", week).players.Select(Players.From);
-                var roster = new RosterPicker(new DataCsvScoreProvider()).PickRoster(allPlayers, week);
+                var roster = new RosterPicker(new DumpCsvScoreProvider()).PickRoster(allPlayers, week);
                 universe.AddFact(new SetRoster
                 {
                     Team = team,

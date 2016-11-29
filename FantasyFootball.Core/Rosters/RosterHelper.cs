@@ -15,13 +15,13 @@ namespace FantasyFootball.Core.Rosters
             var service = new FantasySportsService();
             var week = SeasonWeek.Current;
             var players = service.TeamRoster($"{league_key}.t.{7}", week).players.Select(Players.From).ToArray();
-            var rosterPicker = new RosterPicker(new DataCsvScoreProvider());
+            var rosterPicker = new RosterPicker(new DumpCsvScoreProvider());
             var roster = rosterPicker.PickRoster(players, week);
             foreach(var player in roster)
             {
                 output.WriteLine(player.Name + " " + string.Join("/", player.Positions));
             }
-            output.WriteLine(roster.Sum(p => Scores.GetScore(p, week)));
+            output.WriteLine(roster.Sum(p => DumpData.GetScore(p, week)));
         }
     }
 }

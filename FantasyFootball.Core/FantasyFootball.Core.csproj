@@ -51,7 +51,7 @@
     <Compile Include="Analysis\HistoricalDataFilters.cs" />
     <Compile Include="Analysis\ProbabilityDistribution.cs" />
     <Compile Include="Analysis\ProbabilityDistributionAnalysis.cs" />
-    <Compile Include="Data\DataCsvScoreProvider.cs" />
+    <Compile Include="Data\DumpCsvScoreProvider.cs" />
     <Compile Include="Draft\DraftTeam.cs" />
     <Compile Include="Objects\Matchup.cs" />
     <Compile Include="Objects\Teams.cs" />
@@ -66,7 +66,6 @@
     <Compile Include="Simulation\WinnerPredicter.cs" />
     <Compile Include="Draft\DraftDataWriter.cs" />
     <Compile Include="Draft\DraftExtensions.cs" />
-    <Compile Include="Data\Scores.cs" />
     <Compile Include="Objects\Team.cs" />
     <Compile Include="Draft\DraftChanger.cs" />
     <Compile Include="Draft\Draft.cs" />

@@ -45,8 +45,8 @@ namespace FantasyFootball.Core.Draft
 
 		private double GetWeekScore(IEnumerable<Player> players, int week)
 		{
-			return new RosterPicker(new DataCsvScoreProvider())
-                .PickRoster(players, week).Sum(p => Scores.GetScore(p, week));
+			return new RosterPicker(new DumpCsvScoreProvider())
+                .PickRoster(players, week).Sum(p => DumpData.GetScore(p, week));
 		}
 
 		private DraftTeam GetCurrentTeam()

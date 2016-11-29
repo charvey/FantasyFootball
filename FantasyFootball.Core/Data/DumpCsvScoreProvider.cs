@@ -2,11 +2,11 @@
 
 namespace FantasyFootball.Core.Data
 {
-    public class DataCsvScoreProvider : ScoreProvider
+    public class DumpCsvScoreProvider : ScoreProvider
     {
         public double GetScore(Player player, int week)
         {
-            return Scores.GetScore(player, week);
+            return DumpData.GetScore(player, week);
         }
     }
 }

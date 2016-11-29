@@ -62,7 +62,7 @@ namespace FantasyFootball.Core.Draft
     public class TotalScoreMeasure : Measure
     {
         public override string Name => "Total Score";
-        public override IComparable Compute(Player player) => Scores.GetTotalScore(player);
+        public override IComparable Compute(Player player) => DumpData.GetSeasonTotalScore(player);
         public override int Width => 6;
     }
 
@@ -94,7 +94,7 @@ namespace FantasyFootball.Core.Draft
 
         private static double ComputeReplacement(IGrouping<string,Player> group)
         {
-            var scores = group.Select(Scores.GetTotalScore).OrderByDescending(x => x);
+            var scores = group.Select(DumpData.GetSeasonTotalScore).OrderByDescending(x => x);
             int count;
             switch (group.Key)
             {
@@ -117,7 +117,7 @@ namespace FantasyFootball.Core.Draft
         public override int Width => 8;
         public override IComparable Compute(Player player)
         {
-            return (Scores.GetTotalScore(player) - player.Positions.Min(p => replacement[p]));
+            return (DumpData.GetSeasonTotalScore(player) - player.Positions.Min(p => replacement[p]));
         }
     }
 
@@ -125,7 +125,7 @@ namespace FantasyFootball.Core.Draft
     {
         private static double replacement = Players.All()
             .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())
-            .Select(Scores.GetTotalScore).OrderByDescending(x => x).Skip(12 * 6 - 1).First();
+            .Select(DumpData.GetSeasonTotalScore).OrderByDescending(x => x).Skip(12 * 6 - 1).First();
 
         public override string Name => "Flex VBD";
         public override int Width => 10;
@@ -133,7 +133,7 @@ namespace FantasyFootball.Core.Draft
         {
             if (player.Positions.Intersect(new[] { "QB", "K", "DEF" }).Any())
                 return 0.0;
-            return Scores.GetTotalScore(player) - replacement;
+            return DumpData.GetSeasonTotalScore(player) - replacement;
         }
     }
 

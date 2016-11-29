@@ -13,11 +13,13 @@ namespace FantasyFootball.Core
             }
         }
 
+        public static int Maximum => 17;
+
         public static int ComputeCurrentWeek(DateTime start, DateTime now)
         {
             var timeSinceSeasonStart = now - start;
             var weeksSinceSeasonStart = Math.Ceiling(timeSinceSeasonStart.TotalDays / 7);
-            return (int)Math.Max(1, Math.Min(17, weeksSinceSeasonStart));
+            return (int)Math.Max(1, Math.Min(Maximum, weeksSinceSeasonStart));
         }
     }
 }

@@ -55,36 +55,6 @@ namespace FantasyFootball.Core.Draft
 		}
 	}
 
-	public static class IEnumerableExtentions
-	{
-		public static IEnumerable<T> cons<T>(this T item, IEnumerable<T> list)
-		{
-			return new[] {item}.Concat(list);
-		}
-
-		public static IEnumerable<TSource> WhereMax<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
-		{
-            if (!source.Any()) return Enumerable.Empty<TSource>();
-			var max = source.Max(selector);
-			return source.Where(x => Equals(selector(x), max));
-		}
-
-		public static IEnumerable<Player> Except(this IEnumerable<Player> source, Player item)
-        {
-            return source.Where(x => x != item);
-        }
-		//{
-		//	return source.Where(x => !Equals(x, item));
-		//}
-
-		//private static bool Equals<TSource>(TSource x, TSource y)
-		//{
-  //          if (x == null && y == null) return true;
-  //          if (x == null || y == null) return false;
-		//	return Comparer<TSource>.Default.Compare(x, y) == 0;
-		//}
-	}
-
 	public class DraftPickRecommendation
 	{
 		public Player Player { get; set; }

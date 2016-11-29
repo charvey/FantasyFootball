@@ -1,5 +1,4 @@
-﻿using FantasyFootball.Core.Draft;
-using FantasyFootball.Data.Yahoo;
+﻿using FantasyFootball.Data.Yahoo;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

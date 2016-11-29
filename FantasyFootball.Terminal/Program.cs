@@ -6,11 +6,8 @@ using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace FantasyFootball.Terminal
 {
@@ -18,7 +15,7 @@ namespace FantasyFootball.Terminal
     {
         static void Main(string[] args)
         {
-            //ConsolePrepper.Prep();
+            ConsolePrepper.Prep();
 
             while (true)
             {
@@ -105,86 +102,6 @@ namespace FantasyFootball.Terminal
                     break;
                 }
             }
-        }
-    }
-
-    public class ConsolePrepper
-    {
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        private const int SW_MAXIMIZE = 3;
-
-        public static void Prep()
-        {
-            Process proc = Process.GetCurrentProcess();
-            ShowWindow(proc.MainWindowHandle, SW_MAXIMIZE);
-
-            //Console.WindowWidth = Console.BufferWidth = 192;
-            //Console.WindowHeight = Console.BufferHeight = 50;
-        }
-    }
-
-    public class JinglePlayer
-    {
-        public static void Play()
-        {
-            const int BPM = 360;
-
-            const int SIXTEENTH = (60 * 1000) / (4 * BPM);
-            const int EIGHTH = 2 * SIXTEENTH;
-            const int QUARTER = 2 * EIGHTH;
-            const int HALF = 2 * QUARTER;
-            const int WHOLE = 2 * HALF;
-
-            Thread.Sleep(QUARTER);
-            Console.Beep(523, EIGHTH);
-            Console.Beep(587, EIGHTH);
-            Console.Beep(659, QUARTER);
-            Console.Beep(587, EIGHTH);
-            Console.Beep(523, EIGHTH);
-
-            Console.Beep(784, WHOLE);
-
-            Thread.Sleep(QUARTER);
-            Console.Beep(523, EIGHTH);
-            Console.Beep(587, EIGHTH);
-            Console.Beep(659, QUARTER);
-            Console.Beep(587, EIGHTH);
-            Console.Beep(523, EIGHTH);
-
-            Console.Beep(988, WHOLE);
-
-            Thread.Sleep(QUARTER);
-            Console.Beep(523, EIGHTH);
-            Console.Beep(587, EIGHTH);
-            Console.Beep(659, QUARTER);
-            Console.Beep(587, EIGHTH);
-            Console.Beep(523, EIGHTH);
-
-            Console.Beep(784, HALF);
-            Console.Beep(698, HALF);//
-
-            Console.Beep(659, HALF);//
-            Console.Beep(831, HALF);//
-
-            Console.Beep(740, WHOLE);//
-
-            Thread.Sleep(QUARTER);
-            Console.Beep(784, EIGHTH);
-            Console.Beep(831, EIGHTH);
-            Console.Beep(1245, QUARTER);
-            Console.Beep(784, EIGHTH);
-            Console.Beep(831, EIGHTH);
-
-            Console.Beep(1245, QUARTER);
-            Console.Beep(784, EIGHTH);
-            Console.Beep(831, EIGHTH);
-            Console.Beep(1245, QUARTER);
-            Console.Beep(1568, QUARTER);
-
-            Console.Beep(1175, 2 * WHOLE);
         }
     }
 }

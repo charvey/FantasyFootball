@@ -243,25 +243,4 @@ namespace FantasyFootball.Core.Analysis
             return historicalData;
         }
     }
-
-    public static class IEnumerableExtensions
-    {
-        public static IEnumerable<TResult> CrossJoin<T1, T2, TResult>(this IEnumerable<T1> source, IEnumerable<T2> second, Func<T1, T2, TResult> elementSelector)
-        {
-            foreach(var i1 in source)
-            {
-                foreach(var i2 in second)
-                {
-                    yield return elementSelector(i1, i2);
-                }
-            }
-        }
-
-        public static IEnumerable<TResult> CrossJoin<T1, T2, T3, TResult>(
-            this IEnumerable<T1> source, IEnumerable<T2> second, IEnumerable<T3> third,
-            Func<T1, T2, T3, TResult> elementSelector)
-        {
-            return source.SelectMany(i1 => second.SelectMany(i2 => third.Select(i3 => elementSelector(i1, i2, i3))));
-        }
-    }
 }

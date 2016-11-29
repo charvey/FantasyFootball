@@ -11,20 +11,11 @@ namespace FantasyFootball.Core.Draft
         
         public DraftTeam() { }
 
-        private DraftTeam(Team team)
+        public DraftTeam(Team team)
         {
             this.Id = team.Id;
             this.Name = team.Name;
             this.Owner = team.Owner;
-        }
-
-        [Obsolete]
-        public static DraftTeam GetWithDraftPlayers(int id)
-        {
-            var draft = Draft.FromFile();
-            var team = new DraftTeam(Teams.Get(id));
-            team.Players = draft.PickedPlayersByTeam(team);
-            return team;
         }
     }
 }

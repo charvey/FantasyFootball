@@ -11,9 +11,12 @@ namespace FantasyFootball.Core.Trade
         public void Help(TextWriter output)
         {
             var draft = Draft.Draft.FromFile();
-            var teams = Teams.All().Select(t => DraftTeam.GetWithDraftPlayers(t.Id));
+            var teams = Teams.All().Select(t => new DraftTeam(t) { Players = draft.PickedPlayersByTeam(t) });
 
-            var trades = GetAllPossibleTrades(teams.Single(t => t.Id == 7), teams.Where(t => t.Id != 7)).ToList();
+            const int myTeamId = 7;
+            var myPlayers = teams.Single(t => t.Id == myTeamId);
+            var otherTeamsPlayers = teams.Where(t => t.Id != myTeamId);
+            var trades = GetAllPossibleTrades(myPlayers, otherTeamsPlayers).ToList();
 
             output.WriteLine(trades.Count + " total possible trades");
 

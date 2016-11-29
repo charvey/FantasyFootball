@@ -1,5 +1,5 @@
 ﻿using FantasyFootball.Core.Analysis;
-using FantasyFootball.Core.Draft;
+using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
 using System;

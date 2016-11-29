@@ -1,4 +1,5 @@
-﻿using FantasyFootball.Core.Objects;
+﻿using FantasyFootball.Core.Data;
+using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;

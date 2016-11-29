@@ -1,5 +1,6 @@
-﻿using FantasyFootball.Core.Draft;
+﻿using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
+using FantasyFootball.Data.Yahoo;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,23 +9,44 @@ namespace FantasyFootball.Core.Trade
 {
     public class TradeHelper
     {
+        private const string league_key = "359.l.48793";
+
+        private class TeamPlayers
+        {
+            public Team Team { get; set; }
+            public Player[] Players { get; set; }
+        }
+
+        private class Trade
+        {
+            public Player PlayerA { get; set; }
+            public TeamPlayers TeamA { get; set; }
+            public Player PlayerB { get; set; }
+            public TeamPlayers TeamB { get; set; }
+        }
+
         public void Help(TextWriter output)
         {
-            var draft = Draft.Draft.FromFile();
-            var teams = Teams.All().Select(t => new DraftTeam(t) { Players = draft.PickedPlayersByTeam(t) });
+            var week = SeasonWeek.Current;
+            var service = new FantasySportsService();
+            var teams = Teams.All().Select(t => new TeamPlayers
+            {
+                Team = t,
+                Players = service.TeamRoster($"{league_key}.t.{t.Id}", week).players.Select(Players.From).ToArray()
+            });
 
             const int myTeamId = 7;
-            var myPlayers = teams.Single(t => t.Id == myTeamId);
-            var otherTeamsPlayers = teams.Where(t => t.Id != myTeamId);
+            var myPlayers = teams.Single(t => t.Team.Id == myTeamId);
+            var otherTeamsPlayers = teams.Where(t => t.Team.Id != myTeamId);
             var trades = GetAllPossibleTrades(myPlayers, otherTeamsPlayers).ToList();
 
             output.WriteLine(trades.Count + " total possible trades");
 
-            trades = trades.Where(TheyWouldDoIt).ToList();
+            trades = trades.AsParallel().Where(TheyWouldDoIt).ToList();
 
             output.WriteLine(trades.Count + " trades that would happen");
 
-            trades = trades.Where(IShouldDoIt).ToList();
+            trades = trades.AsParallel().Where(IShouldDoIt).ToList();
 
             output.WriteLine(trades.Count + " trades found");
 
@@ -34,7 +56,7 @@ namespace FantasyFootball.Core.Trade
                 var theirValue = ValueToTrade(trade.TeamB.Players, trade.PlayerB, trade.PlayerA);
                 output.WriteLine(
                     "Trading " + trade.PlayerA.Name +
-                    " to " + trade.TeamB.Owner +
+                    " to " + trade.TeamB.Team.Owner +
                     " for " + trade.PlayerB.Name +
                     " would benefit me " + myValue +
                     " and them " + theirValue);
@@ -53,13 +75,23 @@ namespace FantasyFootball.Core.Trade
 
         private double ValueToTrade(IEnumerable<Player> current,Player losingPlayer,Player newPlayer)
         {
-            var draftHelper = new DraftHelper();
             var playersBeforeTrade = current;
             var playersAfterTrade = newPlayer.cons(current.Except(losingPlayer));
-            return draftHelper.GetTotalScore(playersAfterTrade) - draftHelper.GetTotalScore(playersBeforeTrade);
+            return GetTotalScore(playersAfterTrade) - GetTotalScore(playersBeforeTrade);
         }
 
-        public IEnumerable<Trade> GetAllPossibleTrades(DraftTeam source, IEnumerable<DraftTeam> otherTeams)
+        private double GetTotalScore(IEnumerable<Player> players)
+        {
+            return Enumerable.Range(1, 16).Select(w => GetWeekScore(players, w)).Sum();
+        }
+
+        private double GetWeekScore(IEnumerable<Player> players, int week)
+        {
+            return new RosterPicker(new DataCsvScoreProvider())
+                .PickRoster(players, week).Sum(p => Scores.GetScore(p, week));
+        }
+
+        private IEnumerable<Trade> GetAllPossibleTrades(TeamPlayers source, IEnumerable<TeamPlayers> otherTeams)
         {
             foreach(var player in source.Players)
             {
@@ -78,13 +110,5 @@ namespace FantasyFootball.Core.Trade
                 }
             }
         }
-    }
-
-    public class Trade
-    {
-        public Player PlayerA { get; set; }
-        public DraftTeam TeamA { get; set; }
-        public Player PlayerB { get; set; }
-        public DraftTeam TeamB { get; set; }
     }
 }

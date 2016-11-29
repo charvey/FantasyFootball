@@ -33,7 +33,7 @@ namespace FantasyFootball.Core.Objects
             return All().Single(p => p.Id == id);
         }
 
-        public static Player From(Data.Yahoo.Models.Player player)
+        public static Player From(FantasyFootball.Data.Yahoo.Models.Player player)
         {
             if (player.display_position == "DEF")
                 return Players.All().Single(x => x.Positions.All(p => p == "DEF") && x.Team == player.editorial_team_abbr);

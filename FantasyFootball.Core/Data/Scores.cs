@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace FantasyFootball.Core.Draft
+namespace FantasyFootball.Core.Data
 {
-    public class Scores
+    public static class Scores
     {
         public static double GetTotalScore(Player p)
         {
@@ -34,14 +34,6 @@ namespace FantasyFootball.Core.Draft
                 lastModified = new FileInfo("data.csv").LastWriteTime;
             }
             return scores;
-        }
-    }
-
-    public class DataCsvScoreProvider : ScoreProvider
-    {
-        public double GetScore(Player player, int week)
-        {
-            return Scores.GetScore(player, week);
         }
     }
 }

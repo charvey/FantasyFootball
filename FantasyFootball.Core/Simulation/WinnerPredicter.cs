@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace FantasyFootball.Core.Simulation
 {
@@ -60,7 +61,7 @@ namespace FantasyFootball.Core.Simulation
 
             var average = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / trials);
             Console.WriteLine($"\n{trials} trials ran in {stopwatch.Elapsed} (average {average} each)");
-            foreach(var team in winners.OrderByDescending(x => x.Value))
+            foreach (var team in winners.OrderByDescending(x => x.Value))
             {
                 Console.WriteLine($"{team.Key.Owner} {team.Value} {1.0 * team.Value / trials:P}");
             }
@@ -132,48 +133,64 @@ namespace FantasyFootball.Core.Simulation
 
         private void PredictWeek(Universe universe, int week)
         {
-            foreach(var player in Players.All())
-            {
-                universe.AddFact(new SetScore
-                {
-                    Player = player,
-                    Week = week,
-                    Score = scoreProvider.GetScore(player, week)
-                });
-            }
-
             foreach (var matchup in Matchups.GetByWeek(week))
                 universe.AddFact(new AddMatchup { Matchup = matchup });
 
-            foreach (var team in universe.GetTeams())
+            PredictTeamsForWeek(universe, universe.GetTeams(), week);
+        }
+
+        private void PredictTeamsForWeek(Universe universe, IEnumerable<Team> teams, int week)
+        {
+            foreach (var team in teams)
             {
                 var allPlayers = service.TeamRoster($"{league_key}.t.{team.Id}", week).players.Select(Players.From);
-                var roster = new RosterPicker(new DumpCsvScoreProvider()).PickRoster(allPlayers, week);
+                var roster = new RosterPicker(new DumpCsvScoreProvider()).PickRoster(allPlayers, week).ToArray();
+
+                foreach (var player in roster)
+                {
+                    universe.AddFact(new SetScore
+                    {
+                        Player = player,
+                        Week = week,
+                        Score = scoreProvider.GetScore(player, week)
+                    });
+                }
+
                 universe.AddFact(new SetRoster
                 {
                     Team = team,
                     Week = week,
-                    Players = roster.ToArray()
+                    Players = roster
                 });
             }
         }
 
         private void PredictQuarterfinals(Universe universe)
         {
-            //Does too much work
-            PredictWeek(universe, 14);
+            PredictTeamsForWeek(universe, new[] {
+                universe.GetTeamInPlaceAtEndOfSeason(3),
+                universe.GetTeamInPlaceAtEndOfSeason(4),
+                universe.GetTeamInPlaceAtEndOfSeason(5),
+                universe.GetTeamInPlaceAtEndOfSeason(6)
+            }, 14);
         }
 
         private void PredictSemifinals(Universe universe)
         {
-            //Does too much work
-            PredictWeek(universe, 15);
+            PredictTeamsForWeek(universe, new[] {
+                universe.GetTeamInPlaceAtEndOfSeason(1),
+                universe.GetTeamInPlaceAtEndOfSeason(2),
+                universe.GetQuarterFinalAWinner(),
+                universe.GetQuarterFinalBWinner()
+            }, 15);
         }
 
         private void PredictChampionship(Universe universe)
         {
-            //Does too much work
-            PredictWeek(universe, 16);
+            PredictTeamsForWeek(universe, new[] {
+                universe.GetSemifinalAWinner(),
+                universe.GetSemifinalBWinner()
+            }, 16);
         }
     }
 }

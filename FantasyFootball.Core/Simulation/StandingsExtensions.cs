@@ -1,4 +1,5 @@
 ﻿using FantasyFootball.Core.Objects;
+using FantasyFootball.Core.Simulation.Projections;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace FantasyFootball.Core.Simulation
 
         public static Record GetRecordAfterWeek(this Universe universe, Team team, int week)
         {
-            var allRegularSeasonMatchups = Enumerable.Range(1, week).Select(universe.GetMatchups);
+            var allRegularSeasonMatchups = Enumerable.Range(1, week).Select(w => MatchupProjection.GetMatchups(universe, w));
             var matchupsWithTeam = allRegularSeasonMatchups
                 .SelectMany(wm => wm.Where(m => m.TeamA.Id == team.Id || m.TeamB.Id == team.Id));
             var winners = matchupsWithTeam.Select(m => universe.GetWinner(m)).ToArray();

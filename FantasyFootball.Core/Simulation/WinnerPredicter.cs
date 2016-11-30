@@ -1,12 +1,13 @@
 ﻿using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
+using FantasyFootball.Core.Simulation.Facts;
 using FantasyFootball.Data.Yahoo;
 using System;
-using System.Linq;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace FantasyFootball.Core.Simulation
 {

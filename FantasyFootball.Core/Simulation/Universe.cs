@@ -1,7 +1,7 @@
-﻿using FantasyFootball.Core.Objects;
+﻿using FantasyFootball.Core.Simulation.Facts;
+using FantasyFootball.Core.Simulation.Handlers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FantasyFootball.Core.Simulation
 {
@@ -10,46 +10,34 @@ namespace FantasyFootball.Core.Simulation
         private readonly Guid id;
         public Guid Id { get { return id; } }
         private readonly List<Fact> facts;
-        public IReadOnlyList<Fact> Facts { get { return facts; } }
+        private readonly Dictionary<Type, List<object>> handlers;
 
-        public Universe() : this(new List<Fact>())
-        {
-        }
-
-        private Universe(List<Fact> facts)
+        public Universe()
         {
             this.id = Guid.NewGuid();
-            this.facts = facts;
+            this.facts = new List<Fact>();
+            this.handlers = new Dictionary<Type, List<object>>
+            {
+                { typeof(AddMatchup),new List<object> {new AddMatchupHandler()} },
+                { typeof(AddTeam),new List<object> {new AddTeamHandler()} },
+                { typeof(SetRoster),new List<object> {new SetRosterHandler()} },
+                { typeof(SetScore),new List<object> {new SetScoreHandler()} }
+            };
         }
 
-        public void AddFact(Fact fact) => facts.Add(fact);
-        
+        public void AddFact<T>(T fact) where T : Fact
+        {
+            handlers[typeof(T)].ForEach(h => ((Handler<T>)h).Handle(this, fact));
+            facts.Add(fact);
+        }
+
         public Universe Clone()
         {
-            return new Universe(facts.ToList());
+            var universe = new Universe();
+            var method = typeof(Universe).GetMethod(nameof(AddFact));
+            foreach (var fact in facts)
+                method.MakeGenericMethod(fact.GetType()).Invoke(universe, new[] { fact });
+            return universe;
         }
-    }
-
-    public abstract class Fact { }
-
-    public class AddTeam : Fact
-    {
-        public Team Team { get; set; }
-    }
-    public class AddMatchup : Fact
-    {
-        public Matchup Matchup { get; set; }
-    }
-    public class SetScore : Fact
-    {
-        public Player Player { get; set; }
-        public int Week { get; set; }
-        public double Score { get; set; }
-    }
-    public class SetRoster : Fact
-    {
-        public Team Team { get; set; }
-        public int Week { get; set; }
-        public Player[] Players { get; set; }
     }
 }

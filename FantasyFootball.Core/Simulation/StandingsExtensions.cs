@@ -7,7 +7,12 @@ using System.Linq;
 namespace FantasyFootball.Core.Simulation
 {
     public static class StandingsExtensions
-    {        
+    {
+        public static int GetSeedAtEndOfSeason(this Universe universe, Team team)
+        {
+            return universe.GetStandingsAtEndOfSeason().ToList().IndexOf(team) + 1;
+        }
+
         public static Team GetTeamInPlaceAtEndOfSeason(this Universe universe, int place)
         {
             return universe.GetStandingsAtEndOfSeason()[place - 1];
@@ -15,18 +20,23 @@ namespace FantasyFootball.Core.Simulation
 
         public static Team[] GetStandingsAfterWeek(this Universe universe, int week)
         {
-            return universe
-                .GetTeams()
-                .OrderByDescending(t => universe.GetRecordAfterWeek(t, week))
-                .ThenByDescending(t => universe.TotalScoreAfterWeek(t, week))
-                //.ThenByDescending(universe.LastWeekScore)
-                .ToArray();
+            var teams = universe.GetTeams()
+                .OrderByDescending(t => universe.GetRecordAfterWeek(t, week));
+
+            //foreach (var w in SeasonWeek.RegularSeasonWeeks.Reverse())
+            //{
+            //    teams = teams.ThenByDescending(t => universe.GetScore(t, w));
+            //}
+
+            //teams = teams.ThenByDescending(t => new Random().NextDouble());
+
+            return teams.ToArray();
         }
 
         private static ConcurrentDictionary<Guid, Team[]> standingsCache = new ConcurrentDictionary<Guid, Team[]>();
         private static Team[] GetStandingsAtEndOfSeason(this Universe universe)
         {
-            return standingsCache.GetOrAdd(universe.Id, _ => universe.GetStandingsAfterWeek(13));
+            return standingsCache.GetOrAdd(universe.Id, _ => universe.GetStandingsAfterWeek(SeasonWeek.RegularSeasonEnd));
         }
 
         public static Record GetRecordAfterWeek(this Universe universe, Team team, int week)
@@ -34,23 +44,16 @@ namespace FantasyFootball.Core.Simulation
             var allRegularSeasonMatchups = Enumerable.Range(1, week).Select(w => MatchupProjection.GetMatchups(universe, w));
             var matchupsWithTeam = allRegularSeasonMatchups
                 .SelectMany(wm => wm.Where(m => m.TeamA.Id == team.Id || m.TeamB.Id == team.Id));
-            var winners = matchupsWithTeam.Select(m => universe.GetWinner(m)).ToArray();
-            var wins = winners.Count(w => w.Id == team.Id);
-            var losses = winners.Count(w => w.Id != team.Id);
-            var ties = winners.Count() - (wins + losses);
+            var results = matchupsWithTeam.Select(m => universe.GetRegularSeasonResult(m)).ToArray();
+            var wins = results.Count(r => r.Winner == team);
+            var losses = results.Count(r => r.Loser == team);
+            var ties = results.Count(r => r.Tied);
             return new Record(wins, losses, ties);
         }
 
         public static double TotalScoreAfterWeek(this Universe universe, Team team, int week)
         {
             return Enumerable.Range(1, week).Sum(w => universe.GetScore(team, w));
-        }
-
-        private static double LastWeekScore(this Universe universe, Team team)
-        {
-            //If needed add stub for next tie breaker
-            //https://help.yahoo.com/kb/head-article-non-divisional-leagues-sln6446.html
-            throw new NotImplementedException();
         }
 
         public class Record : IComparable<Record>
@@ -83,6 +86,6 @@ namespace FantasyFootball.Core.Simulation
 
                 throw new NotImplementedException();
             }
-        }    
+        }
     }
 }

@@ -7,14 +7,42 @@ namespace FantasyFootball.Core.Simulation
 {
     public static class GeneralExtensions
     {
-        public static Team GetWinner(this Universe universe, Matchup matchup)
+        public static MatchupResult GetRegularSeasonResult(this Universe universe, Matchup matchup)
         {
             var teamAScore = universe.GetScore(matchup.TeamA, matchup.Week);
             var teamBScore = universe.GetScore(matchup.TeamB, matchup.Week);
 
-            if (teamAScore > teamBScore) return matchup.TeamA;
-            else if (teamAScore < teamBScore) return matchup.TeamB;
-            throw new NotImplementedException();
+            if (teamAScore > teamBScore) return new MatchupResult { Winner = matchup.TeamA, Loser = matchup.TeamB };
+            else if (teamAScore < teamBScore) return new MatchupResult { Winner = matchup.TeamB, Loser = matchup.TeamA };
+            else return new MatchupResult { Tied = true };
+        }
+
+        public static MatchupResult GetPlayoffResult(this Universe universe, Matchup matchup)
+        {
+            {
+                var teamAScore = universe.GetScore(matchup.TeamA, matchup.Week);
+                var teamBScore = universe.GetScore(matchup.TeamB, matchup.Week);
+
+                if (teamAScore > teamBScore) return new MatchupResult { Winner = matchup.TeamA, Loser = matchup.TeamB };
+                else if (teamAScore < teamBScore) return new MatchupResult { Winner = matchup.TeamB, Loser = matchup.TeamA };
+            }
+            {
+                var regularSeasonMatchups = SeasonWeek.RegularSeasonWeeks
+                    .SelectMany(w => MatchupProjection.GetMatchups(universe, w))
+                    .Where(m => (m.TeamA == matchup.TeamA && m.TeamB == matchup.TeamB) || (m.TeamA == matchup.TeamB && m.TeamB == matchup.TeamA));
+                var regularSeasonWinners = regularSeasonMatchups.Select(m => universe.GetRegularSeasonResult(m).Winner);
+                var teamAWins = regularSeasonWinners.Count(w => w == matchup.TeamA);
+                var teamBWins = regularSeasonWinners.Count(w => w == matchup.TeamB);
+                if (teamAWins > teamBWins) return new MatchupResult { Winner = matchup.TeamA, Loser = matchup.TeamB };
+                else if (teamAWins < teamBWins) return new MatchupResult { Winner = matchup.TeamB, Loser = matchup.TeamA };
+            }
+            {
+                var teamASeed = universe.GetSeedAtEndOfSeason(matchup.TeamA);
+                var teamBSeed = universe.GetSeedAtEndOfSeason(matchup.TeamB);
+                if (teamASeed < teamBSeed) return new MatchupResult { Winner = matchup.TeamA, Loser = matchup.TeamB };
+                else if (teamASeed > teamBSeed) return new MatchupResult { Winner = matchup.TeamB, Loser = matchup.TeamA };
+            }
+            throw new InvalidOperationException();
         }
 
         public static double GetScore(this Universe universe, Team team, int week)

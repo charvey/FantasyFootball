@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FantasyFootball.Core
 {
@@ -13,7 +16,13 @@ namespace FantasyFootball.Core
             }
         }
 
+        public static int RegularSeasonEnd => 13;
+        public static int QuarterFinalWeek => 14;
+        public static int SemifinalWeek => 15;
+        public static int ChampionshipWeek => 16;
         public static int Maximum => 17;
+
+        public static IEnumerable<int> RegularSeasonWeeks => Enumerable.Range(1, RegularSeasonEnd);
 
         public static int ComputeCurrentWeek(DateTime start, DateTime now)
         {

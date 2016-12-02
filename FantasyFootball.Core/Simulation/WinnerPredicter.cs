@@ -90,7 +90,7 @@ namespace FantasyFootball.Core.Simulation
 
         private void FinishSeason(Universe universe)
         {
-            for (int week = CurrentWeek; week <= 13; week++)
+            for (int week = CurrentWeek; week <= SeasonWeek.RegularSeasonEnd; week++)
             {
                 Console.WriteLine($"Predicting Week #{week}");
                 PredictWeek(universe, week);
@@ -173,7 +173,7 @@ namespace FantasyFootball.Core.Simulation
                 universe.GetTeamInPlaceAtEndOfSeason(4),
                 universe.GetTeamInPlaceAtEndOfSeason(5),
                 universe.GetTeamInPlaceAtEndOfSeason(6)
-            }, 14);
+            }, SeasonWeek.QuarterFinalWeek);
         }
 
         private void PredictSemifinals(Universe universe)
@@ -183,7 +183,7 @@ namespace FantasyFootball.Core.Simulation
                 universe.GetTeamInPlaceAtEndOfSeason(2),
                 universe.GetQuarterFinalAWinner(),
                 universe.GetQuarterFinalBWinner()
-            }, 15);
+            }, SeasonWeek.SemifinalWeek);
         }
 
         private void PredictChampionship(Universe universe)
@@ -191,7 +191,7 @@ namespace FantasyFootball.Core.Simulation
             PredictTeamsForWeek(universe, new[] {
                 universe.GetSemifinalAWinner(),
                 universe.GetSemifinalBWinner()
-            }, 16);
+            }, SeasonWeek.ChampionshipWeek);
         }
     }
 }

@@ -53,6 +53,12 @@ namespace FantasyFootball.Data.Yahoo
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.scoreboard;
         }
 
+        public Transaction[] LeagueTransactions(string league_key)
+        {
+            var xml = webService.LeagueTransactions(league_key);
+            return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.transactions;
+        }
+
         public IEnumerable<League> Leagues(params string[] league_keys)
         {
             return league_keys.Select(League);

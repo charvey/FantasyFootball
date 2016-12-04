@@ -13,5 +13,6 @@ namespace FantasyFootball.Data.Yahoo.Models
         public DraftResult[] draft_results;
         public LeagueSettings settings;
         public LeagueScoreboard scoreboard;
+        public Transaction[] transactions;
     }
 }

@@ -127,6 +127,13 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url, "xml").Result;
         }
 
+        public string LeagueTransactions(string league_key)
+        {
+            var url = BaseUrl + "/league/" + league_key + "/transactions";
+
+            return MakeCall(url, "xml").Result;
+        }
+
         public string Leagues(string game_key = "nfl")
         {
             var url = BaseUrl + "/leagues;game_key=" + game_key;

@@ -46,26 +46,38 @@ namespace FantasyFootball.Core.Simulation
 
         public void PredictWinners()
         {
-            const int trials = 100;
+            const int trials = 1000;
             var universe = new Universe();
             StartSeason(universe);
 
             var stopwatch = Stopwatch.StartNew();
             var winners = new ConcurrentDictionary<Team, int>();
+            var playoffAppearances = new ConcurrentDictionary<Team, int>();
+
+            Action<int> printProgress = (int t) =>
+              {
+                  var average = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / t);
+                  Console.WriteLine($"\n{t} trials ran in {stopwatch.Elapsed} (average {average} each)");
+                  Console.WriteLine("Championships Wins");
+                  foreach (var team in winners.OrderByDescending(x => x.Value))
+                      Console.WriteLine($"{team.Key.Owner} {team.Value} {1.0 * team.Value / t:P}");
+                  Console.WriteLine("Playoff Appearances");
+                  foreach (var team in playoffAppearances.OrderByDescending(x => x.Value))
+                      Console.WriteLine($"{team.Key.Owner} {team.Value} {1.0 * team.Value / t:P}");
+              };
+
             Enumerable.Range(1, trials).AsParallel().ForAll(_ =>
             {
                 Console.WriteLine($"Starting Trial #{_}");
                 var runUniverse = universe.Clone();
                 FinishSeason(runUniverse);
                 winners.AddOrUpdate(runUniverse.GetChampionshipWinner(), 1, (k, c) => c + 1);
+                foreach (var team in runUniverse.GetStandingsAtEndOfSeason().Take(6))
+                    playoffAppearances.AddOrUpdate(team, 1, (k, c) => c + 1);
             });
 
-            var average = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / trials);
-            Console.WriteLine($"\n{trials} trials ran in {stopwatch.Elapsed} (average {average} each)");
-            foreach (var team in winners.OrderByDescending(x => x.Value))
-            {
-                Console.WriteLine($"{team.Key.Owner} {team.Value} {1.0 * team.Value / trials:P}");
-            }
+            Console.WriteLine("\nFinal Results:\n");
+            printProgress(trials);
         }
 
         public void PredictWinner()

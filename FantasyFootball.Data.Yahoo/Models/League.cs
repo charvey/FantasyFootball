@@ -10,6 +10,7 @@ namespace FantasyFootball.Data.Yahoo.Models
         public string draft_status;
         public int num_teams;
         public int season;
+        public DraftResult[] draft_results;
         public LeagueSettings settings;
         public LeagueScoreboard scoreboard;
     }

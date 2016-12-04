@@ -92,10 +92,11 @@ namespace FantasyFootball.Terminal
                 else if (key.KeyChar == 'y')
                 {
                     var service = new FantasySportsService();
-                    foreach (var game in service.Games())
-                        Console.WriteLine(game);
                     
-                    Console.WriteLine(service.League("359.l.48793").name);
+                    foreach(var x in service.LeagueDraftResults("359.l.48793"))
+                    {
+                        Console.WriteLine($"{x.pick} {x.round} {x.player_key} {x.team_key}");
+                    }
                 }
                 else if (key.KeyChar == 'x')
                 {

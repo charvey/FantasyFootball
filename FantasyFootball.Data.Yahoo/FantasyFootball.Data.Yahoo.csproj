@@ -55,6 +55,7 @@
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\League.cs" />
     <Compile Include="Models\LeagueScoreboard.cs" />
+    <Compile Include="Models\LeagueDraftResults.cs" />
     <Compile Include="Models\LeagueSettings.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Roster.cs" />

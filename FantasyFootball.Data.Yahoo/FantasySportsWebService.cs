@@ -106,6 +106,13 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url, "xml").Result;
         }
 
+        public string LeagueDraftResults(string league_key)
+        {
+            var url = BaseUrl + "/league/" + league_key + "/draftresults";
+
+            return MakeCall(url, "xml").Result;
+        }
+
         public string LeagueScoreboard(string league_key, int week)
         {
             var url = BaseUrl + "/league/" + league_key + "/scoreboard;week=" + week;

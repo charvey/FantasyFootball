@@ -41,6 +41,12 @@ namespace FantasyFootball.Data.Yahoo
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league;
         }
 
+        public DraftResult[] LeagueDraftResults(string league_key)
+        {
+            var xml = webService.LeagueDraftResults(league_key);
+            return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.draft_results;
+        }
+
         public LeagueScoreboard LeagueScoreboard(string league_key, int week)
         {
             var xml = webService.LeagueScoreboard(league_key, week);

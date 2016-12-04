@@ -1,5 +1,4 @@
 ﻿using FantasyFootball.Core.Objects;
-using FantasyFootball.Core.Simulation.Facts;
 using System;
 using System.Collections.Generic;
 
@@ -15,6 +14,11 @@ namespace FantasyFootball.Core.Simulation.Projections
         public static void SetScore(Universe universe, Player player, int week, double score)
         {
             GetState(universe)[Tuple.Create(player.Id, week)] = score;
+        }
+
+        protected override Dictionary<Tuple<string, int>, double> Clone(Dictionary<Tuple<string, int>, double> original)
+        {
+            return new Dictionary<Tuple<string, int>, double>(original);
         }
     }
 }

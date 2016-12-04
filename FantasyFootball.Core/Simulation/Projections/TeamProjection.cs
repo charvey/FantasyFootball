@@ -14,5 +14,10 @@ namespace FantasyFootball.Core.Simulation.Projections
         {
             GetState(universe).Add(team);
         }
+
+        protected override List<Team> Clone(List<Team> original)
+        {
+            return new List<Team>(original);
+        }
     }
 }

@@ -15,5 +15,10 @@ namespace FantasyFootball.Core.Simulation.Projections
         {
             GetState(universe).Add(matchup);
         }
+
+        protected override List<Matchup> Clone(List<Matchup> original)
+        {
+            return new List<Matchup>(original);
+        }
     }
 }

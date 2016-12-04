@@ -15,5 +15,10 @@ namespace FantasyFootball.Core.Simulation.Projections
         {
             GetState(universe)[Tuple.Create(team.Id, week)] = players;
         }
+
+        protected override Dictionary<Tuple<int, int>, Player[]> Clone(Dictionary<Tuple<int, int>, Player[]> original)
+        {
+            return new Dictionary<Tuple<int, int>, Player[]>(original);
+        }
     }
 }

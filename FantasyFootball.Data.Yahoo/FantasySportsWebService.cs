@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,12 +22,11 @@ namespace FantasyFootball.Data.Yahoo
             return MakeMemoryCacheCall(url);
         }
 
-        private static Dictionary<string, string> callCache = new Dictionary<string, string>();
+        private static ConcurrentDictionary<string, string> callCache = new ConcurrentDictionary<string, string>();
         private Task<string> MakeMemoryCacheCall(string url)
         {
-            if (!callCache.ContainsKey(url))
-                callCache[url] = MakeFileCacheCall(url).Result;
-            return Task.FromResult(callCache[url]);
+            var result = callCache.GetOrAdd(url, u => MakeFileCacheCall(u).Result);
+            return Task.FromResult(result);
         }
 
         private Task<string> MakeFileCacheCall(string url)

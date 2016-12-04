@@ -76,6 +76,23 @@ namespace FantasyFootball.Core.Simulation
             Console.WriteLine(universe.GetChampionshipWinner().Owner);
         }
 
+        private ConcurrentDictionary<Tuple<int, int>, Player[]> pastPlayers = new ConcurrentDictionary<Tuple<int, int>, Player[]>();
+        private Player[] GetPastPlayers(Team team, int week)
+        {
+            var key = Tuple.Create(team.Id, week);
+            return pastPlayers.GetOrAdd(key, _ => service.TeamRoster($"{league_key}.t.{team.Id}", week).players
+                .Where(p => p.selected_position.position != "BN")
+                .Select(Players.From).ToArray());
+        }
+
+        private ConcurrentDictionary<Tuple<int, int>, Player[]> futurePlayers = new ConcurrentDictionary<Tuple<int, int>, Player[]>();
+        private Player[] GetFuturePlayers(Team team, int week)
+        {
+            var key = Tuple.Create(team.Id, week);
+            return futurePlayers.GetOrAdd(key, _ => service.TeamRoster($"{league_key}.t.{team.Id}", week).players
+                .Select(Players.From).ToArray());
+        }
+
         private void StartSeason(Universe universe)
         {
             foreach (var team in Teams.All())
@@ -125,9 +142,7 @@ namespace FantasyFootball.Core.Simulation
                 {
                     Team = team,
                     Week = week,
-                    Players = service.TeamRoster($"{league_key}.t.{team.Id}", week).players
-                        .Where(p => p.selected_position.position != "BN")
-                        .Select(Players.From).ToArray()
+                    Players = GetPastPlayers(team, week)
                 });
             }
         }
@@ -144,7 +159,7 @@ namespace FantasyFootball.Core.Simulation
         {
             foreach (var team in teams)
             {
-                var allPlayers = service.TeamRoster($"{league_key}.t.{team.Id}", week).players.Select(Players.From);
+                var allPlayers = GetFuturePlayers(team, week);
                 var roster = new RosterPicker(new DumpCsvScoreProvider()).PickRoster(allPlayers, week).ToArray();
 
                 foreach (var player in roster)

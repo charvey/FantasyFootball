@@ -50,45 +50,53 @@ namespace FantasyFootball.Core.Trade
 
             output.WriteLine(trades.Count + " trades found");
 
-            foreach (var trade in trades)
+            foreach (var trade in trades.OrderByDescending(TeamAValueToTrade).ThenByDescending(TeamBValueToTrade))
             {
-                var myValue = ValueToTrade(trade.TeamA.Players, trade.PlayerA, trade.PlayerB);
-                var theirValue = ValueToTrade(trade.TeamB.Players, trade.PlayerB, trade.PlayerA);
                 output.WriteLine(
                     "Trading " + trade.PlayerA.Name +
                     " to " + trade.TeamB.Team.Owner +
                     " for " + trade.PlayerB.Name +
-                    " would benefit me " + myValue +
-                    " and them " + theirValue);
+                    " would benefit me " + TeamAValueToTrade(trade) +
+                    " and them " + TeamBValueToTrade(trade));
             }
         }
 
         private bool TheyWouldDoIt(Trade trade)
         {
-            return ValueToTrade(trade.TeamB.Players, trade.PlayerB, trade.PlayerA) > 0;
+            return TeamBValueToTrade(trade) > 0;
         }
 
         private bool IShouldDoIt(Trade trade)
         {
-            return ValueToTrade(trade.TeamA.Players, trade.PlayerA, trade.PlayerB) > 0;
+            return TeamAValueToTrade(trade) > 0;
         }
 
-        private double ValueToTrade(IEnumerable<Player> current,Player losingPlayer,Player newPlayer)
+        private static double TeamAValueToTrade(Trade trade)
+        {
+            return ValueToTrade(trade.TeamA.Players, trade.PlayerA, trade.PlayerB);
+        }
+
+        private static double TeamBValueToTrade(Trade trade)
+        {
+            return ValueToTrade(trade.TeamB.Players, trade.PlayerB, trade.PlayerA);
+        }
+
+        private static double ValueToTrade(IEnumerable<Player> current, Player losingPlayer, Player newPlayer)
         {
             var playersBeforeTrade = current;
             var playersAfterTrade = newPlayer.cons(current.Except(losingPlayer));
             return GetTotalScore(playersAfterTrade) - GetTotalScore(playersBeforeTrade);
         }
 
-        private double GetTotalScore(IEnumerable<Player> players)
+        private static double GetTotalScore(IEnumerable<Player> players)
         {
-            return Enumerable.Range(1, 16).Select(w => GetWeekScore(players, w)).Sum();
+            return Enumerable.Range(1, SeasonWeek.ChampionshipWeek).Select(w => GetWeekScore(players, w)).Sum();
         }
 
-        private double GetWeekScore(IEnumerable<Player> players, int week)
+        private static double GetWeekScore(IEnumerable<Player> players, int week)
         {
-            return new RosterPicker(new DumpCsvScoreProvider())
-                .PickRoster(players, week).Sum(p => DumpData.GetScore(p, week));
+            var scoreProvider = new DumpCsvScoreProvider();
+            return new RosterPicker(scoreProvider).PickRoster(players, week).Sum(p => scoreProvider.GetScore(p, week));
         }
 
         private IEnumerable<Trade> GetAllPossibleTrades(TeamPlayers source, IEnumerable<TeamPlayers> otherTeams)

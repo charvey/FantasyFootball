@@ -53,6 +53,9 @@
     <Compile Include="Analysis\ProbabilityDistributionAnalysis.cs" />
     <Compile Include="Data\DumpCsvScoreProvider.cs" />
     <Compile Include="Draft\DraftTeam.cs" />
+    <Compile Include="Maths\Kernel.cs" />
+    <Compile Include="Maths\Kernels\GaussianKernel.cs" />
+    <Compile Include="Maths\Kernels\UniformKernel.cs" />
     <Compile Include="Objects\Matchup.cs" />
     <Compile Include="Objects\Teams.cs" />
     <Compile Include="IEnumerableExtensions.cs" />

@@ -50,5 +50,11 @@ namespace FantasyFootball.Core.Simulation
             //    projection.Clone(this, universe);
             return universe;
         }
+
+        ~Universe()
+        {
+            foreach (var projection in projections)
+                projection.Forget(this);
+        }
     }
 }

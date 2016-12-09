@@ -43,11 +43,11 @@ namespace FantasyFootball.Core.Simulation
         public Universe Clone()
         {
             var universe = new Universe();
-            //var method = typeof(Universe).GetMethod(nameof(AddFact));
-            //foreach (var fact in facts)
-            //    method.MakeGenericMethod(fact.GetType()).Invoke(universe, new[] { fact });
-            foreach (var projection in this.projections)
-                projection.Clone(this, universe);
+            var method = typeof(Universe).GetMethod(nameof(AddFact));
+            foreach (var fact in facts)
+                method.MakeGenericMethod(fact.GetType()).Invoke(universe, new[] { fact });
+            //foreach (var projection in this.projections)
+            //    projection.Clone(this, universe);
             return universe;
         }
     }

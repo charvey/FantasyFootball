@@ -21,7 +21,8 @@ namespace FantasyFootball.Core.Simulation
         public static Team[] GetStandingsAfterWeek(this Universe universe, int week)
         {
             var teams = universe.GetTeams()
-                .OrderByDescending(t => universe.GetRecordAfterWeek(t, week));
+                .OrderByDescending(t => universe.GetRecordAfterWeek(t, week))
+                .ThenByDescending(t => universe.TotalScoreAfterWeek(t, week));
 
             //foreach (var w in SeasonWeek.RegularSeasonWeeks.Reverse())
             //{

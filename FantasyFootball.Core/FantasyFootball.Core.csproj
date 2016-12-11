@@ -48,7 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analysis\CandidateEvaluator.cs" />
-    <Compile Include="Analysis\HistoricalDataFilters.cs" />
+    <Compile Include="Modeling\ScoreModelers\Candidates.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalDataFilter.cs" />
     <Compile Include="Analysis\ProbabilityDistribution.cs" />
     <Compile Include="Analysis\ProbabilityDistributionAnalysis.cs" />
     <Compile Include="Data\DumpCsvScoreProvider.cs" />
@@ -59,6 +60,21 @@
     <Compile Include="Maths\KernelDensityEstimate.cs" />
     <Compile Include="Maths\Kernels\GaussianKernel.cs" />
     <Compile Include="Maths\Kernels\UniformKernel.cs" />
+    <Compile Include="Modeling\MatchupModeler.cs" />
+    <Compile Include="Modeling\ScoreModeler.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\FooModel.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\FooModels\AdjustedByYahooPredictionModel.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\FooModels\RawScoreModel.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalDataFilters\AllHistoricalDataFilter.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalDataFilters\PredictedToScoreAtLeastHistoricalDataFilter.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalDataFilters\PredictedToScoreAtLeastAndNotFlukeHistoricalDataFilter.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalGroupSpecifier.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalGroupSpecifiers\ByPositionHistoricalGroupSpecifier.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalGroupSpecifiers\UngroupedHistoricalGroupSpecifier.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalGroupSpecifiers\ByPlayerHistoricalGroupSpecifier.cs" />
+    <Compile Include="Modeling\ScoreModelers\ComplexScoreCandidate.cs" />
+    <Compile Include="Modeling\ScoreModelers\NoScoreCandidate.cs" />
+    <Compile Include="Modeling\ScoreModelers\RealityCandidate.cs" />
     <Compile Include="Objects\Matchup.cs" />
     <Compile Include="Objects\Teams.cs" />
     <Compile Include="IEnumerableExtensions.cs" />

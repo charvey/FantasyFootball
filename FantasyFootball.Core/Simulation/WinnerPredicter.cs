@@ -1,5 +1,9 @@
 ﻿using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Data;
+using FantasyFootball.Core.Modeling.ScoreModelers;
+using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.FooModels;
+using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalDataFilters;
+using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalGroupSpecifiers;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Core.Simulation.Facts;
 using FantasyFootball.Data.Yahoo;
@@ -37,7 +41,7 @@ namespace FantasyFootball.Core.Simulation
 
         public WinnerPredicter()
         {
-            var candidate = new ComplexCandidate(
+            var candidate = new ComplexScoreCandidate(
                 new PredictedToScoreAtLeastAndNotFlukeHistoricalDataFilter(1, 0.1),
                 new ByPlayerHistoricalGroupSpecifier(),
                 new RawScoreModel());
@@ -46,7 +50,7 @@ namespace FantasyFootball.Core.Simulation
 
         public void PredictWinners()
         {
-            const int trials = 1000;
+            const int trials = 10000;
             var universe = new Universe();
             StartSeason(universe);
 

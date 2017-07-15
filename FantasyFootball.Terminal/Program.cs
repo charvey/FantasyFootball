@@ -25,21 +25,6 @@ namespace FantasyFootball.Terminal
                 if (key.KeyChar == 'a')
                 {
                     ProbabilityDistributionAnalysis.Analyze(Console.Out);
-                    //foreach (var position in Player.All().Select(p => p.Position).Distinct())
-                    //{
-                    //    var datapoints = new List<Tuple<double, double>>();
-                    //    var players = Player.All().Where(p => p.Position == position);
-                    //    for (int week = 1; week <= 5; week++)
-                    //    {                                                       
-                    //        var analyzablePlayers = players
-                    //            .Where(p => DumpData.GetActualScore(p.Id, week).HasValue && DumpData.GetPrediction(p.Id, week, week).HasValue);
-                    //        var playersThatMatter = analyzablePlayers.Where(p => DumpData.GetActualScore(p.Id, week).Value > 0 && DumpData.GetPrediction(p.Id, week, week).Value >= 1);
-                    //        foreach (var p in playersThatMatter)
-                    //            datapoints.Add(Tuple.Create(DumpData.GetActualScore(p.Id, week).Value, DumpData.GetPrediction(p.Id, week, week).Value));
-                    //    }
-
-                    //    File.WriteAllLines($"analysis-{position}.csv", datapoints.Select(d => d.Item1 + "," + d.Item2));
-                    //}
                 }
                 else if (key.KeyChar == 's')
                 {

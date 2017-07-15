@@ -1,18 +1,16 @@
 ﻿using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FantasyFootball.Core.Modeling
 {
-    public interface ProbabilityDistribution<T>
+    public interface ProbabilityDistribution<T> where T : IEquatable<T>
     {
         double Probability(T outcome);
+        IEnumerable<T> Outcomes { get; }
     }
 
-    public interface MatchupModeler
+    public interface MatchupModeler : Modeler
     {
         ProbabilityDistribution<MatchupResult> Model(Matchup matchup);
     }

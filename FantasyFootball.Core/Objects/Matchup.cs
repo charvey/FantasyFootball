@@ -1,4 +1,6 @@
-﻿namespace FantasyFootball.Core.Objects
+﻿using System;
+
+namespace FantasyFootball.Core.Objects
 {
     public class Matchup
     {
@@ -7,10 +9,17 @@
         public int Week { get; set; }
     }
 
-    public class MatchupResult
+    public class MatchupResult : IEquatable<MatchupResult>
     {
         public Team Winner { get; set; }
         public Team Loser { get; set; }
         public bool Tied { get; set; } = false;
+
+        public bool Equals(MatchupResult other)
+        {
+            return this.Winner == other.Winner
+                && this.Loser == other.Loser
+                && this.Tied == other.Tied;
+        }
     }
 }

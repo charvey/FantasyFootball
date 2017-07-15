@@ -14,13 +14,8 @@ namespace FantasyFootball.Core.Modeling
         }
     }
 
-    public interface ContinuousProbabilityDistribution<T>
-    {
-        double Get(T left, T right);
-    }
-
     public interface ScoreModeler
     {
-        ContinuousProbabilityDistribution<double> Model(ScoreSituation situation);
+        ProbabilityDistribution<double> Model(ScoreSituation situation);
     }
 }

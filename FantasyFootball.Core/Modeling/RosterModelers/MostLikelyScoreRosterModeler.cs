@@ -1,24 +1,27 @@
-﻿using FantasyFootball.Core.Objects;
+﻿using FantasyFootball.Core.Modeling.ProbabilityDistributions;
+using FantasyFootball.Core.Objects;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FantasyFootball.Core
+namespace FantasyFootball.Core.Modeling.RosterModelers
 {
-    public interface ScoreProvider
+    public class MostLikelyScoreRosterModeler : RosterModeler
     {
-        double GetScore(Player player, int week);
-    }
+        private readonly ScoreModeler scoreModeler;
 
-    public class RosterPicker
-    {
-        private readonly ScoreProvider scoreProvider;
-
-        public RosterPicker(ScoreProvider scoreProvider)
+        public MostLikelyScoreRosterModeler(ScoreModeler scoreModeler)
         {
-            this.scoreProvider = scoreProvider;
+            this.scoreModeler = scoreModeler;
         }
 
-        public IEnumerable<Player> PickRoster(IEnumerable<Player> players, int week)
+        public ProbabilityDistribution<Roster> Model(RosterSituation roster)
+        {
+            var result = PickRoster(roster.Players, roster.Week);
+            var resultRoster = new Roster(result.ToArray());
+            return new GuaranteedProbabilityDistribution<Roster>(resultRoster);
+        }
+
+        private IEnumerable<Player> PickRoster(IEnumerable<Player> players, int week)
         {
             //	QB, WR, WR, RB, RB, TE, W/R, W/R/T, K, DEF, BN, BN, BN, BN, BN
             var remainingPlayers = players;
@@ -52,8 +55,15 @@ namespace FantasyFootball.Core
         private Player Pick(IEnumerable<Player> players, int week, params string[] positions)
         {
             players = players.Where(p => positions.Intersect(p.Positions).Any());
-            players = players.OrderByDescending(p => scoreProvider.GetScore(p, week));
+            players = players.OrderByDescending(p => MostLikelyScore(p, week));
             return players.FirstOrDefault();
+        }
+
+        private double MostLikelyScore(Player player, int week)
+        {
+            var situation = new ScoreSituation(player, week);
+            var result = scoreModeler.Model(situation);
+            return result.Outcomes.WhereMax(result.Probability).Single();
         }
     }
 }

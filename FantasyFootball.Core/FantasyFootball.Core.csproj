@@ -33,9 +33,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,11 +47,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analysis\CandidateEvaluator.cs" />
+    <Compile Include="Analysis\MatchupModelerEvaluation.cs" />
+    <Compile Include="Modeling\Modeler.cs" />
+    <Compile Include="Modeling\ProbabilityDistributions\GuaranteedProbabilityDistribution.cs" />
+    <Compile Include="Modeling\RosterModeler.cs" />
+    <Compile Include="Modeling\RosterModelers\MostLikelyScoreRosterModeler.cs" />
     <Compile Include="Modeling\ScoreModelers\Candidates.cs" />
     <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalDataFilter.cs" />
     <Compile Include="Analysis\ProbabilityDistribution.cs" />
     <Compile Include="Analysis\ProbabilityDistributionAnalysis.cs" />
-    <Compile Include="Data\DumpCsvScoreProvider.cs" />
     <Compile Include="Draft\DraftTeam.cs" />
     <Compile Include="Maths\BandwidthSelector.cs" />
     <Compile Include="Maths\BandwidthSelectors\ConstantBandwidthSelector.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="Modeling\ScoreModelers\ComplexScoreCandidate.cs" />
     <Compile Include="Modeling\ScoreModelers\NoScoreCandidate.cs" />
     <Compile Include="Modeling\ScoreModelers\RealityCandidate.cs" />
+    <Compile Include="Modeling\ScoreModelers\RealityScoreModeler.cs" />
     <Compile Include="Objects\Matchup.cs" />
     <Compile Include="Objects\Teams.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
@@ -112,12 +116,8 @@
     <Compile Include="Preseason\PreseasonHelper.cs" />
     <Compile Include="Data\DumpData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RosterPicker.cs" />
     <Compile Include="Rosters\RosterHelper.cs" />
     <Compile Include="Trade\TradeHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj">
@@ -125,7 +125,9 @@
       <Name>FantasyFootball.Data.Yahoo</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

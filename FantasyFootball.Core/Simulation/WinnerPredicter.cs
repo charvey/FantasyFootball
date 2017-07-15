@@ -1,5 +1,7 @@
 ﻿using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Data;
+using FantasyFootball.Core.Modeling;
+using FantasyFootball.Core.Modeling.RosterModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.FooModels;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalDataFilters;
@@ -15,7 +17,7 @@ using System.Linq;
 
 namespace FantasyFootball.Core.Simulation
 {
-    public class CandidateScoreProvider : ScoreProvider
+    public class CandidateScoreProvider
     {
         private readonly Candidate candidate;
         private readonly Random random;
@@ -201,9 +203,10 @@ namespace FantasyFootball.Core.Simulation
             foreach (var team in teams)
             {
                 var allPlayers = GetFuturePlayers(team, week);
-                var roster = new RosterPicker(new DumpCsvScoreProvider()).PickRoster(allPlayers, week).ToArray();
+                var roster = new MostLikelyScoreRosterModeler(new RealityScoreModeler())
+                    .Model(new RosterSituation(allPlayers, week)).Outcomes.Single();
 
-                foreach (var player in roster)
+                foreach (var player in roster.Players)
                 {
                     universe.AddFact(new SetScore
                     {
@@ -217,7 +220,7 @@ namespace FantasyFootball.Core.Simulation
                 {
                     Team = team,
                     Week = week,
-                    Players = roster
+                    Players = roster.Players
                 });
             }
         }

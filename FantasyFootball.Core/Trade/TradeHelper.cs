@@ -1,4 +1,7 @@
 ﻿using FantasyFootball.Core.Data;
+using FantasyFootball.Core.Modeling;
+using FantasyFootball.Core.Modeling.RosterModelers;
+using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
 using System.Collections.Generic;
@@ -95,8 +98,10 @@ namespace FantasyFootball.Core.Trade
 
         private static double GetWeekScore(IEnumerable<Player> players, int week)
         {
-            var scoreProvider = new DumpCsvScoreProvider();
-            return new RosterPicker(scoreProvider).PickRoster(players, week).Sum(p => scoreProvider.GetScore(p, week));
+            var scoreProvider = new RealityScoreModeler();
+			return new MostLikelyScoreRosterModeler(scoreProvider)
+				.Model(new Modeling.RosterSituation(players.ToArray(), week))
+				.Outcomes.Single().Players.Sum(p => scoreProvider.Model(new ScoreSituation(p, week)).Outcomes.Single());
         }
 
         private IEnumerable<Trade> GetAllPossibleTrades(TeamPlayers source, IEnumerable<TeamPlayers> otherTeams)

@@ -1,4 +1,7 @@
 ﻿using FantasyFootball.Core.Data;
+using FantasyFootball.Core.Modeling;
+using FantasyFootball.Core.Modeling.RosterModelers;
+using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;
 using System.Collections.Generic;
 using System.IO;
@@ -45,8 +48,10 @@ namespace FantasyFootball.Core.Draft
 
 		private double GetWeekScore(IEnumerable<Player> players, int week)
 		{
-			return new RosterPicker(new DumpCsvScoreProvider())
-                .PickRoster(players, week).Sum(p => DumpData.GetScore(p, week));
+			return new MostLikelyScoreRosterModeler(new RealityScoreModeler())
+				.Model(new RosterSituation(players.ToArray(), week))
+				.Outcomes.Single().Players
+				.Sum(p => DumpData.GetScore(p, week));
 		}
 
 		private DraftTeam GetCurrentTeam()

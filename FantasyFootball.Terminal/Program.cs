@@ -1,4 +1,5 @@
-﻿using FantasyFootball.Core.Analysis;
+﻿using Dapper;
+using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Core.Rosters;
@@ -6,6 +7,8 @@ using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
 using System;
+using System.Configuration;
+using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 
@@ -15,11 +18,13 @@ namespace FantasyFootball.Terminal
     {
         static void Main(string[] args)
         {
-            ConsolePrepper.Prep();
+			var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
+
+			ConsolePrepper.Prep();
 
             while (true)
             {
-                Console.WriteLine("Enter a key: a/s/b/p/d/j/y/x");
+                Console.WriteLine("Enter a key: a/s/b/i/m/p/r/d/j/y/x");
                 var key = Console.ReadKey();
                 Console.Clear();
                 if (key.KeyChar == 'a')
@@ -37,13 +42,28 @@ namespace FantasyFootball.Terminal
                     var draftWriter = new DraftWriter();
                     draftWriter.WriteDraft(Console.Out, draft);
                 }
-                else if (key.KeyChar == 'p')
+				else if (key.KeyChar == 'i')
+				{
+					using (var connection = new SQLiteConnection(connectionString))
+						new Scraper().StrictlyBetterPlayersInfo(connection);
+				}
+				else if (key.KeyChar == 'm')
+				{
+					using (var connection = new SQLiteConnection(connectionString))
+						MiniMaxer.Testminimax(connection);
+				}
+				else if (key.KeyChar == 'p')
                 {
                     var draftChanger = new DraftChanger();
                     var draft = Draft.FromFile();
                     draftChanger.Change(Console.Out, Console.In, draft);
                     draft.ToFile();
                 }
+				else if (key.KeyChar == 'r')
+				{
+					using (var connection = new SQLiteConnection(connectionString))
+						new Scraper().Scrape(connection, Console.ReadLine(), Console.ReadLine());
+				}
                 else if (key.KeyChar == 'd')
                 {
                     var draftDataWriter = new DraftDataWriter();

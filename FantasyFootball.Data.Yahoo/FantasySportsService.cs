@@ -47,6 +47,26 @@ namespace FantasyFootball.Data.Yahoo
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.draft_results;
         }
 
+        public IEnumerable<Player> LeaguePlayers(string league_key)
+        {
+            int start = 0;
+            const int size = 25;
+            while (true)
+            {
+                var xml = webService.LeaguePlayersResults(league_key, start);
+                var players = XDocument.Parse(xml).XPathSelectElement("//*[local-name() = 'players']");
+
+                foreach (var player in players.Elements())
+                    yield return XmlConvert.Deserialize<Player>(player.ToString());
+
+                var count = players.Attribute("count");
+                if (count == null || int.Parse(count.Value) < size)
+                    break;
+
+                start += size;
+            }
+        }
+
         public LeagueScoreboard LeagueScoreboard(string league_key, int week)
         {
             var xml = webService.LeagueScoreboard(league_key, week);

@@ -25,7 +25,7 @@ namespace FantasyFootball.Core.Draft
             {
                 writer.WriteLine(BuildRow(string.Empty, draft.Teams.Select(t => (draft.Pick(t, r)?.Id ?? ""))));
                 writer.WriteLine(BuildRow(" #" + r.ToString(), draft.Teams.Select(t => (draft.Pick(t, r)?.Name ?? ""))));
-                writer.WriteLine(BuildRow(string.Empty, draft.Teams.Select(t => (draft.Pick(t, r)?.Positions.ToString() ?? "" )+" "+ (draft.Pick(t, r)?.Team ?? ""))));
+                writer.WriteLine(BuildRow(string.Empty, draft.Teams.Select(t => string.Join("/", draft.Pick(t, r)?.Positions ?? new string[0]) + " " + (draft.Pick(t, r)?.Team ?? ""))));
             }
         }
 

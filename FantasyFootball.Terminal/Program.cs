@@ -7,6 +7,7 @@ using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SQLite;
 using System.IO;
@@ -18,9 +19,10 @@ namespace FantasyFootball.Terminal
     {
         static void Main(string[] args)
         {
-			var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
+            var league_key = "371.l.88448";
+            var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
 
-			ConsolePrepper.Prep();
+            ConsolePrepper.Prep();
 
             while (true)
             {
@@ -42,28 +44,48 @@ namespace FantasyFootball.Terminal
                     var draftWriter = new DraftWriter();
                     draftWriter.WriteDraft(Console.Out, draft);
                 }
-				else if (key.KeyChar == 'i')
-				{
-					using (var connection = new SQLiteConnection(connectionString))
-						new Scraper().StrictlyBetterPlayersInfo(connection);
-				}
-				else if (key.KeyChar == 'm')
-				{
-					using (var connection = new SQLiteConnection(connectionString))
-						MiniMaxer.Testminimax(connection);
-				}
-				else if (key.KeyChar == 'p')
+                else if (key.KeyChar == 'i')
+                {
+                    using (var connection = new SQLiteConnection(connectionString))
+                    {
+                        var players = new HashSet<string>(connection.Query<string>("SELECT Id FROM Player"));
+                        var scores = Scraper.PlayerScores(connection);
+                        var previous = new Dictionary<string, double>();
+                        File.Delete("sbpi.csv");
+                        for (var t = 0.00; t <= 1.00; t += 0.01)
+                        {
+                            var strictlyBetterPlayers = new StrictlyBetterPlayerFilter(connection, t);
+                            var options = strictlyBetterPlayers.Filter(players);
+                            Console.WriteLine($"{t:p} {options.Count() - previous.Count}");
+                            File.AppendAllText("sbpi.csv", $"{t},{options.Count() - previous.Count},{previous.Count}\n");
+                            foreach (var option in options.Where(o => !previous.ContainsKey(o)))
+                            {
+                                var name = connection.Query<string>("SELECT Name FROM Player WHERE Id='" + option + "'").Single();
+
+                                Console.WriteLine(option + " " + name + " " + string.Join(" ", scores[option]));
+
+                                previous.Add(option, t);
+                            }
+                        }
+                    }
+                }
+                else if (key.KeyChar == 'm')
+                {
+                    using (var connection = new SQLiteConnection(connectionString))
+                        MiniMaxer.Testminimax(connection);
+                }
+                else if (key.KeyChar == 'p')
                 {
                     var draftChanger = new DraftChanger();
                     var draft = Draft.FromFile();
                     draftChanger.Change(Console.Out, Console.In, draft);
                     draft.ToFile();
                 }
-				else if (key.KeyChar == 'r')
-				{
-					using (var connection = new SQLiteConnection(connectionString))
-						new Scraper().Scrape(connection, Console.ReadLine(), Console.ReadLine());
-				}
+                else if (key.KeyChar == 'r')
+                {
+                    using (var connection = new SQLiteConnection(connectionString))
+                        new Scraper().Scrape(league_key, new FantasySportsService(), connection);
+                }
                 else if (key.KeyChar == 'd')
                 {
                     var draftDataWriter = new DraftDataWriter();

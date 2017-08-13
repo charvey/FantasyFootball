@@ -10,6 +10,9 @@ namespace FantasyFootball.Data.Yahoo.Models
         public PlayerName name;
         public Week[] bye_weeks;
         public string image_url;
+        public string editorial_player_key;
+        public string editorial_team_key;
+        public string editorial_team_full_name;
         public string editorial_team_abbr;
         public string display_position;
         public Position[] eligible_positions;

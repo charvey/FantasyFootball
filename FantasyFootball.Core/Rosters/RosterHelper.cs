@@ -11,16 +11,14 @@ namespace FantasyFootball.Core.Rosters
 {
     public class RosterHelper
     {
-        private const string league_key = "359.l.48793";
-
-        public void Help(TextWriter output)
+        public void Help(TextWriter output, string league_key, int team_id)
         {
             var service = new FantasySportsService();
-            var week = SeasonWeek.Current;
-            var players = service.TeamRoster($"{league_key}.t.{7}", week).players.Select(Players.From).ToArray();
-			var rosterPicker = new MostLikelyScoreRosterModeler(new RealityScoreModeler());
-			var roster = rosterPicker.Model(new RosterSituation(players, week));
-            foreach(var player in roster.Outcomes.Single().Players)
+            var week = service.League(league_key).current_week;
+            var players = service.TeamRoster($"{league_key}.t.{team_id}", week).players.Select(Players.From).ToArray();
+            var rosterPicker = new MostLikelyScoreRosterModeler(new RealityScoreModeler());
+            var roster = rosterPicker.Model(new RosterSituation(players, week));
+            foreach (var player in roster.Outcomes.Single().Players)
             {
                 output.WriteLine(player.Name + " " + string.Join("/", player.Positions));
             }

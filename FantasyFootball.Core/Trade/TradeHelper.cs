@@ -1,5 +1,4 @@
-﻿using FantasyFootball.Core.Data;
-using FantasyFootball.Core.Modeling;
+﻿using FantasyFootball.Core.Modeling;
 using FantasyFootball.Core.Modeling.RosterModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;
@@ -12,8 +11,6 @@ namespace FantasyFootball.Core.Trade
 {
     public class TradeHelper
     {
-        private const string league_key = "359.l.48793";
-
         private class TeamPlayers
         {
             public Team Team { get; set; }
@@ -28,10 +25,10 @@ namespace FantasyFootball.Core.Trade
             public TeamPlayers TeamB { get; set; }
         }
 
-        public void Help(TextWriter output)
+        public void Help(TextWriter output, string league_key)
         {
-            var week = SeasonWeek.Current;
             var service = new FantasySportsService();
+            var week = service.League(league_key).current_week;
             var teams = Teams.All().Select(t => new TeamPlayers
             {
                 Team = t,

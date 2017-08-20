@@ -7,10 +7,10 @@ namespace FantasyFootball.Core.Objects
 {
     public static class Matchups
     {
-        public static IEnumerable<Matchup> GetByWeek(int week)
+        public static IEnumerable<Matchup> GetByWeek(string league_key, int week)
         {
             var service = new FantasySportsService();
-            var scoreboard = service.LeagueScoreboard("359.l.48793", week);
+            var scoreboard = service.LeagueScoreboard(league_key, week);
             return scoreboard.matchups.Select(m =>
             {
                 Debug.Assert(m.teams.Length == 2);

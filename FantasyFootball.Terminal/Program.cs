@@ -19,6 +19,7 @@ namespace FantasyFootball.Terminal
         static void Main(string[] args)
         {
             var league_key = "371.l.88448";
+            var team_id = 9;
             var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
 
             ConsolePrepper.Prep();
@@ -55,7 +56,7 @@ namespace FantasyFootball.Terminal
                         File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
                         File.AppendAllLines("output.csv", players.Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));
                     })
-                }),                
+                }),
                 new Menu("Play Jingle",_=>JinglePlayer.Play()),
                 new Menu("Scrape Data", _ =>
                 {
@@ -63,8 +64,8 @@ namespace FantasyFootball.Terminal
                         new Scraper().Scrape(league_key, new FantasySportsService(), connection);
                 }),
                 new Menu("Midseason",new List<Menu>{
-                    new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out)),
-                    new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out)),
+                    new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out, league_key,team_id)),
+                    new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out,league_key)),
                     new Menu("Transactions", _ =>
                     {
                         var service = new FantasySportsService();
@@ -80,7 +81,7 @@ namespace FantasyFootball.Terminal
                         using (var connection = new SQLiteConnection(connectionString))
                             MiniMaxer.Testminimax(connection);
                     }),
-                    new Menu("Predict Winners",_=> new WinnerPredicter().PredictWinners()),
+                    new Menu("Predict Winners",_=> new WinnerPredicter().PredictWinners(league_key)),
                     new Menu("Strictly Better Players",_=>{
                         using (var connection = new SQLiteConnection(connectionString))
                             StrictlyBetterPlayerFilter.RunTest(connection);

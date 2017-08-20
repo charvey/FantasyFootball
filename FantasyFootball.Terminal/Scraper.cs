@@ -12,110 +12,111 @@ using System.Threading;
 
 namespace FantasyFootball.Terminal
 {
-	public class Scraper
-	{
-		public void Scrape(string league_key, FantasySportsService service, SQLiteConnection connection)
-		{
-			UpdatePlayers(league_key, service, connection);
-			GetPredictions(league_key, connection);
-		}
+    public class Scraper
+    {
+        public void Scrape(string league_key, FantasySportsService service, SQLiteConnection connection)
+        {
+            UpdatePlayers(league_key, service, connection);
+            GetPredictions(league_key, service, connection);
+        }
 
-		private void UpdatePlayers(string league_key, FantasySportsService service, SQLiteConnection connection)
-		{
-			var players = service.LeaguePlayers(league_key).ToList();
-			var teams = players.Where(p => p.display_position == "DEF");
+        private void UpdatePlayers(string league_key, FantasySportsService service, SQLiteConnection connection)
+        {
+            var players = service.LeaguePlayers(league_key).ToList();
+            var teams = players.Where(p => p.display_position == "DEF");
 
-			connection.Open();
-			using (var transaction = connection.BeginTransaction())
-			{
-				foreach (var team in teams)
-					connection.Execute("REPLACE INTO Team VALUES (@id,@name,@abbr);", new
-					{
-						id = int.Parse(team.editorial_team_key.Split('.').Last()),
-						name = team.editorial_team_full_name,
-						abbr = team.editorial_team_abbr
-					});
+            connection.Open();
+            using (var transaction = connection.BeginTransaction())
+            {
+                foreach (var team in teams)
+                    connection.Execute("REPLACE INTO Team VALUES (@id,@name,@abbr);", new
+                    {
+                        id = int.Parse(team.editorial_team_key.Split('.').Last()),
+                        name = team.editorial_team_full_name,
+                        abbr = team.editorial_team_abbr
+                    });
 
-				foreach (var player in players)
-					connection.Execute("REPLACE INTO Player VALUES (@id,@name,@positions,@team);", new
-					{
-						id = player.player_id,
-						name = player.name.full,
-						positions = player.display_position,
-						team = int.Parse(player.editorial_team_key.Split('.').Last()),
-					});
-				transaction.Commit();
-			}
-		}
+                foreach (var player in players)
+                    connection.Execute("REPLACE INTO Player VALUES (@id,@name,@positions,@team);", new
+                    {
+                        id = player.player_id,
+                        name = player.name.full,
+                        positions = player.display_position,
+                        team = int.Parse(player.editorial_team_key.Split('.').Last()),
+                    });
+                transaction.Commit();
+            }
+        }
 
-		private void GetPredictions(string league_key, SQLiteConnection connection)
-		{
-			using (var webDriver = new ChromeDriver())
-			{
-				try
-				{
-					Console.Write("Username: ");
-					var username = Console.ReadLine();
-					Console.Write("Password: ");
-					var password = Console.ReadLine();
-					var leagueId = league_key.Split('.').Last();
-					webDriver.Navigate().GoToUrl($"https://football.fantasysports.yahoo.com/f1/{leagueId}/players");
-					webDriver.FindElementById("login-username").SendKeys(username);
-					webDriver.FindElementById("login-signin").Click();
-					Thread.Sleep(TimeSpan.FromSeconds(1));
-					webDriver.FindElementById("login-passwd").SendKeys(password);
-					webDriver.FindElementById("login-signin").Click();
+        private void GetPredictions(string league_key, FantasySportsService service, SQLiteConnection connection)
+        {
+            using (var webDriver = new ChromeDriver())
+            {
+                try
+                {
+                    Console.Write("Username: ");
+                    var username = Console.ReadLine();
+                    Console.Write("Password: ");
+                    var password = Console.ReadLine();
+                    var leagueId = league_key.Split('.').Last();
+                    webDriver.Navigate().GoToUrl($"https://football.fantasysports.yahoo.com/f1/{leagueId}/players");
+                    webDriver.FindElementById("login-username").SendKeys(username);
+                    webDriver.FindElementById("login-signin").Click();
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                    webDriver.FindElementById("login-passwd").SendKeys(password);
+                    webDriver.FindElementById("login-signin").Click();
 
-					ScrapeMissing(connection, webDriver);
-					ScrapeOld(connection, webDriver);
-				}
-				finally
-				{
-					webDriver.Quit();
-				}
-			}
-		}
+                    ScrapeMissing(connection, league_key, service, webDriver);
+                    ScrapeOld(connection, webDriver);
+                }
+                finally
+                {
+                    webDriver.Quit();
+                }
+            }
+        }
 
-		private void ScrapeAll(SQLiteConnection connection, ChromeDriver webDriver)
-		{
-			foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
-				foreach (var week in Enumerable.Range(1, 17))
-					Scrape(connection, webDriver, null, pos, week);
-		}
+        private void ScrapeAll(SQLiteConnection connection, ChromeDriver webDriver)
+        {
+            foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
+                foreach (var week in Enumerable.Range(1, 17))
+                    Scrape(connection, webDriver, null, pos, week);
+        }
 
-		private class ScrapeGroup
-		{
-			public int Team { get; set; }
-			public string Position { get; set; }
-			public int Week { get; set; }
-		}
+        private class ScrapeGroup
+        {
+            public int Team { get; set; }
+            public string Position { get; set; }
+            public int Week { get; set; }
+        }
 
-		private void ScrapeMissing(SQLiteConnection connection, ChromeDriver webDriver)
-		{
-			while (true)
-			{
-				var nextGroup = connection.Query<ScrapeGroup>(@"
+        private void ScrapeMissing(SQLiteConnection connection, string league_key, FantasySportsService service, ChromeDriver webDriver)
+        {
+            var playerIds = service.LeaguePlayers(league_key).Select(p => p.player_id).ToArray();
+            while (true)
+            {
+                var nextGroup = connection.Query<ScrapeGroup>($@"
 					SELECT TeamId AS Team, Positions AS Position, w.Week FROM Player
 					CROSS JOIN(SELECT DISTINCT Week FROM Predictions) w
 					LEFT JOIN Predictions ON Predictions.PlayerId = Id AND Predictions.Week = w.Week AND Year = 2017
-					WHERE Predictions.Value IS NULL"
-					).FirstOrDefault();
+					WHERE Predictions.Value IS NULL AND Player.Id IN ({string.Join(",", playerIds)})"
+                    ).FirstOrDefault();
 
-				if (nextGroup == null)
-					break;
+                if (nextGroup == null)
+                    break;
 
-				Policy.
-					Handle<WebDriverException>()
-					.Retry()
-					.Execute(() => Scrape(connection, webDriver, nextGroup.Team, nextGroup.Position, nextGroup.Week));
-			}
-		}
+                Policy.
+                    Handle<WebDriverException>()
+                    .Retry()
+                    .Execute(() => Scrape(connection, webDriver, nextGroup.Team, nextGroup.Position, nextGroup.Week));
+            }
+        }
 
-		private void ScrapeOld(SQLiteConnection connection, ChromeDriver webDriver)
-		{
-			while (true)
-			{
-				var nextGroup = connection.Query<ScrapeGroup>(@"
+        private void ScrapeOld(SQLiteConnection connection, ChromeDriver webDriver)
+        {
+            while (true)
+            {
+                var nextGroup = connection.Query<ScrapeGroup>(@"
 					SELECT Team, Position, Week
 					FROM(
 						SELECT Team.Id AS Team, Positions AS Position, Week, MAX(AsOf) AS AsOf
@@ -127,113 +128,115 @@ namespace FantasyFootball.Terminal
 					)
 					WHERE AsOf < @before
 					ORDER BY AsOF",
-					new { before = DateTime.Now.AddDays(-2).ToString("O") }
-					).FirstOrDefault();
+                    new { before = DateTime.Now.AddDays(-2).ToString("O") }
+                    ).FirstOrDefault();
 
-				if (nextGroup == null)
-					break;
+                if (nextGroup == null)
+                    break;
 
-				Policy.
-					Handle<WebDriverException>()
-					.Retry()
-					.Execute(() => Scrape(connection, webDriver, nextGroup.Team, nextGroup.Position, nextGroup.Week));
-			}
-		}
+                Policy.
+                    Handle<WebDriverException>()
+                    .Retry()
+                    .Execute(() => Scrape(connection, webDriver, nextGroup.Team, nextGroup.Position, nextGroup.Week));
+            }
+        }
 
-		private void Scrape(SQLiteConnection connection, ChromeDriver webDriver, int? team, string position, int week)
-		{
-			if (team.HasValue)
-				new SelectElement(webDriver.FindElementById("statusselect")).SelectByValue($"ET_{team}");
-			else
-				new SelectElement(webDriver.FindElementById("statusselect")).SelectByText("All Players");
-			new SelectElement(webDriver.FindElementById("posselect")).SelectByText(position);
-			new SelectElement(webDriver.FindElementById("statselect")).SelectByText($"Week {week} (proj)");
+        private void Scrape(SQLiteConnection connection, ChromeDriver webDriver, int? team, string position, int week)
+        {
+            Console.WriteLine($"Scraping {team} {position} {week}");
 
-			webDriver.FindElementById("playerfilter").FindElement(By.ClassName("Btn-primary")).Click();
-			do
-			{
-				Thread.Sleep(TimeSpan.FromSeconds(5));
+            if (team.HasValue)
+                new SelectElement(webDriver.FindElementById("statusselect")).SelectByValue($"ET_{team}");
+            else
+                new SelectElement(webDriver.FindElementById("statusselect")).SelectByText("All Players");
+            new SelectElement(webDriver.FindElementById("posselect")).SelectByText(position);
+            new SelectElement(webDriver.FindElementById("statselect")).SelectByText($"Week {week} (proj)");
 
-				Func<int, bool> isPredictionColumn =
-					column => webDriver
-						   .FindElementById("players-table")
-						   .FindElement(By.TagName("thead"))
-						   .FindElements(By.TagName("tr"))[1]
-						   .FindElements(By.TagName("th"))[column]
-						   .Text == "Fan Pts";
+            webDriver.FindElementById("playerfilter").FindElement(By.ClassName("Btn-primary")).Click();
+            do
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(5));
 
-				int pointsColumn;
-				if (isPredictionColumn(6)) pointsColumn = 6;
-				else if (isPredictionColumn(7)) pointsColumn = 7;
-				else throw new IndexOutOfRangeException();
+                Func<int, bool> isPredictionColumn =
+                    column => webDriver
+                           .FindElementById("players-table")
+                           .FindElement(By.TagName("thead"))
+                           .FindElements(By.TagName("tr"))[1]
+                           .FindElements(By.TagName("th"))[column]
+                           .Text == "Fan Pts";
 
-				var rows = webDriver.FindElementById("players-table").FindElement(By.TagName("tbody")).FindElements(By.TagName("tr"));
-				foreach (var row in rows)
-				{
-					var infoElement = row.FindElement(By.ClassName("ysf-player-name"));
+                int pointsColumn;
+                if (isPredictionColumn(6)) pointsColumn = 6;
+                else if (isPredictionColumn(7)) pointsColumn = 7;
+                else throw new IndexOutOfRangeException();
 
-					var span = infoElement.FindElement(By.TagName("span"));
-					var positions = span.Text.Split('-')[1].Trim();
+                var rows = webDriver.FindElementById("players-table").FindElement(By.TagName("tbody")).FindElements(By.TagName("tr"));
+                foreach (var row in rows)
+                {
+                    var infoElement = row.FindElement(By.ClassName("ysf-player-name"));
 
-					string id;
-					if (positions == "DEF")
-					{
-						id = connection.QuerySingle<string>(
-							"SELECT Player.Id FROM Player " +
-							"JOIN Team ON Team.Id=Player.TeamId " +
-							"WHERE Positions='DEF' AND Team.Abbreviation=@abbr", new
-							{
-								abbr = span.Text.Split('-')[0].Trim()
-							});
-					}
-					else
-					{
-						id = infoElement
-							.FindElement(By.TagName("a"))
-							.GetAttribute("href").Split('/').Last();
-					}
+                    var span = infoElement.FindElement(By.TagName("span"));
+                    var positions = span.Text.Split('-')[1].Trim();
 
-					var points = double.Parse(row.FindElements(By.TagName("td"))[pointsColumn].FindElement(By.TagName("span")).Text);
+                    string id;
+                    if (positions == "DEF")
+                    {
+                        id = connection.QuerySingle<string>(
+                            "SELECT Player.Id FROM Player " +
+                            "JOIN Team ON Team.Id=Player.TeamId " +
+                            "WHERE Positions='DEF' AND Team.Abbreviation=@abbr", new
+                            {
+                                abbr = span.Text.Split('-')[0].Trim()
+                            });
+                    }
+                    else
+                    {
+                        id = infoElement
+                            .FindElement(By.TagName("a"))
+                            .GetAttribute("href").Split('/').Last();
+                    }
 
-					RecordPrediction(connection, id, week, points);
-				}
+                    var points = double.Parse(row.FindElements(By.TagName("td"))[pointsColumn].FindElement(By.TagName("span")).Text);
 
-				try
-				{
-					webDriver.FindElementByClassName("pagingnav").FindElement(By.ClassName("last")).FindElement(By.TagName("a")).Click();
-				}
-				catch (NoSuchElementException) { break; }
-			} while (true);
-		}
+                    RecordPrediction(connection, id, week, points);
+                }
 
-		public static Dictionary<string, double[]> PlayerScores(SQLiteConnection connection)
-		{
-			return connection.Query<PlayerWeekScore>(
-				"SELECT DISTINCT PlayerId,Week,(SELECT Value FROM Predictions v WHERE v.PlayerId=p.PlayerId AND v.Week=p.Week LIMIT 1) AS Value " +
-				"FROM Predictions p WHERE Year=2017")
-				.GroupBy(d => d.PlayerId)
-				.ToDictionary(d => d.Key, d => d.OrderBy(x => x.Week).Select(x => x.Value).ToArray());
-		}
+                try
+                {
+                    webDriver.FindElementByClassName("pagingnav").FindElement(By.ClassName("last")).FindElement(By.TagName("a")).Click();
+                }
+                catch (NoSuchElementException) { break; }
+            } while (true);
+        }
 
-		public class PlayerWeekScore
-		{
-			public string PlayerId { get; set; }
-			public int Week { get; set; }
-			public double Value { get; set; }
-		}
+        public static Dictionary<string, double[]> PlayerScores(SQLiteConnection connection)
+        {
+            return connection.Query<PlayerWeekScore>(
+                "SELECT DISTINCT PlayerId,Week,(SELECT Value FROM Predictions v WHERE v.PlayerId=p.PlayerId AND v.Week=p.Week LIMIT 1) AS Value " +
+                "FROM Predictions p WHERE Year=2017")
+                .GroupBy(d => d.PlayerId)
+                .ToDictionary(d => d.Key, d => d.OrderBy(x => x.Week).Select(x => x.Value).ToArray());
+        }
 
-		private void RecordPrediction(SQLiteConnection connection, string playerId, int week, double value)
-		{
-			connection.Execute(
-				"INSERT INTO Predictions (PlayerId,Week,Year,Value,AsOf) " +
-				"VALUES (@PlayerId,@Week,@Year,@Value,@AsOf)", new
-				{
-					PlayerId = playerId,
-					Week = week,
-					Year = 2017,
-					Value = value,
-					AsOf = DateTime.Now.ToString("O")
-				});
-		}
-	}
+        public class PlayerWeekScore
+        {
+            public string PlayerId { get; set; }
+            public int Week { get; set; }
+            public double Value { get; set; }
+        }
+
+        private void RecordPrediction(SQLiteConnection connection, string playerId, int week, double value)
+        {
+            connection.Execute(
+                "INSERT INTO Predictions (PlayerId,Week,Year,Value,AsOf) " +
+                "VALUES (@PlayerId,@Week,@Year,@Value,@AsOf)", new
+                {
+                    PlayerId = playerId,
+                    Week = week,
+                    Year = 2017,
+                    Value = value,
+                    AsOf = DateTime.Now.ToString("O")
+                });
+        }
+    }
 }

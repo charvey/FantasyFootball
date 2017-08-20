@@ -38,13 +38,13 @@ namespace FantasyFootball.Terminal
                         var draftWriter = new DraftWriter();
                         draftWriter.WriteDraft(Console.Out, draft);
                     }),
-                    new Menu("Make Changes to Draft", _=>  {
+                    new Menu("Make Changes to Draft", _=> {
                         var draftChanger = new DraftChanger();
                         var draft = Draft.FromFile();
                         draftChanger.Change(Console.Out, Console.In, draft);
                         draft.ToFile();
                     }),
-                    new Menu("Show Stats", _ =>    new DraftDataWriter().WriteData(Draft.FromFile())                    ),
+                    new Menu("Show Stats", _ => new DraftDataWriter().WriteData(Draft.FromFile(), team_id)),
                     new Menu("Write Stats to File", _ =>
                     {
                         var draft = Draft.FromFile();
@@ -65,7 +65,7 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Midseason",new List<Menu>{
                     new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out, league_key,team_id)),
-                    new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out,league_key)),
+                    new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out,league_key,team_id)),
                     new Menu("Transactions", _ =>
                     {
                         var service = new FantasySportsService();

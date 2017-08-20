@@ -25,7 +25,7 @@ namespace FantasyFootball.Core.Trade
             public TeamPlayers TeamB { get; set; }
         }
 
-        public void Help(TextWriter output, string league_key)
+        public void Help(TextWriter output, string league_key, int myTeamId)
         {
             var service = new FantasySportsService();
             var week = service.League(league_key).current_week;
@@ -35,7 +35,6 @@ namespace FantasyFootball.Core.Trade
                 Players = service.TeamRoster($"{league_key}.t.{t.Id}", week).players.Select(Players.From).ToArray()
             });
 
-            const int myTeamId = 7;
             var myPlayers = teams.Single(t => t.Team.Id == myTeamId);
             var otherTeamsPlayers = teams.Where(t => t.Team.Id != myTeamId);
             var trades = GetAllPossibleTrades(myPlayers, otherTeamsPlayers).ToList();

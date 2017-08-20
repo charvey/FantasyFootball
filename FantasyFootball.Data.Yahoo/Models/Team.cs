@@ -10,6 +10,7 @@ namespace FantasyFootball.Data.Yahoo.Models
         public string name;
         public string url;
         public TeamLogos team_logos;
+        public Manager[] managers;
         public Roster roster;
     }
 
@@ -22,5 +23,12 @@ namespace FantasyFootball.Data.Yahoo.Models
     {
         public string size;
         public string url;
+    }
+
+    [XmlType("manager")]
+    public class Manager
+    {
+        public string nickname;
+        public string guid;
     }
 }

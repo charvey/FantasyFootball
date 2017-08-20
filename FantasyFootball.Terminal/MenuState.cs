@@ -11,6 +11,14 @@ namespace FantasyFootball.Terminal
         {
             _state[name] = value;
         }
+
+        public T Load<T>(String name) where T : class
+        {
+            T output;
+            Load(name, out output);
+            return output;
+        }
+
         public bool Load<T>(String name, out T variable) where T : class
         {
             if (!_state.ContainsKey(name))

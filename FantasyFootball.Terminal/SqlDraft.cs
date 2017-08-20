@@ -22,12 +22,24 @@ namespace FantasyFootball.Terminal
         public IReadOnlyList<DraftParticipant> Participants => connection.Query<DraftParticipant>("SELECT * FROM DraftParticipant WHERE DraftId=@draftId", new { draftId = draftId }).ToList();
 
         public IReadOnlyList<Player> AllPlayers => throw new NotImplementedException();
-        public IReadOnlyList<Player> PickedPlayers => throw new NotImplementedException();
+        public IReadOnlyList<Player> PickedPlayers => connection.Query<PlayerDto>(@"
+            SELECT Player.*
+            FROM DraftPick
+            JOIN DraftOption ON DraftPick.DraftOptionId = DraftOption.Id
+            JOIN Player ON Player.Id = DraftOption.PlayerId
+            WHERE DraftPick.DraftId=@draftId", new { draftId = draftId })
+            .Select(FromPlayerDto).ToList();
         public IReadOnlyList<Player> PickedPlayersByParticipant(DraftParticipant t)
         {
             throw new NotImplementedException();
         }
-        public IReadOnlyList<Player> UnpickedPlayers => throw new NotImplementedException();
+        public IReadOnlyList<Player> UnpickedPlayers => connection.Query<PlayerDto>(@"
+            SELECT Player.*
+            FROM DraftOption
+            JOIN Player ON Player.Id = DraftOption.PlayerId
+            LEFT JOIN DraftPick ON DraftPick.DraftOptionId = DraftOption.Id
+            WHERE DraftPick.DraftId IS NULL AND DraftOption.DraftId=@draftId", new { draftId = draftId })
+            .Select(FromPlayerDto).ToList();
 
         public class PlayerDto
         {
@@ -39,28 +51,46 @@ namespace FantasyFootball.Terminal
 
         public Player Pick(DraftParticipant t, int r)
         {
-            var draftOptionId = connection.QuerySingle<string>("SELECT DraftOptionId FROM DraftPick WHERE DraftId=@draftId AND DraftParticipantId=@draftParticipantId AND Round=@round", new
+            var draftOptionId = connection.QuerySingleOrDefault<string>("SELECT DraftOptionId FROM DraftPick WHERE DraftId=@draftId AND DraftParticipantId=@draftParticipantId AND Round=@round", new
             {
                 draftId = draftId,
                 draftParticipantId = t.Id,
                 round = r
             });
 
+            if (draftOptionId == null) return null;
+
             var playerId = connection.QuerySingle<string>("SELECT PlayerId FROM DraftOption WHERE Id=@id", new { id = draftOptionId });
 
+            return FromPlayerId(playerId);
+        }
+
+        private Player FromPlayerDto(PlayerDto playerDto)
+        {
+            return new Player
+            {
+                Id = playerDto.Id,
+                Name = playerDto.Name,
+                Positions = playerDto.Positions.Split(','),
+                Team = connection.QuerySingle<string>("SELECT Name FROM Team WHERE Id=@id", new { id = playerDto.TeamId })
+            };
+        }
+
+        private Player FromPlayerId(string playerId)
+        {
             return connection.Query<PlayerDto>("SELECT * FROM Player WHERE Id=@id", new { id = playerId })
-                .Select(p => new Player
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Positions = p.Positions.Split(','),
-                    Team = connection.QuerySingle<string>("SELECT Name FROM Team WHERE Id=@id", new { id = p.TeamId })
-                }).Single();
+                .Select(FromPlayerDto).Single();
         }
 
         public void Pick(DraftParticipant t, int r, Player p)
         {
-            throw new NotImplementedException();
+            connection.Execute("INSERT INTO DraftPick (DraftId,DraftOptionId,DraftParticipantId,Round) VALUES (@draftId,@draftOptionId,@draftParticipantId,@round)", new
+            {
+                draftId = draftId,
+                draftOptionId = connection.QuerySingle<string>("SELECT Id FROM DraftOption WHERE DraftId=@draftId AND PlayerId=@playerId", new { draftId = draftId, playerId = p.Id }),
+                draftParticipantId = t.Id,
+                round = r
+            });
         }
     }
 }

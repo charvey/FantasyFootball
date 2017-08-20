@@ -102,6 +102,7 @@
     <Compile Include="Scraper.cs" />
     <Compile Include="SqlDraft.cs" />
     <Compile Include="StrictlyBetterPlayerFilter.cs" />
+    <Compile Include="UniqueId.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

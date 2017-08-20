@@ -22,8 +22,6 @@ namespace FantasyFootball.Terminal
             var team_id = 9;
             var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
 
-            var lastYearsDraftId = "359.l.48793";
-
             ConsolePrepper.Prep();
 
             new Menu("Main Menu", new List<Menu>
@@ -34,23 +32,86 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Draft",new List<Menu>
                 {
+                    new Menu("Create Mock Draft",_=>{
+                        var service=new FantasySportsService();
+                        using (var connection = new SQLiteConnection(connectionString))
+                        {
+                            connection.Open();
+                            using(var transaction=connection.BeginTransaction())
+                            {
+                                var draftId=league_key+"_Mock_"+UniqueId.Create();
+                                connection.Execute("INSERT INTO Draft (Id,Year,Description) VALUES (@id,@year,@description)", new
+                                {
+                                    id=draftId,
+                                    year=2017,
+                                    description=$"Mock draft based on {league_key}"
+                                });
+                                int order=1;
+                                foreach(var team in service.Teams(league_key))
+                                {
+                                    connection.Execute("INSERT INTO DraftParticipant (Id,Name,Owner,[Order],DraftId) VALUES (@id,@name,@owner,@order,@draftId)",new
+                                    {
+                                        id=UniqueId.Create(),
+                                        name =team.name,
+                                        owner =team.managers.Single().nickname,
+                                        order =order,
+                                        draftId =draftId
+                                    });
+                                    order++;
+                                }
+                                foreach(var player in service.LeaguePlayers(league_key))
+                                {
+                                    connection.Execute("INSERT INTO DraftOption (Id,PlayerId,DraftId) VALUES (@id,@playerId,@draftId)",new
+                                    {
+                                        id=UniqueId.Create(),
+                                        playerId=player.player_id,
+                                        draftId =draftId
+                                    });
+                                }
+                                transaction.Commit();
+                            }
+                        }
+                    }),
+                    new Menu("Open Draft",_=>{
+                        string[] draftIds;
+                        using (var connection = new SQLiteConnection(connectionString))
+                            draftIds=connection.Query<string>("SELECT Id FROM Draft").ToArray();
+                        var option=Menu.Options("Pick Draft",draftIds);
+                        _.Store("CurrentDraft",draftIds[option-1]);
+                    }),
+                    new Menu("Delete Draft", _ =>
+                    {
+                        var id=Menu.Prompt("Enter Draft Id");
+                        using (var connection = new SQLiteConnection(connectionString))
+                        {
+                            connection.Open();
+                            using(var transaction = connection.BeginTransaction())
+                            {
+                                connection.Execute("DELETE FROM DraftPick WHERE DraftId=@id",new{ id=id});
+                                connection.Execute("DELETE FROM DraftOption WHERE DraftId=@id",new{ id=id});
+                                connection.Execute("DELETE FROM DraftParticipant WHERE DraftId=@id",new{ id=id});
+                                connection.Execute("DELETE FROM Draft WHERE Id=@id",new{ id=id});
+                                transaction.Commit();
+                            }
+                        }
+                    }),
                     new Menu("Draft Board",_=>{
                         using (var connection = new SQLiteConnection(connectionString))
-                            new DraftWriter().WriteDraft(Console.Out, new SqlDraft(connection,lastYearsDraftId));
+                            new DraftWriter().WriteDraft(Console.Out, new SqlDraft(connection,_.Load<string>("CurrentDraft")));
                     }),
                     new Menu("Make Changes to Draft", _=> {
                         using (var connection = new SQLiteConnection(connectionString))
-                            new DraftChanger().Change(Console.Out, Console.In, new SqlDraft(connection,lastYearsDraftId));
+                            new DraftChanger().Change(Console.Out, Console.In, new SqlDraft(connection,_.Load<string>("CurrentDraft")));
                     }),
                     new Menu("Show Stats", _ => {
                         using (var connection = new SQLiteConnection(connectionString))
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,lastYearsDraftId));
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")));
                     }),
                     new Menu("Write Stats to File", _ =>
                     {
                         using (var connection = new SQLiteConnection(connectionString))
                         {
-                            var draft = new SqlDraft(connection,lastYearsDraftId);
+                            var draft = new SqlDraft(connection,_.Load<string>("CurrentDraft"));
                             var players = draft.UnpickedPlayers;
                             var measure = new Measure[] {
                                 new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()

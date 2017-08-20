@@ -12,7 +12,7 @@ namespace FantasyFootball.Core.Draft
         {
             var measure = new Measure[] {
                 new NameMeasure(), new TeamMeasure(),new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
-                ,new FlexVBDMeasure(),new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Owner=="Chris H")))
+                ,new FlexVBDMeasure(),new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Name=="Money Ballers")))
             };
 
             var players = Players.All().Except(draft.PickedPlayers);

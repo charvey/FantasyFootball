@@ -121,7 +121,7 @@ namespace FantasyFootball.Terminal
             } while (true);
         }
 
-        public int Options(string p, params string[] o)
+        public static int Options(string p, params string[] o)
         {
             Console.WriteLine(p);
             for (int i = 0; i < o.Length; i++)
@@ -149,12 +149,12 @@ namespace FantasyFootball.Terminal
             } while (true);
         }
 
-        public string Prompt(string p)
+        public static string Prompt(string p)
         {
             return PromptFor<string>(p);
         }
 
-        public T PromptFor<T>(string prompt) where T : IConvertible
+        public static T PromptFor<T>(string prompt) where T : IConvertible
         {
             while (true)
             {

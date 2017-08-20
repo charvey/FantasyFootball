@@ -22,7 +22,6 @@ namespace FantasyFootball.Terminal
 
 		private void UpdatePlayers(string league_key, FantasySportsService service, SQLiteConnection connection)
 		{
-
 			var players = service.LeaguePlayers(league_key).ToList();
 			var teams = players.Where(p => p.display_position == "DEF");
 

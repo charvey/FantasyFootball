@@ -94,6 +94,7 @@
     <Compile Include="ConsolePrepper.cs" />
     <Compile Include="JinglePlayer.cs" />
     <Compile Include="MiniMaxer.cs" />
+    <Compile Include="PreseasonPicks.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scraper.cs" />

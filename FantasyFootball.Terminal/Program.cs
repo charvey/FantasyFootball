@@ -26,7 +26,7 @@ namespace FantasyFootball.Terminal
 
             while (true)
             {
-                Console.WriteLine("Enter a key: a/s/b/i/m/p/r/d/j/y/x");
+                Console.WriteLine("Enter a key: a/s/b/i/m/o/p/r/d/j/y/x");
                 var key = Console.ReadKey();
                 Console.Clear();
                 if (key.KeyChar == 'a')
@@ -73,6 +73,10 @@ namespace FantasyFootball.Terminal
                 {
                     using (var connection = new SQLiteConnection(connectionString))
                         MiniMaxer.Testminimax(connection);
+                }
+                else if (key.KeyChar == 'o')
+                {
+                    PreseasonPicks.Do();
                 }
                 else if (key.KeyChar == 'p')
                 {

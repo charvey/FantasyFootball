@@ -68,7 +68,9 @@ namespace FantasyFootball.Core.Draft
 
         public IReadOnlyList<Player> PickedPlayersByTeam(Team team)
         {
-            return picks.Where(k => k.Key.Team.Id == team.Id).Select(x => x.Value).ToList();
+            return picks.Where(k => k.Key.Team.Id == team.Id)
+                .OrderBy(k => k.Key.Round)
+                .Select(x => x.Value).ToList();
         }
 
         private static DraftPickKey GetKey(Team t, int r) => new DraftPickKey { Team = t, Round = r };

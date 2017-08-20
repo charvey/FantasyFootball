@@ -1,4 +1,5 @@
-﻿using FantasyFootball.Core.Analysis;
+﻿using Dapper;
+using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Core.Rosters;
@@ -21,6 +22,62 @@ namespace FantasyFootball.Terminal
             var league_key = "371.l.88448";
             var team_id = 9;
             var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
+
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                var oldDraft = InMemoryDraft.FromFile();
+                for (int order = 0; order < oldDraft.Teams.Count; order++)
+                {
+                    var team = oldDraft.Teams[order];
+                    connection.Execute(
+                        "REPLACE INTO DraftParticipant VALUES(@id,@name,@owner,@order,@draftId)", new
+                        {
+                            id = "359.l.48793" + ".t." + team.Id,
+                            name = team.Name,
+                            owner = team.Owner,
+                            order = order+1,
+                            draftId = "359.l.48793"
+                        });
+                }
+                    var service = new FantasySportsService();
+                    var players = service.LeaguePlayers("359.l.48793").ToList();
+                    connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    foreach (var player in players)
+                    {
+                        connection.Execute(
+                            "REPLACE INTO DraftOption VALUES(@id,@playerId,@draftId)", new
+                            {
+                                id = "359.l.48793" + "." + player.player_key,
+                                playerId = player.player_id,
+                                draftId = "359.l.48793"
+                            });
+                    }
+                    transaction.Commit();
+                }
+                connection.Execute("DELETE FROM DraftPick WHERE DraftId=@draftId", new { draftId = "359.l.48793" });
+                foreach (var team in oldDraft.Teams)
+                {
+                    var pickedPlayers = oldDraft.PickedPlayersByTeam(team);
+                    for (int round = 1; round <= pickedPlayers.Count; round++)
+                    {
+                        var player = players.Single(p => p.player_id == pickedPlayers[round - 1].Id);
+                        connection.Execute(
+                            "INSERT INTO DraftPick (DraftId,DraftOptionId,DraftParticipantId,Round) " +
+                            "VALUES (@draftId,@draftOptionId,@draftParticipantId,@round)", new
+                            {
+                                draftId = "359.l.48793",
+                                draftOptionId = "359.l.48793" + player.player_key,
+                                draftParticipantId = "359.l.48793" + ".t." + team.Id,
+                                round = round
+                            });
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(Environment.MachineName)) return;
+
 
             ConsolePrepper.Prep();
 

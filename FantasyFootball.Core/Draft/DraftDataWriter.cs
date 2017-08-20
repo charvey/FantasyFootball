@@ -8,11 +8,11 @@ namespace FantasyFootball.Core.Draft
 {
     public class DraftDataWriter
     {
-        public void WriteData(Draft draft, int team_id)
+        public void WriteData(Draft draft)
         {
             var measure = new Measure[] {
                 new NameMeasure(), new TeamMeasure(),new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
-                ,new FlexVBDMeasure(),new ValueAddedMeasure(draft.PickedPlayersByTeam(new Team {Id=team_id}))
+                ,new FlexVBDMeasure(),new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Owner=="Chris H")))
             };
 
             var players = Players.All().Except(draft.PickedPlayers);

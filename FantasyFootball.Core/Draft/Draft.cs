@@ -40,69 +40,20 @@ namespace FantasyFootball.Core.Draft
 
     public interface Draft
     {
-        IReadOnlyList<Team> Teams { get; }
-        Player Pick(Team t, int r);
-        void Pick(Team t, int r, Player p);
-        IReadOnlyList<Player> PickedPlayersByTeam(Team t);
+        IReadOnlyList<DraftParticipant> Participants { get; }
+        Player Pick(DraftParticipant t, int r);
+        void Pick(DraftParticipant t, int r, Player p);
+        IReadOnlyList<Player> AllPlayers { get; }
         IReadOnlyList<Player> PickedPlayers { get; }
-        //IReadOnlyList<Player> UnpickedPlayers { get; }
+        IReadOnlyList<Player> PickedPlayersByParticipant(DraftParticipant t);
+        IReadOnlyList<Player> UnpickedPlayers { get; }
     }
 
-    public class InMemoryDraft : Draft
+    public class DraftParticipant
     {
-        public IReadOnlyList<Team> Teams { get; private set; }
-
-        private Dictionary<DraftPickKey, Player> picks = new Dictionary<DraftPickKey, Player>();
-
-        public Player Pick(Team t, int r)
-        {
-            var key = GetKey(t, r);
-            return picks.ContainsKey(key) ? picks[key] : null;
-        }
-
-        public void Pick(Team t, int r, Player p)
-        {
-            var key = GetKey(t, r);
-            picks[key] = p;
-        }
-
-        public IReadOnlyList<Player> PickedPlayersByTeam(Team team)
-        {
-            return picks.Where(k => k.Key.Team.Id == team.Id)
-                .OrderBy(k => k.Key.Round)
-                .Select(x => x.Value).ToList();
-        }
-
-        private static DraftPickKey GetKey(Team t, int r) => new DraftPickKey { Team = t, Round = r };
-
-        public IReadOnlyList<Player> PickedPlayers
-        {
-            get { return this.picks.Values.ToList(); }
-        }
-
-        public static InMemoryDraft FromFile()
-        {
-            var json = File.ReadAllText("draft.json");
-            var file = JsonConvert.DeserializeObject<DraftFileEntry>(json);
-            var draft= new InMemoryDraft
-            {
-                Teams = file.DraftOrder.Select(Objects.Teams.Get).ToList()
-            };
-            foreach (var p in file.Picks)
-                draft.Pick(Objects.Teams.Get(p.TeamId), p.Round, Players.Get(p.PlayerId));
-
-            return draft;
-        }
-
-        public void ToFile()
-        {
-            var file = new DraftFileEntry
-            {
-                DraftOrder = this.Teams.Select(t => t.Id).ToArray(),
-                Picks = this.picks.Select(p => new DraftPickEntry { TeamId = p.Key.Team.Id, PlayerId = p.Value.Id, Round = p.Key.Round }).ToArray()
-            };
-            var json = JsonConvert.SerializeObject(file, Formatting.Indented);
-            File.WriteAllText("draft.json", json);
-        }
+        public string Id;
+        public string Name;
+        public string Owner;
+        public int Order;
     }
 }

@@ -1,17 +1,16 @@
-﻿using FantasyFootball.Core.Objects;
-using System.Linq;
+﻿using System.Linq;
 
 namespace FantasyFootball.Core.Draft
 {
     public static class DraftExtensions
     {
-        public static Team GetNextDraftTeam(this Draft draft)
+        public static DraftParticipant GetNextDraftTeam(this Draft draft)
         {
             foreach (var round in Enumerable.Range(1, 15))
             {
                 var order = round % 2 == 1
-                    ? draft.Teams.AsEnumerable()
-                    : draft.Teams.AsEnumerable().Reverse();
+                    ? draft.Participants.AsEnumerable()
+                    : draft.Participants.AsEnumerable().Reverse();
 
                 foreach (var team in order)
                 {
@@ -29,8 +28,8 @@ namespace FantasyFootball.Core.Draft
             foreach (var round in Enumerable.Range(1, 15))
             {
                 var order = round % 2 == 1
-                    ? draft.Teams.AsEnumerable()
-                    : draft.Teams.AsEnumerable().Reverse();
+                    ? draft.Participants.AsEnumerable()
+                    : draft.Participants.AsEnumerable().Reverse();
 
                 foreach (var team in order)
                 {

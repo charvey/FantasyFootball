@@ -18,14 +18,14 @@ namespace FantasyFootball.Core.Draft
 
         public void WriteDraft(TextWriter writer, Draft draft)
         {
-            writer.WriteLine(BuildRow("Round", draft.Teams.Select(t => t.Owner)));
-            writer.WriteLine(BuildRow(string.Empty, draft.Teams.Select(t => t.Name)));
+            writer.WriteLine(BuildRow("Round", draft.Participants.Select(t => t.Owner)));
+            writer.WriteLine(BuildRow(string.Empty, draft.Participants.Select(t => t.Name)));
 
             for (int r = 1; r <= 15; r++)
             {
-                writer.WriteLine(BuildRow(string.Empty, draft.Teams.Select(t => (draft.Pick(t, r)?.Id ?? ""))));
-                writer.WriteLine(BuildRow(" #" + r.ToString(), draft.Teams.Select(t => (draft.Pick(t, r)?.Name ?? ""))));
-                writer.WriteLine(BuildRow(string.Empty, draft.Teams.Select(t => string.Join("/", draft.Pick(t, r)?.Positions ?? new string[0]) + " " + (draft.Pick(t, r)?.Team ?? ""))));
+                writer.WriteLine(BuildRow(string.Empty, draft.Participants.Select(t => (draft.Pick(t, r)?.Id ?? ""))));
+                writer.WriteLine(BuildRow(" #" + r.ToString(), draft.Participants.Select(t => (draft.Pick(t, r)?.Name ?? ""))));
+                writer.WriteLine(BuildRow(string.Empty, draft.Participants.Select(t => string.Join("/", draft.Pick(t, r)?.Positions ?? new string[0]) + " " + (draft.Pick(t, r)?.Team ?? ""))));
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Draft;
-using FantasyFootball.Core.Objects;
 using FantasyFootball.Core.Rosters;
 using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
@@ -23,61 +22,7 @@ namespace FantasyFootball.Terminal
             var team_id = 9;
             var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
 
-            using (var connection = new SQLiteConnection(connectionString))
-            {
-                var oldDraft = InMemoryDraft.FromFile();
-                for (int order = 0; order < oldDraft.Teams.Count; order++)
-                {
-                    var team = oldDraft.Teams[order];
-                    connection.Execute(
-                        "REPLACE INTO DraftParticipant VALUES(@id,@name,@owner,@order,@draftId)", new
-                        {
-                            id = "359.l.48793" + ".t." + team.Id,
-                            name = team.Name,
-                            owner = team.Owner,
-                            order = order+1,
-                            draftId = "359.l.48793"
-                        });
-                }
-                    var service = new FantasySportsService();
-                    var players = service.LeaguePlayers("359.l.48793").ToList();
-                    connection.Open();
-                using (var transaction = connection.BeginTransaction())
-                {
-                    foreach (var player in players)
-                    {
-                        connection.Execute(
-                            "REPLACE INTO DraftOption VALUES(@id,@playerId,@draftId)", new
-                            {
-                                id = "359.l.48793" + "." + player.player_key,
-                                playerId = player.player_id,
-                                draftId = "359.l.48793"
-                            });
-                    }
-                    transaction.Commit();
-                }
-                connection.Execute("DELETE FROM DraftPick WHERE DraftId=@draftId", new { draftId = "359.l.48793" });
-                foreach (var team in oldDraft.Teams)
-                {
-                    var pickedPlayers = oldDraft.PickedPlayersByTeam(team);
-                    for (int round = 1; round <= pickedPlayers.Count; round++)
-                    {
-                        var player = players.Single(p => p.player_id == pickedPlayers[round - 1].Id);
-                        connection.Execute(
-                            "INSERT INTO DraftPick (DraftId,DraftOptionId,DraftParticipantId,Round) " +
-                            "VALUES (@draftId,@draftOptionId,@draftParticipantId,@round)", new
-                            {
-                                draftId = "359.l.48793",
-                                draftOptionId = "359.l.48793" + player.player_key,
-                                draftParticipantId = "359.l.48793" + ".t." + team.Id,
-                                round = round
-                            });
-                    }
-                }
-            }
-
-            if (!string.IsNullOrEmpty(Environment.MachineName)) return;
-
+            var lastYearsDraftId = "359.l.48793";
 
             ConsolePrepper.Prep();
 
@@ -90,28 +35,30 @@ namespace FantasyFootball.Terminal
                 new Menu("Draft",new List<Menu>
                 {
                     new Menu("Draft Board",_=>{
-                        var draft = InMemoryDraft.FromFile();
-
-                        var draftWriter = new DraftWriter();
-                        draftWriter.WriteDraft(Console.Out, draft);
+                        using (var connection = new SQLiteConnection(connectionString))
+                            new DraftWriter().WriteDraft(Console.Out, new SqlDraft(connection,lastYearsDraftId));
                     }),
                     new Menu("Make Changes to Draft", _=> {
-                        var draftChanger = new DraftChanger();
-                        var draft = InMemoryDraft.FromFile();
-                        draftChanger.Change(Console.Out, Console.In, draft);
-                        draft.ToFile();
+                        using (var connection = new SQLiteConnection(connectionString))
+                            new DraftChanger().Change(Console.Out, Console.In, new SqlDraft(connection,lastYearsDraftId));
                     }),
-                    new Menu("Show Stats", _ => new DraftDataWriter().WriteData(InMemoryDraft.FromFile(), team_id)),
+                    new Menu("Show Stats", _ => {
+                        using (var connection = new SQLiteConnection(connectionString))
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,lastYearsDraftId));
+                    }),
                     new Menu("Write Stats to File", _ =>
                     {
-                        var draft = InMemoryDraft.FromFile();
-                        var players = Players.All().Except(draft.PickedPlayers);
-                        var measure = new Measure[] {
-                            new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
-                        };
-                        File.Delete("output.csv");
-                        File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
-                        File.AppendAllLines("output.csv", players.Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));
+                        using (var connection = new SQLiteConnection(connectionString))
+                        {
+                            var draft = new SqlDraft(connection,lastYearsDraftId);
+                            var players = draft.UnpickedPlayers;
+                            var measure = new Measure[] {
+                                new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
+                            };
+                            File.Delete("output.csv");
+                            File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
+                            File.AppendAllLines("output.csv", players.Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));
+                        }
                     })
                 }),
                 new Menu("Play Jingle",_=>JinglePlayer.Play()),

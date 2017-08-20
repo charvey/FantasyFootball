@@ -33,21 +33,21 @@ namespace FantasyFootball.Terminal
                 new Menu("Draft",new List<Menu>
                 {
                     new Menu("Draft Board",_=>{
-                        var draft = Draft.FromFile();
+                        var draft = InMemoryDraft.FromFile();
 
                         var draftWriter = new DraftWriter();
                         draftWriter.WriteDraft(Console.Out, draft);
                     }),
                     new Menu("Make Changes to Draft", _=> {
                         var draftChanger = new DraftChanger();
-                        var draft = Draft.FromFile();
+                        var draft = InMemoryDraft.FromFile();
                         draftChanger.Change(Console.Out, Console.In, draft);
                         draft.ToFile();
                     }),
-                    new Menu("Show Stats", _ => new DraftDataWriter().WriteData(Draft.FromFile(), team_id)),
+                    new Menu("Show Stats", _ => new DraftDataWriter().WriteData(InMemoryDraft.FromFile(), team_id)),
                     new Menu("Write Stats to File", _ =>
                     {
-                        var draft = Draft.FromFile();
+                        var draft = InMemoryDraft.FromFile();
                         var players = Players.All().Except(draft.PickedPlayers);
                         var measure = new Measure[] {
                             new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()

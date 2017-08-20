@@ -38,9 +38,19 @@ namespace FantasyFootball.Core.Draft
         }
     }
 
-    public class Draft
+    public interface Draft
     {
-        public List<Team> Teams { get; set; }
+        IReadOnlyList<Team> Teams { get; }
+        Player Pick(Team t, int r);
+        void Pick(Team t, int r, Player p);
+        IReadOnlyList<Player> PickedPlayersByTeam(Team t);
+        IReadOnlyList<Player> PickedPlayers { get; }
+        //IReadOnlyList<Player> UnpickedPlayers { get; }
+    }
+
+    public class InMemoryDraft : Draft
+    {
+        public IReadOnlyList<Team> Teams { get; private set; }
 
         private Dictionary<DraftPickKey, Player> picks = new Dictionary<DraftPickKey, Player>();
 
@@ -56,23 +66,23 @@ namespace FantasyFootball.Core.Draft
             picks[key] = p;
         }
 
-        public IEnumerable<Player> PickedPlayersByTeam(Team team)
+        public IReadOnlyList<Player> PickedPlayersByTeam(Team team)
         {
-            return picks.Where(k => k.Key.Team.Id == team.Id).Select(x => x.Value);
+            return picks.Where(k => k.Key.Team.Id == team.Id).Select(x => x.Value).ToList();
         }
 
         private static DraftPickKey GetKey(Team t, int r) => new DraftPickKey { Team = t, Round = r };
 
-        public IEnumerable<Player> PickedPlayers
+        public IReadOnlyList<Player> PickedPlayers
         {
-            get { return this.picks.Values; }
+            get { return this.picks.Values.ToList(); }
         }
 
-        public static Draft FromFile()
+        public static InMemoryDraft FromFile()
         {
             var json = File.ReadAllText("draft.json");
             var file = JsonConvert.DeserializeObject<DraftFileEntry>(json);
-            var draft= new Draft
+            var draft= new InMemoryDraft
             {
                 Teams = file.DraftOrder.Select(Objects.Teams.Get).ToList()
             };

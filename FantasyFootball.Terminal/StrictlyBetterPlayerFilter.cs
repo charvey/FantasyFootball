@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 
 namespace FantasyFootball.Terminal
@@ -50,5 +51,29 @@ namespace FantasyFootball.Terminal
 		{
 			return allPlayers.Where(p => !betters[p].Any(c => c.Any(op => allPlayers.Contains(op))));
 		}
+
+
+        public static void RunTest(SQLiteConnection connection)
+        {
+            var players = new HashSet<string>(connection.Query<string>("SELECT Id FROM Player"));
+            var scores = Scraper.PlayerScores(connection);
+            var previous = new Dictionary<string, double>();
+            File.Delete("sbpi.csv");
+            for (var t = 0.00; t <= 1.00; t += 0.01)
+            {
+                var strictlyBetterPlayers = new StrictlyBetterPlayerFilter(connection, t);
+                var options = strictlyBetterPlayers.Filter(players);
+                Console.WriteLine($"{t:p} {options.Count() - previous.Count}");
+                File.AppendAllText("sbpi.csv", $"{t},{options.Count() - previous.Count},{previous.Count}\n");
+                foreach (var option in options.Where(o => !previous.ContainsKey(o)))
+                {
+                    var name = connection.Query<string>("SELECT Name FROM Player WHERE Id='" + option + "'").Single();
+
+                    Console.WriteLine(option + " " + name + " " + string.Join(" ", scores[option]));
+
+                    previous.Add(option, t);
+                }
+            }
+        }
 	}
 }

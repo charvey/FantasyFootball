@@ -1,5 +1,4 @@
-﻿using Dapper;
-using FantasyFootball.Core.Analysis;
+﻿using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Core.Rosters;
@@ -24,118 +23,70 @@ namespace FantasyFootball.Terminal
 
             ConsolePrepper.Prep();
 
-            while (true)
+            new Menu("Main Menu", new List<Menu>
             {
-                Console.WriteLine("Enter a key: a/s/b/i/m/o/p/r/d/j/y/x");
-                var key = Console.ReadKey();
-                Console.Clear();
-                if (key.KeyChar == 'a')
+                new Menu("Preseason", new List<Menu>
                 {
-                    ProbabilityDistributionAnalysis.Analyze(Console.Out);
-                }
-                else if (key.KeyChar == 's')
+                    new Menu("Find Odds",_=>PreseasonPicks.Do())
+                }),
+                new Menu("Draft",new List<Menu>
                 {
-                    new WinnerPredicter().PredictWinners();
-                }
-                else if (key.KeyChar == 'b')
-                {
-                    var draft = Draft.FromFile();
+                    new Menu("Draft Board",_=>{
+                        var draft = Draft.FromFile();
 
-                    var draftWriter = new DraftWriter();
-                    draftWriter.WriteDraft(Console.Out, draft);
-                }
-                else if (key.KeyChar == 'i')
-                {
-                    using (var connection = new SQLiteConnection(connectionString))
+                        var draftWriter = new DraftWriter();
+                        draftWriter.WriteDraft(Console.Out, draft);
+                    }),
+                    new Menu("Make Changes to Draft", _=>  {
+                        var draftChanger = new DraftChanger();
+                        var draft = Draft.FromFile();
+                        draftChanger.Change(Console.Out, Console.In, draft);
+                        draft.ToFile();
+                    }),
+                    new Menu("Show Stats", _ =>    new DraftDataWriter().WriteData(Draft.FromFile())                    ),
+                    new Menu("Write Stats to File", _ =>
                     {
-                        var players = new HashSet<string>(connection.Query<string>("SELECT Id FROM Player"));
-                        var scores = Scraper.PlayerScores(connection);
-                        var previous = new Dictionary<string, double>();
-                        File.Delete("sbpi.csv");
-                        for (var t = 0.00; t <= 1.00; t += 0.01)
-                        {
-                            var strictlyBetterPlayers = new StrictlyBetterPlayerFilter(connection, t);
-                            var options = strictlyBetterPlayers.Filter(players);
-                            Console.WriteLine($"{t:p} {options.Count() - previous.Count}");
-                            File.AppendAllText("sbpi.csv", $"{t},{options.Count() - previous.Count},{previous.Count}\n");
-                            foreach (var option in options.Where(o => !previous.ContainsKey(o)))
-                            {
-                                var name = connection.Query<string>("SELECT Name FROM Player WHERE Id='" + option + "'").Single();
-
-                                Console.WriteLine(option + " " + name + " " + string.Join(" ", scores[option]));
-
-                                previous.Add(option, t);
-                            }
-                        }
-                    }
-                }
-                else if (key.KeyChar == 'm')
-                {
-                    using (var connection = new SQLiteConnection(connectionString))
-                        MiniMaxer.Testminimax(connection);
-                }
-                else if (key.KeyChar == 'o')
-                {
-                    PreseasonPicks.Do();
-                }
-                else if (key.KeyChar == 'p')
-                {
-                    var draftChanger = new DraftChanger();
-                    var draft = Draft.FromFile();
-                    draftChanger.Change(Console.Out, Console.In, draft);
-                    draft.ToFile();
-                }
-                else if (key.KeyChar == 'r')
+                        var draft = Draft.FromFile();
+                        var players = Players.All().Except(draft.PickedPlayers);
+                        var measure = new Measure[] {
+                            new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
+                        };
+                        File.Delete("output.csv");
+                        File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
+                        File.AppendAllLines("output.csv", players.Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));
+                    })
+                }),                
+                new Menu("Play Jingle",_=>JinglePlayer.Play()),
+                new Menu("Scrape Data", _ =>
                 {
                     using (var connection = new SQLiteConnection(connectionString))
                         new Scraper().Scrape(league_key, new FantasySportsService(), connection);
-                }
-                else if (key.KeyChar == 'd')
-                {
-                    var draftDataWriter = new DraftDataWriter();
-                    draftDataWriter.WriteData(Draft.FromFile());
-                }
-                else if (key.KeyChar == 'w')
-                {
-                    var draft = Draft.FromFile();
-                    var players = Players.All().Except(draft.PickedPlayers);
-                    var measure = new Measure[] {
-                        new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
-                    };
-                    File.Delete("output.csv");
-                    File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
-                    File.AppendAllLines("output.csv", players.Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));
-                }
-                else if (key.KeyChar == 'j')
-                {
-                    JinglePlayer.Play();
-                }
-                else if (key.KeyChar == 't')
-                {
-                    var tradeHelper = new TradeHelper();
-                    tradeHelper.Help(Console.Out);
-                }
-                else if (key.KeyChar == 'r')
-                {
-                    var rosterHelper = new RosterHelper();
-                    rosterHelper.Help(Console.Out);
-                }
-                else if (key.KeyChar == 'y')
-                {
-                    var service = new FantasySportsService();
-
-                    Console.WriteLine(service.LeagueTransactions("359.l.48793"));
-
-                    foreach (var x in service.LeagueTransactions("359.l.48793"))
+                }),
+                new Menu("Midseason",new List<Menu>{
+                    new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out)),
+                    new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out)),
+                    new Menu("Transactions", _ =>
                     {
-                        Console.WriteLine($"{x.transaction_key} {x.type}");
-                    }
-                }
-                else if (key.KeyChar == 'x')
-                {
-                    break;
-                }
-            }
+                        var service = new FantasySportsService();
+                        foreach (var x in service.LeagueTransactions(league_key))
+                        {
+                            Console.WriteLine($"{x.transaction_key} {x.type}");
+                        }
+                    })
+                }),
+                new Menu("Experiments",new List<Menu>{
+                    new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),
+                    new Menu("Minimax",_=>{
+                        using (var connection = new SQLiteConnection(connectionString))
+                            MiniMaxer.Testminimax(connection);
+                    }),
+                    new Menu("Predict Winners",_=> new WinnerPredicter().PredictWinners()),
+                    new Menu("Strictly Better Players",_=>{
+                        using (var connection = new SQLiteConnection(connectionString))
+                            StrictlyBetterPlayerFilter.RunTest(connection);
+                    }),
+                })
+            }).Display(new MenuState());
         }
     }
 }

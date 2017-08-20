@@ -93,6 +93,8 @@
   <ItemGroup>
     <Compile Include="ConsolePrepper.cs" />
     <Compile Include="JinglePlayer.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="MenuState.cs" />
     <Compile Include="MiniMaxer.cs" />
     <Compile Include="PreseasonPicks.cs" />
     <Compile Include="Program.cs" />

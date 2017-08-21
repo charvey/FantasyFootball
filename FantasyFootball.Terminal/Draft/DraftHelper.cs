@@ -1,4 +1,5 @@
-﻿using FantasyFootball.Core.Data;
+﻿using FantasyFootball.Core;
+using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Modeling;
 using FantasyFootball.Core.Modeling.RosterModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace FantasyFootball.Core.Draft
+namespace FantasyFootball.Terminal.Draft
 {
 	public class DraftHelper
 	{

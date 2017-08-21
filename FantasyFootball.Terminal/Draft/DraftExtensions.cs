@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace FantasyFootball.Core.Draft
+namespace FantasyFootball.Terminal.Draft
 {
     public static class DraftExtensions
     {

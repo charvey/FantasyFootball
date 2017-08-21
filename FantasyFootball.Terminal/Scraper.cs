@@ -29,12 +29,20 @@ namespace FantasyFootball.Terminal
             using (var transaction = connection.BeginTransaction())
             {
                 foreach (var team in teams)
+                {
                     connection.Execute("REPLACE INTO Team VALUES (@id,@name,@abbr);", new
                     {
                         id = int.Parse(team.editorial_team_key.Split('.').Last()),
                         name = team.editorial_team_full_name,
                         abbr = team.editorial_team_abbr
                     });
+                    connection.Execute("REPLACE INTO Bye (TeamId,Year,Week) VALUES (@teamId,@year,@week)", new
+                    {
+                        teamId = int.Parse(team.editorial_team_key.Split('.').Last()),
+                        year = service.League(league_key).season,
+                        week = team.bye_weeks.Single().value
+                    });
+                }
 
                 foreach (var player in players)
                     connection.Execute("REPLACE INTO Player VALUES (@id,@name,@positions,@team);", new

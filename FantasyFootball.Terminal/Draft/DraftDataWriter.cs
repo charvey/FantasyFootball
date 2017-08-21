@@ -4,21 +4,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FantasyFootball.Core.Draft
+namespace FantasyFootball.Terminal.Draft
 {
     public class DraftDataWriter
     {
         public void WriteData(Draft draft)
         {
             var measure = new Measure[] {
-                new NameMeasure(), new TeamMeasure(),new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
-                ,new FlexVBDMeasure(),new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Name=="Money Ballers")))
+                new NameMeasure(),
+                new TeamMeasure(),
+                new PositionMeasure(),
+                //new TotalScoreMeasure(),
+               // new ByeMeasure(),
+               // new VBDMeasure()               ,
+               // new FlexVBDMeasure(),
+             //   new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Name=="Money Ballers")))
             };
 
             var players = Players.All().Except(draft.PickedPlayers);
 
 
-            players = players.OrderByDescending(p => measure[5].Compute(p));
+            //players = players.OrderByDescending(p => measure[5].Compute(p));
 
             Console.WriteLine(string.Join("|", measure.Select(m => PadAndCut(m.Name, m.Width))));
             foreach (var player in players)
@@ -56,7 +62,7 @@ namespace FantasyFootball.Core.Draft
     {
         public override string Name => "Position";
         public override IComparable Compute(Player player) => string.Join("/", player.Positions);
-        public override int Width => 3;
+        public override int Width => 5;
     }
 
     public class TotalScoreMeasure : Measure
@@ -68,18 +74,7 @@ namespace FantasyFootball.Core.Draft
 
     public class ByeMeasure : Measure
     {
-        private static Dictionary<string, int> byes = new Dictionary<string, int>
-        {
-            { "GB",4}, {"Phi",4 },
-            {"Jax",5 }, {"KC",5 }, {"NO",5 }, {"Sea",5 },
-            {"Min",6 }, {"TB",6 },
-            {"Car",7 }, {"Dal",7 },
-            {"Bal",8 }, {"LA",8 }, {"Mia",8 }, {"NYG",8 }, {"Pit",8 }, {"SF",8 },
-            {"Ari",9 }, {"Chi",9 }, {"Cin",9 }, {"Hou",9 }, {"NE",9 }, {"Was",9 },
-            {"Buf",10 }, {"Det",10 }, {"Ind",10 }, {"Oak",10 },
-            {"Atl",11 }, {"Den",11 }, {"NYJ",11 }, {"SD",11 },
-            {"Cle",13 }, {"Ten",13 }
-        };
+        private readonly Dictionary<string, int> byes=new Dictionary<string, int>();
 
         public override string Name => "Bye Week";
         public override IComparable Compute(Player player) => byes[player.Team];

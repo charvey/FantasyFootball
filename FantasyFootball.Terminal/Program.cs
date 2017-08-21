@@ -1,10 +1,10 @@
 ﻿using Dapper;
 using FantasyFootball.Core.Analysis;
-using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Rosters;
 using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
+using FantasyFootball.Terminal.Draft;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

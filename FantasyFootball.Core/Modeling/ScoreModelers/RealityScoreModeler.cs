@@ -3,7 +3,7 @@ using FantasyFootball.Core.Modeling.ProbabilityDistributions;
 
 namespace FantasyFootball.Core.Modeling.ScoreModelers
 {
-    class RealityScoreModeler : ScoreModeler
+    public class RealityScoreModeler : ScoreModeler
     {
         public ProbabilityDistribution<double> Model(ScoreSituation situation)
         {

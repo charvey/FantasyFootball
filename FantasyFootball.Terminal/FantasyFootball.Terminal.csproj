@@ -92,6 +92,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsolePrepper.cs" />
+    <Compile Include="Draft\Draft.cs" />
+    <Compile Include="Draft\DraftChanger.cs" />
+    <Compile Include="Draft\DraftDataWriter.cs" />
+    <Compile Include="Draft\DraftExtensions.cs" />
+    <Compile Include="Draft\DraftHelper.cs" />
+    <Compile Include="Draft\DraftTeam.cs" />
+    <Compile Include="Draft\DraftWriter.cs" />
     <Compile Include="JinglePlayer.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="MenuState.cs" />
@@ -100,7 +107,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scraper.cs" />
-    <Compile Include="SqlDraft.cs" />
+    <Compile Include="Draft\SqlDraft.cs" />
     <Compile Include="StrictlyBetterPlayerFilter.cs" />
     <Compile Include="UniqueId.cs" />
   </ItemGroup>

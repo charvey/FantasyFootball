@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FantasyFootball.Core.Draft
+namespace FantasyFootball.Terminal.Draft
 {
     public class DraftTeam : Team
     {

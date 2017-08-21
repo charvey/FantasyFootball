@@ -1,12 +1,11 @@
 ﻿using Dapper;
-using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 
-namespace FantasyFootball.Terminal
+namespace FantasyFootball.Terminal.Draft
 {
     public class SqlDraft : Draft
     {

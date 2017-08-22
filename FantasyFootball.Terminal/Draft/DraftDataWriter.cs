@@ -1,34 +1,53 @@
-﻿using FantasyFootball.Core.Data;
+﻿using Dapper;
+using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 
 namespace FantasyFootball.Terminal.Draft
 {
     public class DraftDataWriter
     {
-        public void WriteData(Draft draft)
+        public static Measure[] BasicMeasures(SQLiteConnection connection)
         {
-            var measure = new Measure[] {
+            return new Measure[] {
                 new NameMeasure(),
                 new TeamMeasure(),
                 new PositionMeasure(),
-                //new TotalScoreMeasure(),
-               // new ByeMeasure(),
-               // new VBDMeasure()               ,
-               // new FlexVBDMeasure(),
-             //   new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Name=="Money Ballers")))
+                new ByeMeasure(connection)
             };
+        }
 
-            var players = Players.All().Except(draft.PickedPlayers);
+        public static Measure[] PredictionMeasures(SQLiteConnection connection)
+        {
+            return new[] { new NameMeasure() }.Cast<Measure>()
+                .Concat(Enumerable.Range(1, 17).Select(w => new WeekScoreMeasure(connection, w)))
+                .Concat(new[] { new TotalScoreMeasure(connection) })
+                .ToArray();
+        }
 
+        public static Measure[] ValueMeasures(SQLiteConnection connection)
+        {
+            return new Measure[] {
+
+            // new VBDMeasure()               ,
+            // new FlexVBDMeasure(),
+            //   new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Name=="Money Ballers")))
+            };
+        }
+
+        public void WriteData(Draft draft, Measure[] measures)
+        {
+            var players = draft.UnpickedPlayers;
 
             //players = players.OrderByDescending(p => measure[5].Compute(p));
 
-            Console.WriteLine(string.Join("|", measure.Select(m => PadAndCut(m.Name, m.Width))));
+            Console.WriteLine(string.Join("|", measures.Select(m => PadAndCut(m.Name, m.Width))));
             foreach (var player in players)
-                Console.WriteLine(string.Join("|", measure.Select(m => PadAndCut(m.Compute(player).ToString(), m.Width))));
+                Console.WriteLine(string.Join("|", measures.Select(m => PadAndCut(m.Compute(player).ToString(), m.Width))));
         }
 
         private string PadAndCut(string source, int length)
@@ -65,19 +84,92 @@ namespace FantasyFootball.Terminal.Draft
         public override int Width => 5;
     }
 
+    public class WeekScoreMeasure : Measure
+    {
+        private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
+        private readonly SQLiteConnection connection;
+        private readonly int week;
+
+        public WeekScoreMeasure(SQLiteConnection connection, int week)
+        {
+            this.connection = connection;
+            this.week = week;
+        }
+
+        private double GetScore(string playerId)
+        {
+            return connection.QueryFirst<double>(@"
+                SELECT Value
+                FROM Predictions
+                WHERE PlayerId=@playerId AND Year=@year AND Week=@week
+                ORDER BY AsOf DESC", new
+            {
+                playerId = playerId,
+                year = 2017,
+                week = week
+            });
+        }
+
+        public override string Name => $"Week {week} Score";
+        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, GetScore);
+        public override int Width => 6;
+    }
+
     public class TotalScoreMeasure : Measure
     {
+        private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
+        private readonly SQLiteConnection connection;
+
+        public TotalScoreMeasure(SQLiteConnection connection)
+        {
+            this.connection = connection;
+        }
+
+        private double GetScore(string playerId)
+        {
+            return Enumerable.Range(1, 17)
+                .Sum(w => connection.QueryFirst<double>(@"
+                SELECT Value
+                FROM Predictions
+                WHERE PlayerId=@playerId AND Year=@year AND Week=@week
+                ORDER BY AsOf DESC", new
+                {
+                    playerId = playerId,
+                    year = 2017,
+                    week = w
+                }));
+        }
+
         public override string Name => "Total Score";
-        public override IComparable Compute(Player player) => DumpData.GetSeasonTotalScore(player);
+        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, GetScore);
         public override int Width => 6;
     }
 
     public class ByeMeasure : Measure
     {
-        private readonly Dictionary<string, int> byes=new Dictionary<string, int>();
+        private readonly ConcurrentDictionary<string, int> byes = new ConcurrentDictionary<string, int>();
+        private readonly SQLiteConnection connection;
+
+        public ByeMeasure(SQLiteConnection connection)
+        {
+            this.connection = connection;
+        }
+
+        private int GetBye(string team)
+        {
+            return connection.QuerySingle<int>(@"
+                SELECT Week
+                FROM Bye
+                JOIN Team ON Bye.TeamId=Team.Id
+                WHERE Bye.Year=@year AND Team.Name=@name", new
+            {
+                year = 2017,
+                name = team
+            });
+        }
 
         public override string Name => "Bye Week";
-        public override IComparable Compute(Player player) => byes[player.Team];
+        public override IComparable Compute(Player player) => byes.GetOrAdd(player.Team, GetBye);
         public override int Width => 3;
     }
 

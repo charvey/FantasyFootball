@@ -103,9 +103,19 @@ namespace FantasyFootball.Terminal
                         using (var connection = new SQLiteConnection(connectionString))
                             new DraftChanger().Change(Console.Out, Console.In, new SqlDraft(connection,_.Load<string>("CurrentDraft")));
                     }),
-                    new Menu("Show Stats", _ => {
-                        using (var connection = new SQLiteConnection(connectionString))
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")));
+                    new Menu("Show Stats", new List<Menu>{
+                        new Menu("Basic Stats", _ => {
+                            using (var connection = new SQLiteConnection(connectionString))
+                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")),DraftDataWriter.BasicMeasures(connection));
+                        }),
+                        new Menu("Predictions", _ => {
+                            using (var connection = new SQLiteConnection(connectionString))
+                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")),DraftDataWriter.PredictionMeasures(connection));
+                        }),
+                        new Menu("Value", _ => {
+                            using (var connection = new SQLiteConnection(connectionString))
+                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")),DraftDataWriter.ValueMeasures(connection));
+                        }),
                     }),
                     new Menu("Write Stats to File", _ =>
                     {
@@ -114,7 +124,7 @@ namespace FantasyFootball.Terminal
                             var draft = new SqlDraft(connection,_.Load<string>("CurrentDraft"));
                             var players = draft.UnpickedPlayers;
                             var measure = new Measure[] {
-                                new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(), new ByeMeasure(),new VBDMeasure()
+                                new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(connection), new ByeMeasure(connection),new VBDMeasure()
                             };
                             File.Delete("output.csv");
                             File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");

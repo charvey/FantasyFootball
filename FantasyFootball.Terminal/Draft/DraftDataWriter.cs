@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
+using FantasyFootball.Data.Yahoo;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -29,13 +30,13 @@ namespace FantasyFootball.Terminal.Draft
                 .ToArray();
         }
 
-        public static Measure[] ValueMeasures(SQLiteConnection connection)
+        public static Measure[] ValueMeasures(SQLiteConnection connection, string league_key)
         {
             return new Measure[] {
-
-            // new VBDMeasure()               ,
-            // new FlexVBDMeasure(),
-            //   new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Name=="Money Ballers")))
+                new NameMeasure(),
+                new VBDMeasure(connection,league_key),
+                //new FlexVBDMeasure(),
+                //new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Name=="Money Ballers")))
             };
         }
 
@@ -43,7 +44,7 @@ namespace FantasyFootball.Terminal.Draft
         {
             var players = draft.UnpickedPlayers;
 
-            //players = players.OrderByDescending(p => measure[5].Compute(p));
+            players = players.OrderByDescending(p => measures.Last().Compute(p)).ToList();
 
             Console.WriteLine(string.Join("|", measures.Select(m => PadAndCut(m.Name, m.Width))));
             foreach (var player in players)
@@ -110,9 +111,9 @@ namespace FantasyFootball.Terminal.Draft
             });
         }
 
-        public override string Name => $"Week {week} Score";
+        public override string Name => $"Week {week}";
         public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, GetScore);
-        public override int Width => 6;
+        public override int Width => Math.Min(6, Name.Length);
     }
 
     public class TotalScoreMeasure : Measure
@@ -140,7 +141,7 @@ namespace FantasyFootball.Terminal.Draft
                 }));
         }
 
-        public override string Name => "Total Score";
+        public override string Name => "Total";
         public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, GetScore);
         public override int Width => 6;
     }
@@ -175,13 +176,11 @@ namespace FantasyFootball.Terminal.Draft
 
     public class VBDMeasure : Measure
     {
-        private static Dictionary<string, double> replacement = Players.All()
-            .SelectMany(p => p.Positions.Select(pos => Tuple.Create(pos, p)))
-            .GroupBy(p => p.Item1, p => p.Item2).ToDictionary(g => g.Key, ComputeReplacement);
+        private readonly Dictionary<string, double> values;
 
-        private static double ComputeReplacement(IGrouping<string,Player> group)
+        private static double ComputeReplacement(IGrouping<string, double> group)
         {
-            var scores = group.Select(DumpData.GetSeasonTotalScore).OrderByDescending(x => x);
+            var scores = group.OrderByDescending(x => x);
             int count;
             switch (group.Key)
             {
@@ -200,12 +199,63 @@ namespace FantasyFootball.Terminal.Draft
             return scores.Skip(count - 1).First();
         }
 
+        public VBDMeasure(SQLiteConnection connection, string league_key)
+        {
+            var players = new FantasySportsService().LeaguePlayers(league_key)
+                .Select(p => FromPlayerId(connection, p.player_id));
+            var scores = players
+                .ToDictionary(p => p.Id, p => GetScore(connection, p.Id));
+            var replacementScores = players
+                .SelectMany(p => p.Positions.Select(pos => Tuple.Create(pos, p)))
+                .GroupBy(p => p.Item1, p => scores[p.Item2.Id])
+                .ToDictionary(g => g.Key, ComputeReplacement);
+            values = players
+                .ToDictionary(p => p.Id, p => scores[p.Id] - p.Positions.Min(pos => replacementScores[pos]));
+        }
+
+        private double GetScore(SQLiteConnection connection, string playerId)
+        {
+            return Enumerable.Range(1, 17)
+                .Sum(w => connection.QueryFirst<double>(@"
+                SELECT Value
+                FROM Predictions
+                WHERE PlayerId=@playerId AND Year=@year AND Week=@week
+                ORDER BY AsOf DESC", new
+                {
+                    playerId = playerId,
+                    year = 2017,
+                    week = w
+                }));
+        }
+
+        public class PlayerDto
+        {
+            public string Id;
+            public string Name;
+            public string Positions;
+            public int TeamId;
+        }
+
+        private Player FromPlayerDto(SQLiteConnection connection, PlayerDto playerDto)
+        {
+            return new Player
+            {
+                Id = playerDto.Id,
+                Name = playerDto.Name,
+                Positions = playerDto.Positions.Split(','),
+                Team = connection.QuerySingle<string>("SELECT Name FROM Team WHERE Id=@id", new { id = playerDto.TeamId })
+            };
+        }
+
+        private Player FromPlayerId(SQLiteConnection connection, string playerId)
+        {
+            return connection.Query<PlayerDto>("SELECT * FROM Player WHERE Id=@id", new { id = playerId })
+                .Select(p => FromPlayerDto(connection, p)).Single();
+        }
+
         public override string Name => "VBD";
         public override int Width => 8;
-        public override IComparable Compute(Player player)
-        {
-            return (DumpData.GetSeasonTotalScore(player) - player.Positions.Min(p => replacement[p]));
-        }
+        public override IComparable Compute(Player player) => values[player.Id];
     }
 
     public class FlexVBDMeasure : Measure

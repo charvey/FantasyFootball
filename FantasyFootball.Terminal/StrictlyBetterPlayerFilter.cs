@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using FantasyFootball.Data.Yahoo;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -11,16 +12,16 @@ namespace FantasyFootball.Terminal
 	{
 		private Dictionary<string, List<HashSet<string>>> betters;
 
-		public StrictlyBetterPlayerFilter(SQLiteConnection connection, double threshold = 0)
+		public StrictlyBetterPlayerFilter(SQLiteConnection connection, IEnumerable<string> playerIds, double threshold = 0)
 		{
 			if (threshold < 0 || 1 < threshold)
 				throw new ArgumentException("Threshold must be between 0 and 1", nameof(threshold));
 
-			var playersByPosition = new[] { "QB", "WR", "RB", "TE", "K", "DEF" }
-				.ToDictionary(
-					x => x,
-					p => connection.Query<string>($"SELECT Id FROM Player WHERE Positions LIKE '%{p}%'").ToArray()
-				);
+            var playersByPosition = new[] { "QB", "WR", "RB", "TE", "K", "DEF" }
+                .ToDictionary(
+                    x => x,
+                    p => connection.Query<string>($"SELECT Id FROM Player WHERE Positions LIKE '%{p}%'").Intersect(playerIds).ToArray()
+                );
 			var playerScores = Scraper.PlayerScores(connection);
 			var weeks = Enumerable.Range(1, 17).ToArray();
 			betters = new Dictionary<string, List<HashSet<string>>>();
@@ -53,15 +54,15 @@ namespace FantasyFootball.Terminal
 		}
 
 
-        public static void RunTest(SQLiteConnection connection)
+        public static void RunTest(SQLiteConnection connection, string league_key)
         {
-            var players = new HashSet<string>(connection.Query<string>("SELECT Id FROM Player"));
+            var players = new HashSet<string>(new FantasySportsService().LeaguePlayers(league_key).Select(p => p.player_id));
             var scores = Scraper.PlayerScores(connection);
             var previous = new Dictionary<string, double>();
             File.Delete("sbpi.csv");
             for (var t = 0.00; t <= 1.00; t += 0.01)
             {
-                var strictlyBetterPlayers = new StrictlyBetterPlayerFilter(connection, t);
+                var strictlyBetterPlayers = new StrictlyBetterPlayerFilter(connection, players, t);
                 var options = strictlyBetterPlayers.Filter(players);
                 Console.WriteLine($"{t:p} {options.Count() - previous.Count}");
                 File.AppendAllText("sbpi.csv", $"{t},{options.Count() - previous.Count},{previous.Count}\n");

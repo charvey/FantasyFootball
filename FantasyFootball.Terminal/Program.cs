@@ -114,7 +114,7 @@ namespace FantasyFootball.Terminal
                         }),
                         new Menu("Value", _ => {
                             using (var connection = new SQLiteConnection(connectionString))
-                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")),DraftDataWriter.ValueMeasures(connection));
+                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")),DraftDataWriter.ValueMeasures(connection, league_key));
                         }),
                     }),
                     new Menu("Write Stats to File", _ =>
@@ -124,7 +124,7 @@ namespace FantasyFootball.Terminal
                             var draft = new SqlDraft(connection,_.Load<string>("CurrentDraft"));
                             var players = draft.UnpickedPlayers;
                             var measure = new Measure[] {
-                                new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(connection), new ByeMeasure(connection),new VBDMeasure()
+                                new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(connection), new ByeMeasure(connection),new VBDMeasure(connection, league_key)
                             };
                             File.Delete("output.csv");
                             File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
@@ -159,7 +159,7 @@ namespace FantasyFootball.Terminal
                     new Menu("Predict Winners",_=> new WinnerPredicter().PredictWinners(league_key)),
                     new Menu("Strictly Better Players",_=>{
                         using (var connection = new SQLiteConnection(connectionString))
-                            StrictlyBetterPlayerFilter.RunTest(connection);
+                            StrictlyBetterPlayerFilter.RunTest(connection, league_key);
                     }),
                 })
             }).Display(new MenuState());

@@ -154,7 +154,7 @@ namespace FantasyFootball.Terminal
                     new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),
                     new Menu("Minimax",_=>{
                         using (var connection = new SQLiteConnection(connectionString))
-                            MiniMaxer.Testminimax(connection);
+                            MiniMaxer.Testminimax(connection, league_key);
                     }),
                     new Menu("Predict Winners",_=> new WinnerPredicter().PredictWinners(league_key)),
                     new Menu("Strictly Better Players",_=>{

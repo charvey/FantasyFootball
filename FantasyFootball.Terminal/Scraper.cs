@@ -1,11 +1,11 @@
 ﻿using Dapper;
 using FantasyFootball.Data.Yahoo;
+using FantasyFootball.Terminal.Database;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using Polly;
 using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
@@ -74,6 +74,7 @@ namespace FantasyFootball.Terminal
                     webDriver.FindElementById("login-passwd").SendKeys(password);
                     webDriver.FindElementById("login-signin").Click();
 
+                    //ScrapeAll(connection, webDriver);
                     ScrapeMissing(connection, league_key, service, webDriver);
                     ScrapeOld(connection, webDriver);
                 }
@@ -217,34 +218,9 @@ namespace FantasyFootball.Terminal
             } while (true);
         }
 
-        public static Dictionary<string, double[]> PlayerScores(SQLiteConnection connection)
-        {
-            return connection.Query<PlayerWeekScore>(
-                "SELECT DISTINCT PlayerId,Week,(SELECT Value FROM Predictions v WHERE v.PlayerId=p.PlayerId AND v.Week=p.Week LIMIT 1) AS Value " +
-                "FROM Predictions p WHERE Year=2017")
-                .GroupBy(d => d.PlayerId)
-                .ToDictionary(d => d.Key, d => d.OrderBy(x => x.Week).Select(x => x.Value).ToArray());
-        }
-
-        public class PlayerWeekScore
-        {
-            public string PlayerId { get; set; }
-            public int Week { get; set; }
-            public double Value { get; set; }
-        }
-
         private void RecordPrediction(SQLiteConnection connection, string playerId, int week, double value)
         {
-            connection.Execute(
-                "INSERT INTO Predictions (PlayerId,Week,Year,Value,AsOf) " +
-                "VALUES (@PlayerId,@Week,@Year,@Value,@AsOf)", new
-                {
-                    PlayerId = playerId,
-                    Week = week,
-                    Year = 2017,
-                    Value = value,
-                    AsOf = DateTime.Now.ToString("O")
-                });
+            connection.AddPrediction(playerId, week: week, year: 2017, value: value, asOf: DateTime.Now);
         }
     }
 }

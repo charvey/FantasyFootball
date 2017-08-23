@@ -2,6 +2,7 @@
 using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
+using FantasyFootball.Terminal.Database;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -97,22 +98,8 @@ namespace FantasyFootball.Terminal.Draft
             this.week = week;
         }
 
-        private double GetScore(string playerId)
-        {
-            return connection.QueryFirst<double>(@"
-                SELECT Value
-                FROM Predictions
-                WHERE PlayerId=@playerId AND Year=@year AND Week=@week
-                ORDER BY AsOf DESC", new
-            {
-                playerId = playerId,
-                year = 2017,
-                week = week
-            });
-        }
-
         public override string Name => $"Week {week}";
-        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, GetScore);
+        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, p => connection.GetPrediction(p, 2017, week));
         public override int Width => Math.Min(6, Name.Length);
     }
 
@@ -128,17 +115,7 @@ namespace FantasyFootball.Terminal.Draft
 
         private double GetScore(string playerId)
         {
-            return Enumerable.Range(1, 17)
-                .Sum(w => connection.QueryFirst<double>(@"
-                SELECT Value
-                FROM Predictions
-                WHERE PlayerId=@playerId AND Year=@year AND Week=@week
-                ORDER BY AsOf DESC", new
-                {
-                    playerId = playerId,
-                    year = 2017,
-                    week = w
-                }));
+            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 17)).Sum();
         }
 
         public override string Name => "Total";
@@ -156,21 +133,8 @@ namespace FantasyFootball.Terminal.Draft
             this.connection = connection;
         }
 
-        private int GetBye(string team)
-        {
-            return connection.QuerySingle<int>(@"
-                SELECT Week
-                FROM Bye
-                JOIN Team ON Bye.TeamId=Team.Id
-                WHERE Bye.Year=@year AND Team.Name=@name", new
-            {
-                year = 2017,
-                name = team
-            });
-        }
-
         public override string Name => "Bye Week";
-        public override IComparable Compute(Player player) => byes.GetOrAdd(player.Team, GetBye);
+        public override IComparable Compute(Player player) => byes.GetOrAdd(player.Team, t => connection.GetByeWeek(2017, t));
         public override int Width => 3;
     }
 
@@ -215,17 +179,7 @@ namespace FantasyFootball.Terminal.Draft
 
         private double GetScore(SQLiteConnection connection, string playerId)
         {
-            return Enumerable.Range(1, 17)
-                .Sum(w => connection.QueryFirst<double>(@"
-                SELECT Value
-                FROM Predictions
-                WHERE PlayerId=@playerId AND Year=@year AND Week=@week
-                ORDER BY AsOf DESC", new
-                {
-                    playerId = playerId,
-                    year = 2017,
-                    week = w
-                }));
+            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 17)).Sum();
         }
 
         public class PlayerDto

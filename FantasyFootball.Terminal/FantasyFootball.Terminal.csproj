@@ -92,6 +92,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsolePrepper.cs" />
+    <Compile Include="Database\ByeOperations.cs" />
+    <Compile Include="Database\PredictionOperations.cs" />
     <Compile Include="Draft\Draft.cs" />
     <Compile Include="Draft\DraftChanger.cs" />
     <Compile Include="Draft\DraftDataWriter.cs" />

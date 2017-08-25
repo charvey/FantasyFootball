@@ -26,19 +26,25 @@ namespace FantasyFootball.Terminal.Draft
             FROM DraftPick
             JOIN DraftOption ON DraftPick.DraftOptionId = DraftOption.Id
             JOIN Player ON Player.Id = DraftOption.PlayerId
-            WHERE DraftPick.DraftId=@draftId", new { draftId = draftId })
+            WHERE DraftPick.DraftId=@draftId",
+            new { draftId = draftId })
             .Select(FromPlayerDto).ToList();
-        public IReadOnlyList<Player> PickedPlayersByParticipant(DraftParticipant t)
-        {
-            throw new NotImplementedException();
-        }
+        public IReadOnlyList<Player> PickedPlayersByParticipant(DraftParticipant t) => connection.Query<PlayerDto>(@"
+            SELECT Player.*
+            FROM DraftPick
+            JOIN DraftOption ON DraftPick.DraftOptionId = DraftOption.Id
+            JOIN Player ON Player.Id = DraftOption.PlayerId
+            WHERE DraftPick.DraftId=@draftId AND DraftPick.DraftParticipantId=draftParticipantId",
+            new { draftId = draftId, draftParticipantId = t.Id })
+            .Select(FromPlayerDto).ToList();
         public IReadOnlyList<Player> UnpickedPlayers => connection.Query<PlayerDto>(@"
             SELECT Player.*
             FROM DraftOption
             JOIN Player ON Player.Id = DraftOption.PlayerId
             LEFT JOIN DraftPick ON DraftPick.DraftOptionId = DraftOption.Id
-            WHERE DraftPick.DraftId IS NULL AND DraftOption.DraftId=@draftId", new { draftId = draftId })
-            .Select(FromPlayerDto).ToList();
+            WHERE DraftPick.DraftId IS NULL AND DraftOption.DraftId=@draftId",
+            new { draftId = draftId })
+                .Select(FromPlayerDto).ToList();
 
         public class PlayerDto
         {

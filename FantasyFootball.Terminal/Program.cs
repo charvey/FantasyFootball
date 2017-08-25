@@ -77,7 +77,7 @@ namespace FantasyFootball.Terminal
                         using (var connection = new SQLiteConnection(connectionString))
                             draftIds=connection.Query<string>("SELECT Id FROM Draft").ToArray();
                         var option=Menu.Options("Pick Draft",draftIds);
-                        _.Store("CurrentDraft",draftIds[option-1]);
+                        _.Store("CurrentDraftId",draftIds[option-1]);
                     }),
                     new Menu("Delete Draft", _ =>
                     {
@@ -97,35 +97,39 @@ namespace FantasyFootball.Terminal
                     }),
                     new Menu("Draft Board",_=>{
                         using (var connection = new SQLiteConnection(connectionString))
-                            new DraftWriter().WriteDraft(Console.Out, new SqlDraft(connection,_.Load<string>("CurrentDraft")));
+                            new DraftWriter().WriteDraft(Console.Out, new SqlDraft(connection,_.Load<string>("CurrentDraftId")));
                     }),
                     new Menu("Make Changes to Draft", _=> {
                         using (var connection = new SQLiteConnection(connectionString))
-                            new DraftChanger().Change(Console.Out, Console.In, new SqlDraft(connection,_.Load<string>("CurrentDraft")));
+                            new DraftChanger().Change(Console.Out, Console.In, new SqlDraft(connection,_.Load<string>("CurrentDraftId")));
                     }),
                     new Menu("Show Stats", new List<Menu>{
                         new Menu("Basic Stats", _ => {
                             using (var connection = new SQLiteConnection(connectionString))
-                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")),DraftDataWriter.BasicMeasures(connection));
+                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),DraftDataWriter.BasicMeasures(connection));
                         }),
                         new Menu("Predictions", _ => {
                             using (var connection = new SQLiteConnection(connectionString))
-                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")),DraftDataWriter.PredictionMeasures(connection));
+                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),DraftDataWriter.PredictionMeasures(connection));
                         }),
                         new Menu("Value", _ => {
                             using (var connection = new SQLiteConnection(connectionString))
-                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraft")),DraftDataWriter.ValueMeasures(connection, league_key));
+                                new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),DraftDataWriter.ValueMeasures(connection, league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId"))));
                         }),
                     }),
                     new Menu("Write Stats to File", _ =>
                     {
                         using (var connection = new SQLiteConnection(connectionString))
                         {
-                            var draft = new SqlDraft(connection,_.Load<string>("CurrentDraft"));
+                            var draft = new SqlDraft(connection,_.Load<string>("CurrentDraftId"));
                             var players = draft.UnpickedPlayers;
                             var measure = new Measure[] {
-                                new NameMeasure(), new PositionMeasure(), new TotalScoreMeasure(connection), new ByeMeasure(connection),new VBDMeasure(connection, league_key)
-                            };
+                                new NameMeasure(), new TeamMeasure(), new PositionMeasure(),
+                                new ByeMeasure(connection)
+                            }.Concat(Enumerable.Range(1,17).Select(w=>new WeekScoreMeasure(connection,w) as Measure))
+                            .Concat(new Measure[]{
+                                new TotalScoreMeasure(connection),new VBDMeasure(connection, league_key)
+                            });
                             File.Delete("output.csv");
                             File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
                             File.AppendAllLines("output.csv", players.Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));

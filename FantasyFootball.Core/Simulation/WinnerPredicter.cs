@@ -202,7 +202,7 @@ namespace FantasyFootball.Core.Simulation
             foreach (var team in teams)
             {
                 var allPlayers = GetFuturePlayers(league_key, team, week);
-                var roster = new MostLikelyScoreRosterModeler(new RealityScoreModeler())
+                var roster = new MostLikelyScoreRosterModeler(new RealityScoreModeler(DumpData.GetScore))
                     .Model(new RosterSituation(allPlayers, week)).Outcomes.Single();
 
                 foreach (var player in roster.Players)

@@ -3,6 +3,7 @@ using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Database;
+using FantasyFootball.Terminal.Draft.Measures;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,13 +32,13 @@ namespace FantasyFootball.Terminal.Draft
                 .ToArray();
         }
 
-        public static Measure[] ValueMeasures(SQLiteConnection connection, string league_key)
+        public static Measure[] ValueMeasures(SQLiteConnection connection, string league_key, Draft draft)
         {
             return new Measure[] {
                 new NameMeasure(),
                 new VBDMeasure(connection,league_key),
-                //new FlexVBDMeasure(),
-                //new ValueAddedMeasure(draft.PickedPlayersByParticipant(draft.Participants.Single(p=>p.Name=="Money Ballers")))
+                new FlexVBDMeasure(connection,league_key),
+                new ValueAddedMeasure(connection,draft,draft.Participants.Single(p=>p.Name=="Money Ballers"))
             };
         }
 
@@ -214,9 +215,49 @@ namespace FantasyFootball.Terminal.Draft
 
     public class FlexVBDMeasure : Measure
     {
-        private static double replacement = Players.All()
-            .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())
-            .Select(DumpData.GetSeasonTotalScore).OrderByDescending(x => x).Skip(12 * 6 - 1).First();
+        private readonly double replacement;
+        private readonly SQLiteConnection connection;
+
+        public FlexVBDMeasure(SQLiteConnection connection, string league_key)
+        {
+            this.connection = connection;
+            var service = new FantasySportsService();
+            replacement = service.LeaguePlayers(league_key).Select(p => FromPlayerId(connection, p.player_id))
+                .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())
+                .Select(p => GetScore(connection, p.Id))
+                .OrderByDescending(x => x).Skip(12 * (2 + 2 + 1 + 2) - 1).First();
+        }
+
+        private double GetScore(SQLiteConnection connection, string playerId)
+        {
+            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 17)).Sum();
+        }
+
+        public class PlayerDto
+        {
+            public string Id;
+            public string Name;
+            public string Positions;
+            public int TeamId;
+        }
+
+        private Player FromPlayerDto(SQLiteConnection connection, PlayerDto playerDto)
+        {
+            return new Player
+            {
+                Id = playerDto.Id,
+                Name = playerDto.Name,
+                Positions = playerDto.Positions.Split(','),
+                Team = connection.QuerySingle<string>("SELECT Name FROM Team WHERE Id=@id", new { id = playerDto.TeamId })
+            };
+        }
+
+        private Player FromPlayerId(SQLiteConnection connection, string playerId)
+        {
+            return connection.Query<PlayerDto>("SELECT * FROM Player WHERE Id=@id", new { id = playerId })
+                .Select(p => FromPlayerDto(connection, p)).Single();
+        }
+
 
         public override string Name => "Flex VBD";
         public override int Width => 10;
@@ -224,27 +265,7 @@ namespace FantasyFootball.Terminal.Draft
         {
             if (player.Positions.Intersect(new[] { "QB", "K", "DEF" }).Any())
                 return 0.0;
-            return DumpData.GetSeasonTotalScore(player) - replacement;
-        }
-    }
-
-    public class ValueAddedMeasure : Measure
-    {
-        private DraftHelper draftHelper = new DraftHelper();
-        private readonly IEnumerable<Player> team;
-
-        public ValueAddedMeasure(IEnumerable<Player> team)
-        {
-            this.team = team;
-        }
-
-        public override string Name => "Value Added";
-
-        public override int Width => Name.Length;
-
-        public override IComparable Compute(Player player)
-        {
-            return draftHelper.ValueAdded(team, player);
+            return GetScore(connection, player.Id) - replacement;
         }
     }
 }

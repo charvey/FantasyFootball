@@ -77,6 +77,11 @@ namespace FantasyFootball.Terminal
 
             foreach (var row in webDriver.FindElementsByClassName("gameline-layout"))
             {
+                var notes = row.FindElement(By.ClassName("event-notes"));
+
+                if (notes.Text.Contains("Line not available"))
+                    continue;
+
                 var names = row.FindElements(By.TagName("h3"))
                     .Select(e => e.Text).Select(t => t.Split(' ').Last()).ToArray();
 

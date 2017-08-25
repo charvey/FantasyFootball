@@ -16,7 +16,7 @@ namespace FantasyFootball.Core.Rosters
             var service = new FantasySportsService();
             var week = service.League(league_key).current_week;
             var players = service.TeamRoster($"{league_key}.t.{team_id}", week).players.Select(Players.From).ToArray();
-            var rosterPicker = new MostLikelyScoreRosterModeler(new RealityScoreModeler());
+            var rosterPicker = new MostLikelyScoreRosterModeler(new RealityScoreModeler(DumpData.GetScore));
             var roster = rosterPicker.Model(new RosterSituation(players, week));
             foreach (var player in roster.Outcomes.Single().Players)
             {

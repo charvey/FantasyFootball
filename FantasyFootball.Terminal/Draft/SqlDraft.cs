@@ -18,7 +18,7 @@ namespace FantasyFootball.Terminal.Draft
             this.draftId = draftId;
         }
 
-        public IReadOnlyList<DraftParticipant> Participants => connection.Query<DraftParticipant>("SELECT * FROM DraftParticipant WHERE DraftId=@draftId", new { draftId = draftId }).ToList();
+        public IReadOnlyList<DraftParticipant> Participants => connection.Query<DraftParticipant>("SELECT * FROM DraftParticipant WHERE DraftId=@draftId ORDER BY [Order]", new { draftId = draftId }).ToList();
 
         public IReadOnlyList<Player> AllPlayers => throw new NotImplementedException();
         public IReadOnlyList<Player> PickedPlayers => connection.Query<PlayerDto>(@"

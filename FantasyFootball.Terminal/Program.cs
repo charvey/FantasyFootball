@@ -5,6 +5,7 @@ using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Draft;
+using FantasyFootball.Terminal.Preseason;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -28,7 +29,12 @@ namespace FantasyFootball.Terminal
             {
                 new Menu("Preseason", new List<Menu>
                 {
-                    new Menu("Find Odds",_=>PreseasonPicks.Do())
+                    new Menu("Find Odds",_=>PreseasonPicks.Do()),
+                    new Menu("Choose Draft Order", _ =>
+                    {
+                        using (var connection = new SQLiteConnection(connectionString))
+                            ChooseDraftOrder.Do(connection,league_key);
+                    })
                 }),
                 new Menu("Draft",new List<Menu>
                 {

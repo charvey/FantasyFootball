@@ -1,6 +1,4 @@
-﻿using Dapper;
-using FantasyFootball.Core.Data;
-using FantasyFootball.Core.Objects;
+﻿using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Database;
 using FantasyFootball.Terminal.Draft.Measures;
@@ -167,7 +165,7 @@ namespace FantasyFootball.Terminal.Draft
         public VBDMeasure(SQLiteConnection connection, string league_key)
         {
             var players = new FantasySportsService().LeaguePlayers(league_key)
-                .Select(p => FromPlayerId(connection, p.player_id));
+                .Select(p => connection.GetPlayer(p.player_id));
             var scores = players
                 .ToDictionary(p => p.Id, p => GetScore(connection, p.Id));
             var replacementScores = players
@@ -180,32 +178,7 @@ namespace FantasyFootball.Terminal.Draft
 
         private double GetScore(SQLiteConnection connection, string playerId)
         {
-            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 17)).Sum();
-        }
-
-        public class PlayerDto
-        {
-            public string Id;
-            public string Name;
-            public string Positions;
-            public int TeamId;
-        }
-
-        private Player FromPlayerDto(SQLiteConnection connection, PlayerDto playerDto)
-        {
-            return new Player
-            {
-                Id = playerDto.Id,
-                Name = playerDto.Name,
-                Positions = playerDto.Positions.Split(','),
-                Team = connection.QuerySingle<string>("SELECT Name FROM Team WHERE Id=@id", new { id = playerDto.TeamId })
-            };
-        }
-
-        private Player FromPlayerId(SQLiteConnection connection, string playerId)
-        {
-            return connection.Query<PlayerDto>("SELECT * FROM Player WHERE Id=@id", new { id = playerId })
-                .Select(p => FromPlayerDto(connection, p)).Single();
+            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 16)).Sum();
         }
 
         public override string Name => "VBD";
@@ -222,7 +195,8 @@ namespace FantasyFootball.Terminal.Draft
         {
             this.connection = connection;
             var service = new FantasySportsService();
-            replacement = service.LeaguePlayers(league_key).Select(p => FromPlayerId(connection, p.player_id))
+            replacement = service.LeaguePlayers(league_key)
+                .Select(p => connection.GetPlayer(p.player_id))
                 .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())
                 .Select(p => GetScore(connection, p.Id))
                 .OrderByDescending(x => x).Skip(12 * (2 + 2 + 1 + 2) - 1).First();
@@ -230,34 +204,8 @@ namespace FantasyFootball.Terminal.Draft
 
         private double GetScore(SQLiteConnection connection, string playerId)
         {
-            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 17)).Sum();
+            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 16)).Sum();
         }
-
-        public class PlayerDto
-        {
-            public string Id;
-            public string Name;
-            public string Positions;
-            public int TeamId;
-        }
-
-        private Player FromPlayerDto(SQLiteConnection connection, PlayerDto playerDto)
-        {
-            return new Player
-            {
-                Id = playerDto.Id,
-                Name = playerDto.Name,
-                Positions = playerDto.Positions.Split(','),
-                Team = connection.QuerySingle<string>("SELECT Name FROM Team WHERE Id=@id", new { id = playerDto.TeamId })
-            };
-        }
-
-        private Player FromPlayerId(SQLiteConnection connection, string playerId)
-        {
-            return connection.Query<PlayerDto>("SELECT * FROM Player WHERE Id=@id", new { id = playerId })
-                .Select(p => FromPlayerDto(connection, p)).Single();
-        }
-
 
         public override string Name => "Flex VBD";
         public override int Width => 10;

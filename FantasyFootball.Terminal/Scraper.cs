@@ -74,9 +74,9 @@ namespace FantasyFootball.Terminal
                     webDriver.FindElementById("login-passwd").SendKeys(password);
                     webDriver.FindElementById("login-signin").Click();
 
-                    //ScrapeAll(connection, webDriver);
                     ScrapeMissing(connection, league_key, service, webDriver);
                     ScrapeOld(connection, webDriver);
+                    ScrapeMissing(connection, league_key, service, webDriver);
                 }
                 finally
                 {
@@ -125,7 +125,7 @@ namespace FantasyFootball.Terminal
         {
             while (true)
             {
-                var nextGroup = connection.Query<ScrapeGroup>(@"
+                var nextGroups = connection.Query<ScrapeGroup>(@"
 					SELECT Team, Position, Week
 					FROM(
 						SELECT Team.Id AS Team, Positions AS Position, Week, MAX(AsOf) AS AsOf
@@ -138,15 +138,23 @@ namespace FantasyFootball.Terminal
 					WHERE AsOf < @before
 					ORDER BY AsOF",
                     new { before = DateTime.Now.AddDays(-2).ToString("O") }
-                    ).FirstOrDefault();
+                    );
 
-                if (nextGroup == null)
+                if (!nextGroups.Any())
                     break;
+
+                var nextGroup = nextGroups.First();
+
+                int? team;
+                if (nextGroups.Count(g => g.Position == nextGroup.Position && g.Week == nextGroup.Week) > 16)
+                    team = null;
+                else
+                    team = nextGroup.Team;
 
                 Policy.
                     Handle<WebDriverException>()
                     .Retry()
-                    .Execute(() => Scrape(connection, webDriver, nextGroup.Team, nextGroup.Position, nextGroup.Week));
+                    .Execute(() => Scrape(connection, webDriver, team, nextGroup.Position, nextGroup.Week));
             }
         }
 

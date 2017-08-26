@@ -81,7 +81,11 @@ namespace FantasyFootball.Terminal
                     }),
                     new Menu("Delete Draft", _ =>
                     {
-                        var id=Menu.Prompt("Enter Draft Id");
+                        string[] draftIds;
+                        using (var connection = new SQLiteConnection(connectionString))
+                            draftIds=connection.Query<string>("SELECT Id FROM Draft").ToArray();
+                        var option=Menu.Options("Pick Draft",draftIds);
+                        var id=draftIds[option-1];
                         using (var connection = new SQLiteConnection(connectionString))
                         {
                             connection.Open();

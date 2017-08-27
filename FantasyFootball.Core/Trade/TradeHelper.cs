@@ -30,11 +30,13 @@ namespace FantasyFootball.Core.Trade
         {
             var service = new FantasySportsService();
             var week = service.League(league_key).current_week;
-            var teams = Teams.All().Select(t => new TeamPlayers
-            {
-                Team = t,
-                Players = service.TeamRoster($"{league_key}.t.{t.Id}", week).players.Select(Players.From).ToArray()
-            });
+            var teams = service.Teams(league_key)
+                .Select(Teams.From)
+                .Select(t => new TeamPlayers
+                {
+                    Team = t,
+                    Players = service.TeamRoster($"{league_key}.t.{t.Id}", week).players.Select(Players.From).ToArray()
+                });
 
             var myPlayers = teams.Single(t => t.Team.Id == myTeamId);
             var otherTeamsPlayers = teams.Where(t => t.Team.Id != myTeamId);

@@ -79,8 +79,8 @@
     <Compile Include="Modeling\ScoreModelers\RealityCandidate.cs" />
     <Compile Include="Modeling\ScoreModelers\RealityScoreModeler.cs" />
     <Compile Include="Objects\Matchup.cs" />
-    <Compile Include="Objects\Teams.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
+    <Compile Include="Objects\Teams.cs" />
     <Compile Include="SeasonWeek.cs" />
     <Compile Include="Simulation\Fact.cs" />
     <Compile Include="Simulation\Facts\AddMatchup.cs" />

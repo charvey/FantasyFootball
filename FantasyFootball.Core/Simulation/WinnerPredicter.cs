@@ -137,7 +137,7 @@ namespace FantasyFootball.Core.Simulation
 
         private void StartSeason(Universe universe, string league_key)
         {
-            foreach (var team in Teams.All())
+            foreach (var team in service.Teams(league_key).Select(Teams.From))
                 universe.AddFact(new AddTeam { Team = team });
 
             for (int week = 1; week < CurrentWeek; week++)

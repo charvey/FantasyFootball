@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -7,7 +6,6 @@ using FantasyFootball.Data.Yahoo.Actions;
 using FantasyFootball.Data.Yahoo.Models;
 using Newtonsoft.Json;
 using System.Xml.XPath;
-
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -85,11 +83,6 @@ namespace FantasyFootball.Data.Yahoo
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.transactions;
         }
 
-        public IEnumerable<League> Leagues(params string[] league_keys)
-        {
-            return league_keys.Select(League);
-        }
-
         public Player Player(string player_key)
         {
             var xml = webService.Player(player_key);
@@ -120,12 +113,6 @@ namespace FantasyFootball.Data.Yahoo
         {
             var xml = webService.Team(team_key);
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.team;
-        }
-
-        public IEnumerable<Team> Teams()
-        {
-            var league = Leagues().Single(l => l.season == DateTime.Now.Year);
-            return Teams(league.league_key);
         }
 
         public IEnumerable<Team> Teams(string league_key)

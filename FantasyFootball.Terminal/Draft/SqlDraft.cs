@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FantasyFootball.Core.Objects;
+using FantasyFootball.Terminal.Database;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -67,7 +68,7 @@ namespace FantasyFootball.Terminal.Draft
 
             var playerId = connection.QuerySingle<string>("SELECT PlayerId FROM DraftOption WHERE Id=@id", new { id = draftOptionId });
 
-            return FromPlayerId(playerId);
+            return connection.GetPlayer(playerId);
         }
 
         private Player FromPlayerDto(PlayerDto playerDto)
@@ -79,12 +80,6 @@ namespace FantasyFootball.Terminal.Draft
                 Positions = playerDto.Positions.Split(','),
                 Team = connection.QuerySingle<string>("SELECT Name FROM Team WHERE Id=@id", new { id = playerDto.TeamId })
             };
-        }
-
-        private Player FromPlayerId(string playerId)
-        {
-            return connection.Query<PlayerDto>("SELECT * FROM Player WHERE Id=@id", new { id = playerId })
-                .Select(FromPlayerDto).Single();
         }
 
         public void Pick(DraftParticipant t, int r, Player p)

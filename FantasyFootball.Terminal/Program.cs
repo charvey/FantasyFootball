@@ -4,6 +4,7 @@ using FantasyFootball.Core.Rosters;
 using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
+using FantasyFootball.Terminal.Database;
 using FantasyFootball.Terminal.Draft;
 using FantasyFootball.Terminal.Preseason;
 using System;
@@ -30,10 +31,10 @@ namespace FantasyFootball.Terminal
             {
                 new Menu("Preseason", new List<Menu>
                 {
-                    new Menu("Find Odds",_=>PreseasonPicks.Do()),
+                    new Menu("Find Odds", _=> PreseasonPicks.Do()),
                     new Menu("Choose Draft Order", _ => ChooseDraftOrder.Do(connection,league_key))
                 }),
-                new Menu("Draft",new List<Menu>
+                new Menu("Draft", new List<Menu>
                 {
                     new Menu("Create Mock Draft",_=>{
                         var service=new FantasySportsService();
@@ -72,23 +73,16 @@ namespace FantasyFootball.Terminal
                         }
                     }),
                     new Menu("Open Draft",_=>{
-                        var draftIds=connection.Query<string>("SELECT Id FROM Draft").ToArray();
-                        var option=Menu.Options("Pick Draft",draftIds);
-                        _.Store("CurrentDraftId",draftIds[option-1]);
+                        var draftIds = connection.GetDraftIds();
+                        var option = Menu.Options("Pick Draft", draftIds);
+                        _.Store("CurrentDraftId", draftIds[option-1]);
                     }),
                     new Menu("Delete Draft", _ =>
                     {
-                        var draftIds=connection.Query<string>("SELECT Id FROM Draft").ToArray();
-                        var option=Menu.Options("Pick Draft",draftIds);
-                        var id=draftIds[option-1];
-                        using(var transaction = connection.BeginTransaction())
-                        {
-                            connection.Execute("DELETE FROM DraftPick WHERE DraftId=@id",new{ id=id});
-                            connection.Execute("DELETE FROM DraftOption WHERE DraftId=@id",new{ id=id});
-                            connection.Execute("DELETE FROM DraftParticipant WHERE DraftId=@id",new{ id=id});
-                            connection.Execute("DELETE FROM Draft WHERE Id=@id",new{ id=id});
-                            transaction.Commit();
-                        }
+                        var draftIds = connection.GetDraftIds();
+                        var option = Menu.Options("Pick Draft", draftIds);
+                        var id = draftIds[option-1];
+                        connection.DeleteDraft(id);
                     }),
                     new Menu("Draft Board",_=>{
                         new DraftWriter().WriteDraft(Console.Out, new SqlDraft(connection,_.Load<string>("CurrentDraftId")));

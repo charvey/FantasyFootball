@@ -5,6 +5,7 @@ using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Terminal.Database;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
@@ -28,10 +29,15 @@ namespace FantasyFootball.Terminal.Draft.Measures
 
         public override int Width => Name.Length;
 
-        public override IComparable Compute(Player player)
+        public override IComparable Compute(Player player) => throw new NotImplementedException();
+
+        public override IComparable[] Compute(Player[] players)
         {
             var currentPlayers = draft.PickedPlayersByParticipant(participant);
-            return GetTotalScore(player.cons(currentPlayers)) - GetTotalScore(currentPlayers);
+            var baseScore = GetTotalScore(currentPlayers);
+            return players.Select(p => GetTotalScore(p.cons(currentPlayers)) - baseScore)
+                .Cast<IComparable>()
+                .ToArray();
         }
 
         private double GetTotalScore(IEnumerable<Player> players)
@@ -39,12 +45,14 @@ namespace FantasyFootball.Terminal.Draft.Measures
             return Enumerable.Range(1, 16).Select(w => GetWeekScore(players, w)).Sum();
         }
 
+        private readonly ConcurrentDictionary<Tuple<string, int>, double> predictions = new ConcurrentDictionary<Tuple<string, int>, double>();
+
         private double GetWeekScore(IEnumerable<Player> players, int week)
         {
-            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => connection.GetPrediction(p.Id, 2017, w)))
+            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => connection.GetPrediction(t.Item1, 2017, t.Item2))))
                 .Model(new RosterSituation(players.ToArray(), week))
                 .Outcomes.Single().Players
-                .Sum(p => connection.GetPrediction(p.Id, 2017, week));
+                .Sum(p => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => connection.GetPrediction(t.Item1, 2017, t.Item2)));
         }
     }
 

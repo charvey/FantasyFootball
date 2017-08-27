@@ -12,43 +12,20 @@ namespace FantasyFootball.Terminal.Draft
 {
     public class DraftDataWriter
     {
-        public static Measure[] BasicMeasures(SQLiteConnection connection)
-        {
-            return new Measure[] {
-                new NameMeasure(),
-                new TeamMeasure(),
-                new PositionMeasure(),
-                new ByeMeasure(connection)
-            };
-        }
-
-        public static Measure[] PredictionMeasures(SQLiteConnection connection)
-        {
-            return new[] { new NameMeasure() }.Cast<Measure>()
-                .Concat(Enumerable.Range(1, 17).Select(w => new WeekScoreMeasure(connection, w)))
-                .Concat(new[] { new TotalScoreMeasure(connection) })
-                .ToArray();
-        }
-
-        public static Measure[] ValueMeasures(SQLiteConnection connection, string league_key, Draft draft)
-        {
-            return new Measure[] {
-                new NameMeasure(),
-                new VBDMeasure(connection,league_key),
-                new FlexVBDMeasure(connection,league_key),
-                new ValueAddedMeasure(connection,draft,draft.Participants.Single(p=>p.Name=="Money Ballers"))
-            };
-        }
-
         public void WriteData(Draft draft, Measure[] measures)
         {
-            var players = draft.UnpickedPlayers;
+            var players = draft.UnpickedPlayers.ToArray();
 
-            players = players.OrderByDescending(p => measures.Last().Compute(p)).ToList();
+            var columns = measures.Select(m => m.Compute(players)).ToArray();
+
+            var data = Enumerable.Range(0, players.Length)
+                .Select(i => columns.Select(c => c[i]).ToArray());
+
+            data = data.OrderByDescending(p => p.Last()).ToList();
 
             Console.WriteLine(string.Join("|", measures.Select(m => PadAndCut(m.Name, m.Width))));
-            foreach (var player in players)
-                Console.WriteLine(string.Join("|", measures.Select(m => PadAndCut(m.Compute(player).ToString(), m.Width))));
+            foreach (var row in data)
+                Console.WriteLine(string.Join("|", row.Select((c, i) => PadAndCut(c.ToString(), measures[i].Width))));
         }
 
         private string PadAndCut(string source, int length)
@@ -62,6 +39,46 @@ namespace FantasyFootball.Terminal.Draft
         public abstract string Name { get; }
         public abstract IComparable Compute(Player player);
         public abstract int Width { get; }
+
+        public virtual IComparable[] Compute(Player[] players)
+        {
+            return players.Select(Compute).ToArray();
+        }
+    }
+
+    public static class MeasureSource
+    {
+        private static ConcurrentDictionary<string, Measure[]> basicMeasures = new ConcurrentDictionary<string, Measure[]>();
+        public static Measure[] BasicMeasures(string league_key, SQLiteConnection connection)
+        {
+            return basicMeasures.GetOrAdd(league_key, l_ => new Measure[] {
+                new NameMeasure(),
+                new TeamMeasure(),
+                new PositionMeasure(),
+                new ByeMeasure(connection)
+             });
+        }
+
+        private static ConcurrentDictionary<string, Measure[]> predictionMeasures = new ConcurrentDictionary<string, Measure[]>();
+        public static Measure[] PredictionMeasures(string league_key, SQLiteConnection connection)
+        {
+            return predictionMeasures.GetOrAdd(league_key, l_k =>
+              new[] { new NameMeasure() }.Cast<Measure>()
+                 .Concat(Enumerable.Range(1, 17).Select(w => new WeekScoreMeasure(connection, w)))
+                 .Concat(new[] { new TotalScoreMeasure(connection) })
+                 .ToArray());
+        }
+
+        private static ConcurrentDictionary<string, Measure[]> valueMeasures = new ConcurrentDictionary<string, Measure[]>();
+        public static Measure[] ValueMeasures(SQLiteConnection connection, string league_key, Draft draft)
+        {
+            return valueMeasures.GetOrAdd(league_key, l_k => new Measure[] {
+                new NameMeasure(),new PositionMeasure(),
+                new FlexVBDMeasure(connection,league_key),
+                new VBDMeasure(connection,league_key),
+                //new ValueAddedMeasure(connection,draft,draft.Participants.Single(p=>p.Name=="Money Ballers")),
+            });
+        }
     }
 
     public class NameMeasure : Measure
@@ -188,6 +205,7 @@ namespace FantasyFootball.Terminal.Draft
 
     public class FlexVBDMeasure : Measure
     {
+        private readonly ConcurrentDictionary<string, double> values = new ConcurrentDictionary<string, double>();
         private readonly double replacement;
         private readonly SQLiteConnection connection;
 
@@ -213,7 +231,8 @@ namespace FantasyFootball.Terminal.Draft
         {
             if (player.Positions.Intersect(new[] { "QB", "K", "DEF" }).Any())
                 return 0.0;
-            return GetScore(connection, player.Id) - replacement;
+
+            return values.GetOrAdd(player.Id, pid => GetScore(connection, pid) - replacement);
         }
     }
 }

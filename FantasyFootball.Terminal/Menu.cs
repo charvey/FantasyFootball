@@ -61,6 +61,7 @@ namespace FantasyFootball.Terminal
 
         public virtual void Display(MenuState state)
         {
+            Console.Clear();
             if (Operation != null)
             {
                 Operation(state);

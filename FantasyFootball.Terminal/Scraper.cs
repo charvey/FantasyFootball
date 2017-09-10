@@ -17,7 +17,23 @@ namespace FantasyFootball.Terminal
         public void Scrape(string league_key, FantasySportsService service, SQLiteConnection connection)
         {
             UpdatePlayers(league_key, service, connection);
-            GetPredictions(league_key, service, connection);
+            GetPredictions(league_key, service, connection, webDriver =>
+             {
+                 ScrapeMissing(connection, league_key, service, webDriver);
+                 ScrapeOld(connection, webDriver);
+                 ScrapeMissing(connection, league_key, service, webDriver);
+             });
+        }
+
+        public void ScrapeCurrentWeek(string league_key, FantasySportsService service, SQLiteConnection connection)
+        {
+            UpdatePlayers(league_key, service, connection);
+            GetPredictions(league_key, service, connection, webDriver =>
+             {
+                 var week = service.League(league_key).current_week;
+                 foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
+                     Scrape(connection, webDriver, null, pos, week);
+             });
         }
 
         private void UpdatePlayers(string league_key, FantasySportsService service, SQLiteConnection connection)
@@ -56,7 +72,7 @@ namespace FantasyFootball.Terminal
             }
         }
 
-        private void GetPredictions(string league_key, FantasySportsService service, SQLiteConnection connection)
+        private void GetPredictions(string league_key, FantasySportsService service, SQLiteConnection connection, Action<ChromeDriver> payload)
         {
             using (var webDriver = new ChromeDriver())
             {
@@ -74,9 +90,7 @@ namespace FantasyFootball.Terminal
                     webDriver.FindElementById("login-passwd").SendKeys(password);
                     webDriver.FindElementById("login-signin").Click();
 
-                    ScrapeMissing(connection, league_key, service, webDriver);
-                    ScrapeOld(connection, webDriver);
-                    ScrapeMissing(connection, league_key, service, webDriver);
+                    payload(webDriver);
                 }
                 finally
                 {

@@ -127,7 +127,11 @@ namespace FantasyFootball.Terminal
                     })
                 }),
                 new Menu("Play Jingle",_=>JinglePlayer.Play()),
-                new Menu("Scrape Data", _ => new Scraper().Scrape(league_key, new FantasySportsService(), connection)),
+                new Menu("Scrape Data", new List<Menu>
+                {
+                    new Menu("All", _ => new Scraper().Scrape(league_key, new FantasySportsService(), connection)),
+                    new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, new FantasySportsService(), connection)),
+                }),
                 new Menu("Midseason",new List<Menu>{
                     new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out, league_key,team_id)),
                     new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out,league_key,team_id)),

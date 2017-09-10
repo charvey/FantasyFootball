@@ -15,6 +15,7 @@ namespace FantasyFootball.Data.Yahoo.Models
         public string editorial_team_full_name;
         public string editorial_team_abbr;
         public string display_position;
+        public PlayerStats player_stats;
         public Position[] eligible_positions;
         public SelectedPosition selected_position;
         public TransactionData transactioin_data;
@@ -28,6 +29,20 @@ namespace FantasyFootball.Data.Yahoo.Models
         public string last;
         public string ascii_first;
         public string ascii_last;
+    }
+
+    public class PlayerStats
+    {
+        public string coverage_type;
+        public int week;
+        [XmlArrayItem("stat")]
+        public PlayerStat[] stats;
+    }
+
+    public class PlayerStat
+    {
+        public int stat_id;
+        public int value;
     }
 
     [XmlType("position")]

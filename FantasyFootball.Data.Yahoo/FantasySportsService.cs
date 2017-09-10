@@ -19,6 +19,12 @@ namespace FantasyFootball.Data.Yahoo
             return JsonConvert.DeserializeObject<WebServiceResponse>(json).fantasy_content?.game.Single();
         }
 
+        public StatCategories GameStatCategories(string game_key)
+        {
+            var xml = webService.GameStatCategories(game_key);
+            return XmlConvert.Deserialize<FantasyContentXml>(xml)?.game?.stat_categories;
+        }
+
         public IEnumerable<Game> Games()
         {
             var filepath = "GameKeys";
@@ -87,6 +93,12 @@ namespace FantasyFootball.Data.Yahoo
         {
             var xml = webService.Player(player_key);
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.player;
+        }
+
+        public PlayerStats PlayerStats(string player_key, int week)
+        {
+            var xml = webService.PlayerStats(player_key, week);
+            return XmlConvert.Deserialize<FantasyContentXml>(xml)?.player?.player_stats;
         }
 
         public IEnumerable<Player> Players(string game_key)

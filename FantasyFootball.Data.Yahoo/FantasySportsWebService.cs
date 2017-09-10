@@ -71,13 +71,6 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url).Result;
         }
 
-        public string stat_categories(string gameId = "nfl")
-        {
-            var url = BaseUrl + "/game/" + gameId + "/stat_categories";
-
-            return MakeCall(url).Result;
-        }
-
         public string roster_positions(string gameId = "nfl")
         {
             var url = BaseUrl + "/game/" + gameId + "/roster_positions";
@@ -90,6 +83,13 @@ namespace FantasyFootball.Data.Yahoo
             var url = BaseUrl + "/game/" + gameId;
 
             return MakeCall(url).Result;
+        }
+
+        public string GameStatCategories(string game_key)
+        {
+            var url = BaseUrl + $"/game/{game_key}/stat_categories";
+
+            return MakeCall(url, "xml").Result;
         }
 
         public string Games(params string[] gameId)
@@ -174,6 +174,13 @@ namespace FantasyFootball.Data.Yahoo
             var url = BaseUrl + "/players;player_keys=" + string.Join(",", player_keys);
 
             return MakeCall(url).Result;
+        }
+
+        public string PlayerStats(string player_key, int week)
+        {
+            var url = BaseUrl + $"/player/{player_key}/stats;type=week;week={week}";
+
+            return MakeCall(url, "xml").Result;
         }
 
         public string Team(string team_key)

@@ -46,7 +46,7 @@ namespace FantasyFootball.Data.Yahoo
                     wait = TimeSpan.Zero;
                 Thread.Sleep(wait);
             }
-            WaitUntil = DateTime.Now.AddSeconds(0.25);
+            WaitUntil = DateTime.Now.AddSeconds(0.18);
 
             if (!File.Exists("Yahoo.log")) File.WriteAllLines("Yahoo.log", new string[0]);
             lock (BaseUrl)
@@ -78,9 +78,9 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url).Result;
         }
 
-        public string Game(string gameId = "nfl")
+        public string Game(string game_key)
         {
-            var url = BaseUrl + "/game/" + gameId;
+            var url = BaseUrl + $"/game/{game_key}";
 
             return MakeCall(url).Result;
         }
@@ -162,9 +162,9 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url, "xml").Result;
         }
 
-        public string Players(string game_key = "nfl", int start = 0)
+        public string Players(string game_key, int start = 0)
         {
-            var url = BaseUrl + "/games;game_keys=" + game_key + "/players;start=" + start;
+            var url = BaseUrl + $"/games;game_keys={game_key}/players;start={start}";
 
             return MakeCall(url, "xml").Result;
         }

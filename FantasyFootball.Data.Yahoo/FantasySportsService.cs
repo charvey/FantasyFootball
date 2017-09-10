@@ -11,12 +11,17 @@ namespace FantasyFootball.Data.Yahoo
 {
     public class FantasySportsService
     {
-        private FantasySportsWebService webService = new FantasySportsWebService();
+        private readonly FantasySportsWebService webService;
+
+        public FantasySportsService()
+        {
+            webService = new FantasySportsWebService();
+        }
 
         public Game Game(string gameId)
         {
             var json = webService.Game(gameId);
-            return JsonConvert.DeserializeObject<WebServiceResponse>(json).fantasy_content?.game.Single();
+            return JsonConvert.DeserializeObject<WebServiceResponse>(json)?.fantasy_content?.game.Single();
         }
 
         public StatCategories GameStatCategories(string game_key)
@@ -104,7 +109,6 @@ namespace FantasyFootball.Data.Yahoo
         public IEnumerable<Player> Players(string game_key)
         {
             int start = 0;
-            const int size = 25;
             while (true)
             {
                 var xml = webService.Players(game_key, start);
@@ -114,10 +118,10 @@ namespace FantasyFootball.Data.Yahoo
                     yield return XmlConvert.Deserialize<Player>(player.ToString());
 
                 var count = players.Attribute("count");
-                if (count == null || int.Parse(count.Value) < size)
+                if (count == null)
                     break;
 
-                start += size;
+                start += int.Parse(count.Value);
             }
         }
 

@@ -1,9 +1,11 @@
-﻿using Dapper;
+﻿
+using Dapper;
 using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Rosters;
 using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
+using FantasyFootball.Terminal.Daily;
 using FantasyFootball.Terminal.Database;
 using FantasyFootball.Terminal.Draft;
 using FantasyFootball.Terminal.Preseason;
@@ -27,7 +29,7 @@ namespace FantasyFootball.Terminal
             ConsolePrepper.Prep();
 
             using (var connection = new SQLiteConnection(connectionString))
-            new Menu("Main Menu", new List<Menu>
+                new Menu("Main Menu", new List<Menu>
             {
                 new Menu("Preseason", new List<Menu>
                 {
@@ -143,6 +145,10 @@ namespace FantasyFootball.Terminal
                             Console.WriteLine($"{x.transaction_key} {x.type}");
                         }
                     })
+                }),
+                new Menu("Daily", new List<Menu>{
+                     new Menu("Model1", _=>DailyModel1.Do(connection,2045014)),
+                     new Menu("Model2", _=>DailyModel2.Do(connection)),
                 }),
                 new Menu("Experiments",new List<Menu>{
                     new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),

@@ -54,6 +54,12 @@
     <Reference Include="Hangfire.MemoryStorage, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.MemoryStorage.1.5.1\lib\net40\Hangfire.MemoryStorage.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.5.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.5.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -77,6 +83,7 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.105.2\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -92,6 +99,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsolePrepper.cs" />
+    <Compile Include="Daily\DailyModel1.cs" />
+    <Compile Include="Daily\DailyModel2.cs" />
+    <Compile Include="Daily\DailyPlayer.cs" />
+    <Compile Include="Daily\LineupGenerator.cs" />
     <Compile Include="Database\ByeOperations.cs" />
     <Compile Include="Database\DraftOperations.cs" />
     <Compile Include="Database\PlayerOpertations.cs" />
@@ -118,7 +129,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FantasyFootball.Core\FantasyFootball.Core.csproj">

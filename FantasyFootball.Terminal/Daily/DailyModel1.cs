@@ -154,7 +154,7 @@ namespace FantasyFootball.Terminal.Daily
             var threshold = average * 9 * (10.0 / 9);
             Console.WriteLine($"{sw.Elapsed} Average score of players: {average} Threshold: {threshold}");
 
-            var lineups = LineupGenerator.GenerateLineups(players).Where(l => l.Sum(p => p.Salary) <= budget);
+            var lineups = LineupGenerator.GenerateLineups(players, budget).Where(l => l.Sum(p => p.Salary) <= budget);
             
             lineups = lineups.Where(l => l.Sum(p => points[p.Id]) >= threshold).Distinct(new LineupEqualityComparer()).ToArray();
 

@@ -18,6 +18,42 @@ namespace FantasyFootball.Terminal.Daily
 {
     public class DailyModel2
     {
+        private readonly string dataDirectory;
+        private readonly SQLiteConnection connection;
+        private readonly Dictionary<string, HtmlDocument> positionPage;
+
+        public DailyModel2(SQLiteConnection connection,string dataDirectory)
+        {
+            this.connection = connection;
+            this.dataDirectory = dataDirectory;
+            this.positionPage = new Dictionary<string, HtmlDocument>();
+        }
+
+        private HtmlDocument DocumentByPosition(string position)
+        {
+            if (!positionPage.ContainsKey(position))
+            {
+                string filename;
+                switch (position)
+                {
+                    case "QB": filename = @"qb.html"; break;
+                    case "WR": filename = @"wr.html"; break;
+                    case "RB": filename = @"rb.html"; break;
+                    case "TE": filename = @"te.html"; break;
+                    case "DEF": filename = @"dst.html"; break;
+                    default: throw new ArgumentOutOfRangeException();
+                }
+                var file = Directory.EnumerateDirectories(dataDirectory + @"\fantasypros")
+                    .OrderByDescending(d => DateTime.ParseExact(Path.GetFileName(d), "yyyy-MM-dd HH-mm-ss", (IFormatProvider)null))
+                    .Select(d => Path.Combine(d, filename))
+                    .First(f => File.Exists(f));
+                var document = new HtmlDocument();
+                document.LoadHtml(File.ReadAllText(file));
+                positionPage[position] = document;
+            }
+            return positionPage[position];
+        }
+
 		static Dictionary<float, double> Combine(IReadOnlyDictionary<float, double> A, IReadOnlyDictionary<float, double> B)
 		{
 			var outcome = new Dictionary<float, double>();
@@ -48,22 +84,9 @@ namespace FantasyFootball.Terminal.Daily
 			return player.Name;
 		}
 
-        static IReadOnlyDictionary<float,double> ExpectedPoints(SQLiteConnection connection, DailyPlayer player)
+        IReadOnlyDictionary<float,double> ExpectedPoints(SQLiteConnection connection, DailyPlayer player)
         {
-			string filename = @"C:\Users\Chris\OneDrive\Projects\data\FantasyFootball\fantasypros\2017-09-18";
-			switch (player.Position)
-			{
-				case "QB":filename += @"\qb.html";break;
-				case "WR": filename += @"\wr.html"; break;
-				case "RB": filename += @"\rb.html"; break;
-				case "TE":filename += @"\te.html"; break;
-				case "DEF":filename += @"\dst.html"; break;
-				default:throw new ArgumentOutOfRangeException();
-			}
-			var html = File.ReadAllText(filename);
-            var document = new HtmlDocument();
-            document.LoadHtml(html);
-            var table=document.GetElementbyId("data");
+            var table = DocumentByPosition(player.Position).GetElementbyId("data");
 			var nameToSearchFor = NameToSearchFor(player);
             var row=table.Element("tbody").Elements("tr").SingleOrDefault(tr=>tr.Elements("td").First().Elements("a").First().InnerText==nameToSearchFor);
 
@@ -141,10 +164,7 @@ namespace FantasyFootball.Terminal.Daily
 
 		private static Dictionary<float, double> Estimate(float mean)
 		{
-			var stddev = 1.0;
-			var normal = new Normal(mean, stddev);
-			//var total=0.0;
-
+            var normal = new Normal(mean, Math.Sqrt(mean));
 
 			var count = 8.0;
 			var a = Enumerable.Range(1,(int) count);
@@ -162,13 +182,9 @@ namespace FantasyFootball.Terminal.Daily
             private string ConcatIds(DailyPlayer[] players) => string.Join(":", players.OrderBy(p => p.Id).Select(p => p.Id));
         }
 
-        public static void Do(SQLiteConnection connection)
+        public void Do(int contestId= 2046081)
         {
-			var contestId = 2045014;
 			//var seriesId = 3578;
-			var year = 2017;
-			var service = new FantasySportsService();			
-            var game_key = service.Games().Single(g => g.season == year).game_key;
 
             var budget = 200;
 
@@ -191,6 +207,8 @@ namespace FantasyFootball.Terminal.Daily
             var points = players.ToDictionary(p => p.Id, p => ExpectedPoints(connection, p));
 			players = players.Where(p => !points[p.Id].ContainsKey(0f) || points[p.Id][0f] < 1).ToArray();
             Console.WriteLine($"{sw.Elapsed} {players.Length} players expected to get any points");
+            players = players.Where(player => points[player.Id].Where(p => p.Key > 5).Sum(p => p.Value) > 0.75).ToArray();
+            Console.WriteLine($"{sw.Elapsed} {players.Length} players with 75% chance to get 5 points");
             // players = players.Where(player =>
             // {
             //     return !players
@@ -202,7 +220,7 @@ namespace FantasyFootball.Terminal.Daily
             // Console.WriteLine($"{sw.Elapsed} {players.Length} players who are strictly best with regard to salary");
 
             //var average = players.Average(p => points[p.Id]);
-			var threshold = 95f;//average * 9 * (10.0 / 9);
+			var threshold = 100f;//average * 9 * (10.0 / 9);
 								//Console.WriteLine($"{sw.Elapsed} Average score of players: {average} Threshold: {threshold}");
 
 			
@@ -214,10 +232,10 @@ namespace FantasyFootball.Terminal.Daily
 
 			var producer = new Thread(() =>
 			  {
-				  foreach (var lineup in LineupGenerator.GenerateLineups(players).Where(l => l.Sum(p => p.Salary) <= budget))
+				  foreach (var lineup in LineupGenerator.GenerateLineups(players, budget).Where(l => l.Sum(p => p.Salary) <= budget))
 				  {
 					  queue.Enqueue(lineup);
-					  if (queue.Count > 1000) Thread.Sleep(TimeSpan.FromSeconds(1));
+					  if (queue.Count > 100000) Thread.Sleep(TimeSpan.FromSeconds(1));
 				  }
 				  done = true;
 			  });
@@ -232,8 +250,10 @@ namespace FantasyFootball.Terminal.Daily
 						DailyPlayer[] lineup;
 						if (queue.TryDequeue(out lineup))
 						{
-							if (MoreLikelyToCash(lineup, points, threshold))
-								qualified.Add(lineup);
+                            if (ChanceToCash(lineup, points, threshold) > 0.666f)
+                            {
+                                qualified.Add(lineup);
+                            }
 							Interlocked.Increment(ref processed);
 						}
 						else
@@ -247,11 +267,23 @@ namespace FantasyFootball.Terminal.Daily
 			producer.Start();
 			foreach (var consumer in consumers)
 				consumer.Start();
-			while (!done || !queue.IsEmpty)
-			{
-				Console.WriteLine($"{sw.Elapsed} {queue.Count} {qualified.Count}/{processed}");
-				Thread.Sleep(TimeSpan.FromSeconds(3));
-			}
+            while (!done || !queue.IsEmpty)
+            {
+                Console.WriteLine($"{sw.Elapsed} {queue.Count} {qualified.Count}/{processed}");
+                if (qualified.Any())
+                {
+                    var best = qualified.OrderByDescending(l => ChanceToCash(l, points, threshold)).First();
+                    var orderedLineup = best.OrderBy(p => p.Position).ThenBy(p => p.Name);
+                    Console.WriteLine(string.Join(" ", new[]{
+                        $"Chace to Cash: {ChanceToCash(best,points,threshold)}",
+                        $"Salary: ${best.Sum(p => p.Salary)}"
+                    }));
+                    Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(0).Take(3).Select(p => p.Name))}");
+                    Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(3).Take(3).Select(p => p.Name))}");
+                    Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(6).Take(3).Select(p => p.Name))}");
+                }
+                Thread.Sleep(TimeSpan.FromSeconds(5));
+            }
 			producer.Join();
 			foreach (var consumer in consumers)
 				consumer.Join();
@@ -267,7 +299,7 @@ namespace FantasyFootball.Terminal.Daily
                 var orderedLineup = lineup.OrderBy(p => p.Position).ThenBy(p => points[p.Id]).ThenBy(p => p.Name);
 
                 Console.WriteLine(string.Join(" ", new[]{
-                        $"Chace to Cash: {ChanceToCash(lineup,points,threshold)}",
+                        $"Chace to Cash: {ChanceToCash(lineup,points,threshold):P}",
                         $"Salary: ${lineup.Sum(p => p.Salary)}"
                     }));
                 Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(0).Take(3).Select(p => p.Name))}");
@@ -276,15 +308,30 @@ namespace FantasyFootball.Terminal.Daily
             }
         }
 
-        private static bool MoreLikelyToCash(DailyPlayer[] lineup, Dictionary<string, IReadOnlyDictionary<float,double>> points,float threshold)
+        private ConcurrentDictionary<DailyPlayer[], double> chances = new ConcurrentDictionary<DailyPlayer[], double>();
+        private double ChanceToCash(DailyPlayer[] lineup, Dictionary<string, IReadOnlyDictionary<float, double>> points, float threshold)
 		{
-			return ChanceToCash(lineup, points, threshold) > 0.55;
-		}
+            return chances.GetOrAdd(lineup, l =>
+            {
+                var outcome = LineupDistribution(string.Join(",", lineup.Select(p => p.Id).Reverse()), points);
+                return outcome.Where(x => x.Key >= threshold).Sum(x => x.Value);
+            });
+        }
 
-		
-		private static double ChanceToCash(DailyPlayer[] lineup, Dictionary<string, IReadOnlyDictionary<float, double>> points, float threshold)
-		{
-			throw new Exception();
-		}
-	}
+        private ConcurrentDictionary<string, IReadOnlyDictionary<float, double>> lineupDist = new ConcurrentDictionary<string, IReadOnlyDictionary<float, double>>();
+        private IReadOnlyDictionary<float, double> LineupDistribution(string lineupKey, Dictionary<string, IReadOnlyDictionary<float, double>> points)
+        {
+            return lineupDist.GetOrAdd(lineupKey, k =>
+            {
+                if (k == "") return new Dictionary<float, double> { { 0, 1 } };
+
+                var parts = k.Split(new[] { ',' }, 2);
+
+                if (parts.Length == 1)
+                    return points[parts[0]];
+
+                return Combine(LineupDistribution(parts[0], points), LineupDistribution(parts[1], points));
+            });
+        }
+    }
 }

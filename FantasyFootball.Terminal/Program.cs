@@ -1,5 +1,4 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Rosters;
 using FantasyFootball.Core.Simulation;
@@ -9,6 +8,7 @@ using FantasyFootball.Terminal.Daily;
 using FantasyFootball.Terminal.Database;
 using FantasyFootball.Terminal.Draft;
 using FantasyFootball.Terminal.Preseason;
+using FantasyFootball.Terminal.Scraping;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -25,6 +25,7 @@ namespace FantasyFootball.Terminal
             var league_key = "371.l.88448";
             var team_id = 9;
             var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
+            var dataDirectory = ConfigurationManager.AppSettings["DataDirectory"];
 
             ConsolePrepper.Prep();
 
@@ -133,6 +134,7 @@ namespace FantasyFootball.Terminal
                 {
                     new Menu("All", _ => new Scraper().Scrape(league_key, new FantasySportsService(), connection)),
                     new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, new FantasySportsService(), connection)),
+                    new Menu ("Fantasy Pros", _ =>FantasyPros.Scrape(dataDirectory))
                 }),
                 new Menu("Midseason",new List<Menu>{
                     new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out, league_key,team_id)),
@@ -148,7 +150,7 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Daily", new List<Menu>{
                      new Menu("Model1", _=>DailyModel1.Do(connection,2045014)),
-                     new Menu("Model2", _=>DailyModel2.Do(connection)),
+                     new Menu("Model2", _=>new DailyModel2(connection,dataDirectory).Do()),
                 }),
                 new Menu("Experiments",new List<Menu>{
                     new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),

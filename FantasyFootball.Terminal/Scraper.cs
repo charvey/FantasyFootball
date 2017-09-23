@@ -20,7 +20,7 @@ namespace FantasyFootball.Terminal
             GetPredictions(league_key, service, connection, webDriver =>
              {
                  ScrapeMissing(connection, league_key, service, webDriver);
-                 ScrapeOld(connection, webDriver);
+                 ScrapeOld(connection, league_key, service, webDriver);
                  ScrapeMissing(connection, league_key, service, webDriver);
              });
         }
@@ -135,7 +135,7 @@ namespace FantasyFootball.Terminal
             }
         }
 
-        private void ScrapeOld(SQLiteConnection connection, ChromeDriver webDriver)
+        private void ScrapeOld(SQLiteConnection connection, string league_key, FantasySportsService service, ChromeDriver webDriver)
         {
             while (true)
             {
@@ -149,10 +149,13 @@ namespace FantasyFootball.Terminal
 						WHERE Year = 2017 AND Positions NOT LIKE '%,%'
 						GROUP BY Team.Id, Positions, Week
 					)
-					WHERE AsOf < @before
+					WHERE AsOf < @before AND Week >= @week
 					ORDER BY AsOF",
-                    new { before = DateTime.Now.AddDays(-2).ToString("O") }
-                    );
+                    new
+                    {
+                        before = DateTime.Now.AddDays(-2).ToString("O"),
+                        week = service.League(league_key).current_week
+                    });
 
                 if (!nextGroups.Any())
                     break;

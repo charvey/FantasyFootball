@@ -101,6 +101,7 @@
     <Compile Include="ConsolePrepper.cs" />
     <Compile Include="Daily\DailyFantasyService.cs" />
     <Compile Include="Daily\DailyModel1.cs" />
+    <Compile Include="Daily\DailyModel3.cs" />
     <Compile Include="Daily\DailyModel2.cs" />
     <Compile Include="Daily\DailyPlayer.cs" />
     <Compile Include="Daily\FantasyPros.cs" />

@@ -143,14 +143,11 @@ namespace FantasyFootball.Terminal.Daily
             private string ConcatIds(DailyPlayer[] players) => string.Join(":", players.OrderBy(p => p.Id).Select(p => p.Id));
         }
 
-        public void Do(int contestId= 2046081)
+        public void Do(int contestId)
         {
-			//var seriesId = 3578;
-
             var budget = 200;
 
             var sw = Stopwatch.StartNew();
-            
 
             var players = DailyFantasyService.GetPlayers(contestId).ToArray();
             var playerLookup = players.ToDictionary(p => p.Id);

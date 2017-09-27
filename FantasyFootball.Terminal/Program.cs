@@ -150,7 +150,8 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Daily", new List<Menu>{
                      new Menu("Model1", _=>DailyModel1.Do(connection,2045014)),
-                     new Menu("Model2", _=>new DailyModel2(connection,dataDirectory).Do()),
+                     new Menu("Model2", _=>new DailyModel2(connection,dataDirectory).Do(2046081)),
+                     new Menu("Model3", _=>new DailyModel3(connection,dataDirectory).Do(2060717))
                 }),
                 new Menu("Experiments",new List<Menu>{
                     new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),

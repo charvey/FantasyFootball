@@ -94,15 +94,6 @@ namespace FantasyFootball.Terminal.Daily
             var game_key = service.Games().Single(g => g.season == year).game_key;
 
             var budget = 200;
-            
-            //  contest series  entry
-            //  1993845 3569    40476877
-            //  2020325 3576    40782716
-            //  2029280 3576    40781975
-            //  2019929 3576    40781838
-            //  2019949 3576    40781723
-
-            //  2031717 3571    40880101
 
             var sw = Stopwatch.StartNew();
 
@@ -144,7 +135,7 @@ namespace FantasyFootball.Terminal.Daily
             Console.WriteLine($"{sw.Elapsed} Average score of players: {average} Threshold: {threshold}");
 
             var lineups = LineupGenerator.GenerateLineups(players, budget).Where(l => l.Sum(p => p.Salary) <= budget);
-            
+
             lineups = lineups.Where(l => l.Sum(p => points[p.Id]) >= threshold).Distinct(new LineupEqualityComparer()).ToArray();
 
             Console.WriteLine($"{lineups.Count()} lineups at least {threshold} points");

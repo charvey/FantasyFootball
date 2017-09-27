@@ -1,18 +1,12 @@
-using Dapper;
-using FantasyFootball.Data.Yahoo;
-using FantasyFootball.Terminal.Database;
+using HtmlAgilityPack;
+using MathNet.Numerics.Distributions;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.IO;
-using HtmlAgilityPack;
-using MathNet.Numerics.Distributions;
-using System.Collections.Concurrent;
 using System.Threading;
-using System.Runtime.Caching;
 
 namespace FantasyFootball.Terminal.Daily
 {
@@ -20,38 +14,13 @@ namespace FantasyFootball.Terminal.Daily
     {
         private readonly string dataDirectory;
         private readonly SQLiteConnection connection;
-        private readonly Dictionary<string, HtmlDocument> positionPage;
+        private readonly FantasyPros fantasyPros;
 
         public DailyModel2(SQLiteConnection connection,string dataDirectory)
         {
             this.connection = connection;
             this.dataDirectory = dataDirectory;
-            this.positionPage = new Dictionary<string, HtmlDocument>();
-        }
-
-        private HtmlDocument DocumentByPosition(string position)
-        {
-            if (!positionPage.ContainsKey(position))
-            {
-                string filename;
-                switch (position)
-                {
-                    case "QB": filename = @"qb.html"; break;
-                    case "WR": filename = @"wr.html"; break;
-                    case "RB": filename = @"rb.html"; break;
-                    case "TE": filename = @"te.html"; break;
-                    case "DEF": filename = @"dst.html"; break;
-                    default: throw new ArgumentOutOfRangeException();
-                }
-                var file = Directory.EnumerateDirectories(dataDirectory + @"\fantasypros")
-                    .OrderByDescending(d => DateTime.ParseExact(Path.GetFileName(d), "yyyy-MM-dd HH-mm-ss", (IFormatProvider)null))
-                    .Select(d => Path.Combine(d, filename))
-                    .First(f => File.Exists(f));
-                var document = new HtmlDocument();
-                document.LoadHtml(File.ReadAllText(file));
-                positionPage[position] = document;
-            }
-            return positionPage[position];
+            this.fantasyPros = new FantasyPros(dataDirectory);
         }
 
 		static Dictionary<float, double> Combine(IReadOnlyDictionary<float, double> A, IReadOnlyDictionary<float, double> B)
@@ -78,17 +47,9 @@ namespace FantasyFootball.Terminal.Daily
 			return outcome;
 		}
 
-        static string NameToSearchFor(DailyPlayer player)
-		{
-			if (player.Name == "Todd Gurley II") return "Todd Gurley";
-			return player.Name;
-		}
-
-        IReadOnlyDictionary<float,double> ExpectedPoints(SQLiteConnection connection, DailyPlayer player)
+        IReadOnlyDictionary<float, double> ExpectedPoints(SQLiteConnection connection, DailyPlayer player)
         {
-            var table = DocumentByPosition(player.Position).GetElementbyId("data");
-			var nameToSearchFor = NameToSearchFor(player);
-            var row=table.Element("tbody").Elements("tr").SingleOrDefault(tr=>tr.Elements("td").First().Elements("a").First().InnerText==nameToSearchFor);
+            var row = fantasyPros.GetPlayerRow(player);
 
 			if (row == null)
 			{

@@ -134,7 +134,7 @@ namespace FantasyFootball.Terminal
                 {
                     new Menu("All", _ => new Scraper().Scrape(league_key, new FantasySportsService(), connection)),
                     new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, new FantasySportsService(), connection)),
-                    new Menu ("Fantasy Pros", _ =>FantasyPros.Scrape(dataDirectory))
+                    new Menu ("Fantasy Pros", _ =>Scraping.FantasyPros.Scrape(dataDirectory))
                 }),
                 new Menu("Midseason",new List<Menu>{
                     new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out, league_key,team_id)),

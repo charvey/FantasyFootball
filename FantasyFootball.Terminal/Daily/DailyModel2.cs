@@ -190,17 +190,8 @@ namespace FantasyFootball.Terminal.Daily
 
             var sw = Stopwatch.StartNew();
             
-            var playerUrl = $"https://dfyql-ro.sports.yahoo.com/v2/export/contestPlayers?contestId={contestId}";
-            var lines = new HttpClient().GetStringAsync(playerUrl).Result.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Skip(1);
 
-            var players = lines
-                .Select(l => l.Split(',')).Select(l => new DailyPlayer
-                {
-                    Id = l[0],
-                    Name = l[1] + " " + l[2],
-                    Position = l[3],
-                    Salary = int.Parse(l[8])
-                }).ToArray();
+            var players = DailyFantasyService.GetPlayers(contestId).ToArray();
             var playerLookup = players.ToDictionary(p => p.Id);
 
             Console.WriteLine($"{sw.Elapsed} {players.Length} players eligible");

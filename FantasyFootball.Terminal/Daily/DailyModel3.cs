@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -12,13 +13,18 @@ namespace FantasyFootball.Terminal.Daily
 {
     public class DailyModel3
     {
+        private readonly TextWriter output;
         private readonly string dataDirectory;
         private readonly SQLiteConnection connection;
         private readonly FantasyPros fantasyPros;
 
-        public DailyModel3(SQLiteConnection connection, string dataDirectory)
+        private Dictionary<string, Normal> points;
+        private float threshold;
+
+        public DailyModel3(SQLiteConnection connection, TextWriter output, string dataDirectory)
         {
             this.connection = connection;
+            this.output = output;
             this.dataDirectory = dataDirectory;
             this.fantasyPros = new FantasyPros(dataDirectory);
         }
@@ -33,13 +39,13 @@ namespace FantasyFootball.Terminal.Daily
             return new Normal(x.Mean * m, x.StdDev * Math.Abs(m));
         }
 
-        Normal ExpectedPoints(SQLiteConnection connection, DailyPlayer player)
+        Normal ExpectedPoints(DailyPlayer player, DateTime at)
         {
-            var row = fantasyPros.GetPlayerRow(player);
+            var row = fantasyPros.GetPlayerRow(player, at);
 
             if (row == null)
             {
-                Console.WriteLine($"Can't find {player.Name} {player.Salary:C}");
+                output.WriteLine($"Can't find {player.Name} {player.Salary:C}");
                 return new Normal(0, 0);
             }
 
@@ -123,39 +129,38 @@ namespace FantasyFootball.Terminal.Daily
 
         public void Do(int contestId)
         {
-            var budget = 200;
+            var contest = DailyFantasyService.GetContest(contestId);
+            var budget = contest.salaryCap;
+            var startTime = new DateTime(1970, 1, 1).AddMilliseconds(contest.startTime);
 
             var sw = Stopwatch.StartNew();
 
             var players = DailyFantasyService.GetPlayers(contestId).ToArray();
             var playerLookup = players.ToDictionary(p => p.Id);
 
-            Console.WriteLine($"{sw.Elapsed} {players.Length} players eligible");
-            var points = players.ToDictionary(p => p.Id, p => ExpectedPoints(connection, p));
+            output.WriteLine($"{sw.Elapsed} {players.Length} players eligible");
+            points = players.ToDictionary(p => p.Id, p => ExpectedPoints(p, startTime));
+            threshold = 100f;
 
             {
                 var pointLine = 2;
                 var chance = 0.6;
                 players = players.Where(player => player.Position == "DEF" || points[player.Id].CumulativeDistribution(pointLine) < (1 - chance)).ToArray();
-                Console.WriteLine($"{sw.Elapsed} {players.Length} players with {chance:P} chance to get {pointLine} points");
+                output.WriteLine($"{sw.Elapsed} {players.Length} players with {chance:P} chance to get {pointLine} points");
             }
-
-            var threshold = 100f;
 
             var done = false;
             var queue = new ConcurrentQueue<DailyPlayer[]>();
-            var qualified = new ConcurrentBag<DailyPlayer[]>();
+            var qualified = new ConcurrentDictionary<DailyPlayer[], double>();
             var processed = 0L;
+            var qualifiedCount = 0L;
+            var producer = new LineupGeneratorProducer(players, budget);
 
-            var producer = new Thread(() =>
-              {
-                  foreach (var lineup in LineupGenerator.GenerateLineups(players, budget).Where(l => l.Sum(p => p.Salary) <= budget))
-                  {
-                      queue.Enqueue(lineup);
-                      if (queue.Count > 100000) Thread.Yield();
-                  }
-                  done = true;
-              });
+            new Thread(() =>
+             {
+                 producer.Start(queue);
+                 done = true;
+             }).Start();
 
             var consumers = new Thread[10];
             for (var i = 0; i < consumers.Length; i++)
@@ -167,9 +172,12 @@ namespace FantasyFootball.Terminal.Daily
                         DailyPlayer[] lineup;
                         if (queue.TryDequeue(out lineup))
                         {
-                            if (ChanceToCash(lineup, points, threshold) > 0.6f)
+                            var chanceToCash = ChanceToCash(lineup);
+                            if (chanceToCash > 0.6f)
                             {
-                                qualified.Add(lineup);
+                                if (!qualified.TryAdd(lineup, chanceToCash))
+                                    throw new InvalidOperationException();
+                                Interlocked.Increment(ref qualifiedCount);
                             }
                             Interlocked.Increment(ref processed);
                         }
@@ -181,60 +189,63 @@ namespace FantasyFootball.Terminal.Daily
                 });
             }
 
-            producer.Start();
             foreach (var consumer in consumers)
                 consumer.Start();
             while (!done || !queue.IsEmpty)
             {
-                Console.WriteLine($"{sw.Elapsed} {queue.Count} {qualified.Count}/{processed}");
+                output.WriteLine($"{sw.Elapsed} {queue.Count} {qualifiedCount}/{processed} {producer.Done}/{producer.Total} ({1.0 * producer.Done / producer.Total:P})");
                 if (qualified.Any())
                 {
-                    var best = qualified.OrderByDescending(l => ChanceToCash(l, points, threshold)).First();
-                    var orderedLineup = best.OrderBy(p => p.Position).ThenBy(p => p.Name);
-                    Console.WriteLine(string.Join(" ", new[]{
-                        $"Chace to Cash: {ChanceToCash(best,points,threshold)}",
-                        $"Salary: ${best.Sum(p => p.Salary)}"
-                    }));
-                    Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(0).Take(3).Select(p => p.Name))}");
-                    Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(3).Take(3).Select(p => p.Name))}");
-                    Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(6).Take(3).Select(p => p.Name))}");
+                    var ordered = qualified.ToArray().OrderByDescending(l => l.Value);
+                    var best = ordered.First();
+                    DisplayInfo(best.Key);
+                    foreach(var x in ordered.Skip(1000))
+                    {
+                        if (!qualified.TryRemove(x.Key, out double _))
+                            throw new Exception();
+                    }
                 }
                 Thread.Sleep(TimeSpan.FromSeconds(5));
             }
-            producer.Join();
             foreach (var consumer in consumers)
                 consumer.Join();
 
-            var lineups = qualified.Distinct(new LineupEqualityComparer()).ToArray();
+            var lineups = qualified.Keys.Distinct(new LineupEqualityComparer()).ToArray();
 
-            Console.WriteLine($"{lineups.Count()} lineups at least {threshold} points");
+            output.WriteLine($"{lineups.Count()} lineups at least {threshold} points");
 
-            lineups = lineups.OrderByDescending(l => ChanceToCash(l, points, threshold)).ToArray();
+            lineups = lineups.OrderByDescending(l => ChanceToCash(l)).ToArray();
 
             foreach (var lineup in lineups.Take(20))
             {
-                var orderedLineup = lineup.OrderBy(p => p.Position).ThenBy(p => p.Name);
-
-                Console.WriteLine(string.Join(" ", new[]{
-                        $"Chace to Cash: {ChanceToCash(lineup,points,threshold):P}",
-                        $"Salary: ${lineup.Sum(p => p.Salary)}"
-                    }));
-                Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(0).Take(3).Select(p => p.Name + " " + p.Position))}");
-                Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(3).Take(3).Select(p => p.Name + " " + p.Position))}");
-                Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(6).Take(3).Select(p => p.Name + " " + p.Position))}");
+                DisplayInfo(lineup);
             }
         }
 
-        private double ChanceToCash(DailyPlayer[] lineup, Dictionary<string, Normal> points, float threshold)
+        private double ChanceToCash(DailyPlayer[] lineup)
         {
             var mean = 0.0;
             var totalVariance = 0.0;
             foreach (var player in lineup)
             {
-                mean += points[player.Id].Mean;
-                totalVariance += points[player.Id].Variance;
+                var playerPoints = points[player.Id];
+                mean += playerPoints.Mean;
+                totalVariance += playerPoints.Variance;
             }
             return 1 - new Normal(mean, Math.Sqrt(totalVariance)).CumulativeDistribution(threshold);
+        }
+
+        private void DisplayInfo(DailyPlayer[] lineup)
+        {
+            var orderedLineup = lineup.OrderBy(p => p.Position).ThenBy(p => p.Name);
+
+            output.WriteLine(string.Join(" ", new[]{
+                        $"Chace to Cash: {ChanceToCash(lineup):P}",
+                        $"Salary: ${lineup.Sum(p => p.Salary)}"
+                    }));
+            output.WriteLine($"\t{string.Join(",", orderedLineup.Skip(0).Take(3).Select(p => p.Name + " " + p.Position))}");
+            output.WriteLine($"\t{string.Join(",", orderedLineup.Skip(3).Take(3).Select(p => p.Name + " " + p.Position))}");
+            output.WriteLine($"\t{string.Join(",", orderedLineup.Skip(6).Take(3).Select(p => p.Name + " " + p.Position))}");
         }
     }
 }

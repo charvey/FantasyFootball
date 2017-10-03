@@ -14,8 +14,17 @@ namespace FantasyFootball.Terminal.Daily
             var rbPairs = RBPairs(playersByPosition["RB"]).ToArray();
             var wrSets = WRSets(playersByPosition["WR"]).ToArray();
 
+            foreach (var x in playersByPosition)
+            {
+                Console.WriteLine($"{x.Key}:{x.Value.Length}");
+            }
+
             Console.WriteLine(1L * rbPairs.Length * wrSets.Length
                 * playersByPosition["TE"].Length * playersByPosition["QB"].Length * playersByPosition["DEF"].Length
+                * (playersByPosition["RB"].Length + playersByPosition["WR"].Length + playersByPosition["TE"].Length - 5));
+
+            Console.WriteLine(1L * rbPairs.Length * wrSets.Length
+                * playersByPosition["TE"].Length
                 * (playersByPosition["RB"].Length + playersByPosition["WR"].Length + playersByPosition["TE"].Length - 5));
 
             foreach (var rbs in rbPairs)

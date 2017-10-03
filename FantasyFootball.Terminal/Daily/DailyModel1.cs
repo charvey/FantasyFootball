@@ -5,12 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace FantasyFootball.Terminal.Daily
 {
     public class DailyModel1
     {
+        private readonly TextWriter output;
+
+        public DailyModel1(TextWriter output)
+        {
+            this.output = output;
+        }
+
         static double ExpectedPoints(SQLiteConnection connection, DailyPlayer player, int seriesId)
         {
             return connection.GetPrediction(GetPlayerIdForDailyPlayer(connection, player),
@@ -86,21 +94,20 @@ namespace FantasyFootball.Terminal.Daily
             private string ConcatIds(DailyPlayer[] players) => string.Join(":", players.OrderBy(p => p.Id).Select(p => p.Id));
         }
 
-        public static void Do(SQLiteConnection connection, int contestId)
+        public void Do(SQLiteConnection connection, int contestId)
         {
             var service = new FantasySportsService();
-            var seriesId = connection.QuerySingle<int>("SELECT SeriesId FROM DailyFantasyContest WHERE Id=@id", new { id = contestId });
-            var year = connection.QuerySingle<int>("SELECT Year FROM DailyFantasySeries WHERE Id=@id", new { id = seriesId });
+            var contest = DailyFantasyService.GetContest(contestId);
+            var year = new DateTime(1970, 1, 1).AddMilliseconds(contest.startTime).Year;
             var game_key = service.Games().Single(g => g.season == year).game_key;
-
-            var budget = 200;
+            var budget = contest.salaryCap;
 
             var sw = Stopwatch.StartNew();
 
             var players = DailyFantasyService.GetPlayers(contestId).ToArray();
             var playerLookup = players.ToDictionary(p => p.Id);
 
-            Console.WriteLine($"{sw.Elapsed} {players.Length} players eligible");
+            output.WriteLine($"{sw.Elapsed} {players.Length} players eligible");
             players = players.Where(player =>
             {
                 try
@@ -113,10 +120,10 @@ namespace FantasyFootball.Terminal.Daily
                     return false;
                 }
             }).ToArray();
-            Console.WriteLine($"{sw.Elapsed} {players.Length} players I know about");
-            var points = players.ToDictionary(p => p.Id, p => ExpectedPoints(connection, p, seriesId));
+            output.WriteLine($"{sw.Elapsed} {players.Length} players I know about");
+            var points = players.ToDictionary(p => p.Id, p => ExpectedPoints(connection, p, contest.seriesId));
             players = players.Where(p => points[p.Id] > 0).ToArray();
-            Console.WriteLine($"{sw.Elapsed} {players.Length} players expected to get any points");
+            output.WriteLine($"{sw.Elapsed} {players.Length} players expected to get any points");
             players = players.Where(player =>
             {
                 return !players
@@ -125,20 +132,20 @@ namespace FantasyFootball.Terminal.Daily
                 .Where(p => points[p.Id] > points[player.Id])
                 .Any();
             }).ToArray();
-            Console.WriteLine($"{sw.Elapsed} {players.Length} players who are strictly best with regard to salary");
+            output.WriteLine($"{sw.Elapsed} {players.Length} players who are strictly best with regard to salary");
 
             foreach (var player in players.OrderByDescending(p => CurrentPoints(connection, game_key, p)).Take(5))
-                Console.WriteLine($"{player.Name} {CurrentPoints(connection, game_key, player)}");
+                output.WriteLine($"{player.Name} {CurrentPoints(connection, game_key, player)}");
 
             var average = players.Average(p => points[p.Id]);
             var threshold = average * 9 * (10.0 / 9);
-            Console.WriteLine($"{sw.Elapsed} Average score of players: {average} Threshold: {threshold}");
+            output.WriteLine($"{sw.Elapsed} Average score of players: {average} Threshold: {threshold}");
 
             var lineups = LineupGenerator.GenerateLineups(players, budget).Where(l => l.Sum(p => p.Salary) <= budget);
 
             lineups = lineups.Where(l => l.Sum(p => points[p.Id]) >= threshold).Distinct(new LineupEqualityComparer()).ToArray();
 
-            Console.WriteLine($"{lineups.Count()} lineups at least {threshold} points");
+            output.WriteLine($"{lineups.Count()} lineups at least {threshold} points");
 
             lineups = lineups.OrderByDescending(l => l/*.Where(p => p.Position != "DEF")*/.Sum(p => points[p.Id])).ToArray();
 
@@ -146,15 +153,15 @@ namespace FantasyFootball.Terminal.Daily
             {
                 var orderedLineup = lineup.OrderBy(p => p.Position).ThenBy(p => points[p.Id]).ThenBy(p => p.Name);
 
-                Console.WriteLine(string.Join(" ", new[]{
+                output.WriteLine(string.Join(" ", new[]{
                         $"Total: {lineup.Sum(p => points[p.Id])}",
                         $"Without DEF: {lineup.Where(p => p.Position != "DEF").Sum(p => points[p.Id])}",
                         $"Salary: ${lineup.Sum(p => p.Salary)}",
                         $"Current Score: {lineup.Sum(p=>CurrentPoints(connection,game_key,p))}"
                     }));
-                Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(0).Take(3).Select(p => p.Name))}");
-                Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(3).Take(3).Select(p => p.Name))}");
-                Console.WriteLine($"\t{string.Join(",", orderedLineup.Skip(6).Take(3).Select(p => p.Name))}");
+                output.WriteLine($"\t{string.Join(",", orderedLineup.Skip(0).Take(3).Select(p => p.Name))}");
+                output.WriteLine($"\t{string.Join(",", orderedLineup.Skip(3).Take(3).Select(p => p.Name))}");
+                output.WriteLine($"\t{string.Join(",", orderedLineup.Skip(6).Take(3).Select(p => p.Name))}");
             }
         }
     }

@@ -3,61 +3,53 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FantasyFootball.Terminal.Daily
 {
     public class FantasyPros
     {
-        private readonly Dictionary<string, HtmlDocument> positionPage;
-        private readonly string dataDirectory;
+        private static readonly Dictionary<string, string> positionByFilename = new Dictionary<string, string>
+        {
+            { "qb.html","QB"},
+            { "wr.html","WR"},
+            { "rb.html","RB"},
+            { "te.html","TE"},
+            { "k.html","K" },
+            { "dst.html","DEF"}
+        };
+        private readonly Dictionary<string, IOrderedEnumerable<Tuple<DateTime, HtmlDocument>>> documents;
 
         public FantasyPros(string dataDirectory)
         {
-            this.positionPage = new Dictionary<string, HtmlDocument>();
-            this.dataDirectory = dataDirectory;
+            this.documents = Directory.EnumerateDirectories(dataDirectory + @"\fantasypros")
+                    .SelectMany(d => Directory.EnumerateFiles(d)
+                        .Select(f => Tuple.Create(DateTime.ParseExact(Path.GetFileName(d), "yyyy-MM-dd HH-mm-ss", (IFormatProvider)null), f))
+                    )
+                    .GroupBy(x => positionByFilename[Path.GetFileName(x.Item2)], x => Tuple.Create(x.Item1, HtmlDocumentFromFile(x.Item2)))
+                    .ToDictionary(x => x.Key, x => x.OrderByDescending(t => t.Item1));
         }
 
-        private HtmlDocument DocumentByPosition(string position)
+        private static HtmlDocument HtmlDocumentFromFile(string filename)
         {
-            if (!positionPage.ContainsKey(position))
-            {
-                string filename;
-                switch (position)
-                {
-                    case "QB": filename = @"qb.html"; break;
-                    case "WR": filename = @"wr.html"; break;
-                    case "RB": filename = @"rb.html"; break;
-                    case "TE": filename = @"te.html"; break;
-                    case "DEF": filename = @"dst.html"; break;
-                    default: throw new ArgumentOutOfRangeException();
-                }
-                var file = Directory.EnumerateDirectories(dataDirectory + @"\fantasypros")
-                    .OrderByDescending(d => DateTime.ParseExact(Path.GetFileName(d), "yyyy-MM-dd HH-mm-ss", (IFormatProvider)null))
-                    .Select(d => Path.Combine(d, filename))
-                    .First(f => File.Exists(f));
-                var document = new HtmlDocument();
-                document.LoadHtml(File.ReadAllText(file));
-                positionPage[position] = document;
-            }
-            return positionPage[position];
+            var document = new HtmlDocument();
+            document.LoadHtml(File.ReadAllText(filename));
+            return document;
         }
 
-
-        static string NameToSearchFor(DailyPlayer player)
+        private static string NameToSearchFor(DailyPlayer player)
         {
             if (player.Name == "Todd Gurley II") return "Todd Gurley";
             else if (player.Name == "Terrelle Pryor Sr.") return "Terrelle Pryor";
             else if (player.Name == "Patrick Mahomes II") return "Patrick Mahomes";
             else if (player.Name == "Mitchell Trubisky") return "Mitch Trubisky";
             else if (player.Name == "Rob Kelley") return "Robert Kelley";
+            else if (player.Name == "C.J. Ham") return "CJ Ham";
             return player.Name;
         }
 
-        public HtmlNode GetPlayerRow(DailyPlayer player)
+        public HtmlNode GetPlayerRow(DailyPlayer player, DateTime at)
         {
-            var table = DocumentByPosition(player.Position).GetElementbyId("data");
+            var table = documents[player.Position].First(d => d.Item1 <= at).Item2.GetElementbyId("data");
             var nameToSearchFor = NameToSearchFor(player);
             return table.Element("tbody").Elements("tr").SingleOrDefault(tr => tr.Elements("td").First().Elements("a").First().InnerText == nameToSearchFor);
         }

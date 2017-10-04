@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsolePrepper.cs" />
+    <Compile Include="Daily\BackTester.cs" />
     <Compile Include="Daily\BlockingCollectionSlim.cs" />
     <Compile Include="Daily\DailyFantasyService.cs" />
     <Compile Include="Daily\DailyModel1.cs" />

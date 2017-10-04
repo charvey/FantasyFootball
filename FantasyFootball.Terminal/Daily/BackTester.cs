@@ -1,12 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FantasyFootball.Terminal.Daily
 {
-    class BackTester
+    public class BackTester
     {
+        public static void Do(string dataDirectory)
+        {
+            foreach (var contest in DailyFantasyService.MyContests(dataDirectory).Where(c => !c.isCanceled))
+            {
+                Console.WriteLine($"{contest.id} {contest.title} {contest.winnings:C} {contest.rank}/{contest.entryCount}");
+            }
+        }
     }
 }

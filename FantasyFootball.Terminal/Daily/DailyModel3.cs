@@ -153,7 +153,7 @@ namespace FantasyFootball.Terminal.Daily
             players = players.Where(player => points[player.Id].Mean >= baseLineByPosition[player.Position]).ToArray();
             output.WriteLine($"{sw.Elapsed} {players.Length} players who are above targets ({string.Join(",", players.GroupBy(p => p.Position).Select(g => g.Key + ":" + g.Count()))})");
 
-            var queue = new BlockingCollection<DailyPlayer[]>(1000000);
+            var queue = new BlockingCollectionSlim<DailyPlayer[]>(1000000);
             var qualified = new ConcurrentDictionary<DailyPlayer[], double>();
             var processed = 0L;
             var qualifiedCount = 0L;

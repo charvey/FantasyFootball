@@ -9,20 +9,20 @@ namespace FantasyFootball.Terminal.Daily
     {
         private readonly DailyPlayer[] players;
         private readonly int budget;
-        private readonly BlockingCollection<DailyPlayer[]> pool;
+        private readonly BlockingCollectionSlim<DailyPlayer[]> pool;
 
         public LinqLineupGeneratorProducer(DailyPlayer[] players, int budget)
         {
             this.players = players;
             this.budget = budget;
-            this.pool = new BlockingCollection<DailyPlayer[]>();
+            this.pool = new BlockingCollectionSlim<DailyPlayer[]>();
         }
 
         public long Total;
 
-        public void Start(BlockingCollection<DailyPlayer[]> output)
+        public void Start(BlockingCollectionSlim<DailyPlayer[]> output)
         {
-            Enumerable.Repeat(0, output.BoundedCapacity).Select(_ => new DailyPlayer[9]).ToList().ForEach(l => pool.Add(l));
+            Enumerable.Repeat(0, output.Capacity).Select(_ => new DailyPlayer[9]).ToList().ForEach(l => pool.Add(l));
             Generate().ForAll(output.Add);
             output.CompleteAdding();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -28,17 +29,16 @@ namespace FantasyFootball.Core.Objects
             return all;
         }
 
-        public static Player Get(string id)
-        {
-            return All().Single(p => p.Id == id);
-        }
-
         public static Player From(FantasyFootball.Data.Yahoo.Models.Player player)
         {
-            if (player.display_position == "DEF")
-                return Players.All().Single(x => x.Positions.All(p => p == "DEF") && x.Team == player.editorial_team_abbr);
-            else
-                return Players.Get(player.player_id);
+            Debug.Assert(player.display_position.All(char.IsLetter));
+            return new Player
+            {
+                Id = player.player_id,
+                Name = player.name.full,
+                Positions = new[] { player.display_position },
+                Team = player.editorial_team_abbr
+            };
         }
     }
 }

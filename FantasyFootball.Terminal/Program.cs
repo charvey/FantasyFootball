@@ -137,7 +137,7 @@ namespace FantasyFootball.Terminal
                     new Menu ("Fantasy Pros", _ =>Scraping.FantasyPros.Scrape(dataDirectory))
                 }),
                 new Menu("Midseason",new List<Menu>{
-                    new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out, league_key,team_id)),
+                    new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out,(p,w)=>connection.GetPrediction(p.Id,2017,w), league_key,team_id)),
                     new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out,league_key,team_id)),
                     new Menu("Transactions", _ =>
                     {

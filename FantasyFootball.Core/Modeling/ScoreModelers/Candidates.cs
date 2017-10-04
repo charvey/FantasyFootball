@@ -4,6 +4,7 @@ using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.FooModels;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalDataFilters;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalGroupSpecifiers;
+using System;
 using System.Collections.Generic;
 
 namespace FantasyFootball.Core.Modeling.ScoreModelers
@@ -40,7 +41,9 @@ namespace FantasyFootball.Core.Modeling.ScoreModelers
                 new PredictedToScoreAtLeastAndNotFlukeHistoricalDataFilter(3,0.33)
             }.CrossJoin(new HistoricalGroupSpecifier[]
             {
-                new UngroupedHistoricalGroupSpecifier(),new ByPlayerHistoricalGroupSpecifier(),new ByPositionHistoricalGroupSpecifier()
+                new UngroupedHistoricalGroupSpecifier(),
+                new ByPlayerHistoricalGroupSpecifier(),
+                new ByPositionHistoricalGroupSpecifier(_=>throw new NotImplementedException())
             }, new FooModel[] { new AdjustedByYahooPredictionModel(), new RawScoreModel() }
             , (h, g, m) => new ComplexScoreCandidate(h, g, m));
 

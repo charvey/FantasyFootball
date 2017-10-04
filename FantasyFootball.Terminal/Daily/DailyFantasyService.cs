@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 
@@ -28,13 +29,21 @@ namespace FantasyFootball.Terminal.Daily
         public static Contest GetContest(int contestId)
         {
             var json = httpClient.GetStringAsync($"https://dfyql-ro.sports.yahoo.com/v2/contest/{contestId}").Result;
-            return JsonConvert.DeserializeObject<Response>(json).contests.result.Single();
+            return JsonConvert.DeserializeObject<ContestResponse>(json).contests.result.Single();
+        }
+
+        public static IEnumerable<UserContest> MyContests(string dataDirectory)
+        {
+            var json = File.ReadAllText(Path.Combine(dataDirectory, "userContests.json"));
+            return JsonConvert.DeserializeObject<UserContestResponse>(json).contests.result;
         }
     }
 
-    public class Response
+    public class ContestResponse
     {
         public Contests contests { get; set; }
+        public long currentTime { get; set; }
+        public Pagination pagination { get; set; }
     }
 
     public class Contests
@@ -49,5 +58,75 @@ namespace FantasyFootball.Terminal.Daily
         public int salaryCap { get; set; }
         public int seriesId { get; set; }
         public long startTime { get; set; }
+    }
+
+    public class UserContestResponse
+    {
+        public UserContests contests { get; set; }
+        public long currentTime { get; set; }
+        public Pagination pagination { get; set; }
+    }
+
+    public class UserContests
+    {
+        public UserContest[] result { get; set; }
+        public object error { get; set; }
+    }
+
+    public class UserContest
+    {
+        public int contestEntryId { get; set; }
+        public int rank { get; set; }
+        public double? percentile { get; set; }
+        public double score { get; set; }
+        public double winnings { get; set; }
+        public Money paidWinnings { get; set; }
+        public object prize { get; set; }
+        public string currency { get; set; }
+        public bool isCanceled { get; set; }
+        public string status { get; set; }
+        public double entryFee { get; set; }
+        public Money paidEntryFee { get; set; }
+        public int id { get; set; }
+        public string title { get; set; }
+        public string type { get; set; }
+        public string sportCode { get; set; }
+        public int seriesId { get; set; }
+        public int entryCount { get; set; }
+        public double totalPrize { get; set; }
+        public Money paidTotalPrize { get; set; }
+        public int entryLimit { get; set; }
+        public int multipleEntryLimit { get; set; }
+        public bool multipleEntry { get; set; }
+        public int salaryCap { get; set; }
+        public long startTime { get; set; }
+        public double topPrize { get; set; }
+        public string state { get; set; }
+        public string scope { get; set; }
+        public bool guaranteed { get; set; }
+        public string subleague { get; set; }
+        public string subleagueDisplayName { get; set; }
+        public object opponentExperience { get; set; }
+        public string restriction { get; set; }
+    }
+
+    public class PaginationResult
+    {
+        public int start { get; set; }
+        public int limit { get; set; }
+        public int totalCount { get; set; }
+    }
+
+    public class Pagination
+    {
+        public PaginationResult result { get; set; }
+        public object error { get; set; }
+    }
+
+    public class Money
+    {
+        public double value { get; set; }
+        public string currency { get; set; }
+        public double amount { get; set; }
     }
 }

@@ -136,41 +136,40 @@ namespace FantasyFootball.Terminal.Daily
             var sw = Stopwatch.StartNew();
 
             var players = DailyFantasyService.GetPlayers(contestId).ToArray();
-            var playerLookup = players.ToDictionary(p => p.Id);
-
-            output.WriteLine($"{sw.Elapsed} {players.Length} players eligible");
+            output.WriteLine($"{sw.Elapsed} {players.Length} players eligible ({string.Join(",", players.GroupBy(p => p.Position).Select(g => g.Key + ":" + g.Count()))})");
             points = players.ToDictionary(p => p.Id, p => ExpectedPoints(p, startTime));
             threshold = 100f;
 
+            var baseLineByPosition = new Dictionary<string, double>
             {
-                var pointLine = 2;
-                var chance = 0.6;
-                players = players.Where(player => player.Position == "DEF" || points[player.Id].CumulativeDistribution(pointLine) < (1 - chance)).ToArray();
-                output.WriteLine($"{sw.Elapsed} {players.Length} players with {chance:P} chance to get {pointLine} points");
-            }
+                {"QB",1 },
+                {"DEF",1 },
+                {"RB",5 },
+                {"WR",6 },
+                {"TE",3 }
+            };
 
-            var done = false;
-            var queue = new ConcurrentQueue<DailyPlayer[]>();
+            output.WriteLine($"Filtering by targets of {string.Join(",", baseLineByPosition.Select(x => x.Key + ":" + x.Value))}");
+            players = players.Where(player => points[player.Id].Mean >= baseLineByPosition[player.Position]).ToArray();
+            output.WriteLine($"{sw.Elapsed} {players.Length} players who are above targets ({string.Join(",", players.GroupBy(p => p.Position).Select(g => g.Key + ":" + g.Count()))})");
+
+            var queue = new BlockingCollection<DailyPlayer[]>(1000000);
             var qualified = new ConcurrentDictionary<DailyPlayer[], double>();
             var processed = 0L;
             var qualifiedCount = 0L;
-            var producer = new LineupGeneratorProducer(players, budget);
+            var producer = new LinqLineupGeneratorProducer(players, budget);
 
-            new Thread(() =>
-             {
-                 producer.Start(queue);
-                 done = true;
-             }).Start();
+            new Thread(() => producer.Start(queue)).Start();
 
-            var consumers = new Thread[10];
+            var consumers = new Thread[Environment.ProcessorCount];
             for (var i = 0; i < consumers.Length; i++)
             {
                 consumers[i] = new Thread(() =>
                 {
-                    while (!done || !queue.IsEmpty)
+                    while (!queue.IsCompleted)
                     {
                         DailyPlayer[] lineup;
-                        if (queue.TryDequeue(out lineup))
+                        if (queue.TryTake(out lineup, TimeSpan.FromSeconds(1)))
                         {
                             var chanceToCash = ChanceToCash(lineup);
                             if (chanceToCash > 0.6f)
@@ -179,11 +178,11 @@ namespace FantasyFootball.Terminal.Daily
                                     throw new InvalidOperationException();
                                 Interlocked.Increment(ref qualifiedCount);
                             }
+                            else
+                            {
+                                producer.Release(lineup);
+                            }
                             Interlocked.Increment(ref processed);
-                        }
-                        else
-                        {
-                            Thread.Sleep(TimeSpan.FromSeconds(0.5));
                         }
                     }
                 });
@@ -191,18 +190,19 @@ namespace FantasyFootball.Terminal.Daily
 
             foreach (var consumer in consumers)
                 consumer.Start();
-            while (!done || !queue.IsEmpty)
+            while (!queue.IsCompleted)
             {
-                output.WriteLine($"{sw.Elapsed} {queue.Count} {qualifiedCount}/{processed} {producer.Done}/{producer.Total} ({1.0 * producer.Done / producer.Total:P})");
+                output.WriteLine($"{sw.Elapsed} {queue.Count} {qualifiedCount}/{processed} {processed}/{producer.Total} ({1.0 * processed / producer.Total:P})");
                 if (qualified.Any())
                 {
                     var ordered = qualified.ToArray().OrderByDescending(l => l.Value);
                     var best = ordered.First();
                     DisplayInfo(best.Key);
-                    foreach(var x in ordered.Skip(1000))
+                    foreach (var x in ordered.Skip(1000))
                     {
                         if (!qualified.TryRemove(x.Key, out double _))
                             throw new Exception();
+                        producer.Release(x.Key);
                     }
                 }
                 Thread.Sleep(TimeSpan.FromSeconds(5));
@@ -212,13 +212,17 @@ namespace FantasyFootball.Terminal.Daily
 
             var lineups = qualified.Keys.Distinct(new LineupEqualityComparer()).ToArray();
 
+            output.WriteLine();
             output.WriteLine($"{lineups.Count()} lineups at least {threshold} points");
 
             lineups = lineups.OrderByDescending(l => ChanceToCash(l)).ToArray();
 
+            var rank = 1;
             foreach (var lineup in lineups.Take(20))
             {
+                output.WriteLine($"\n#{rank}");
                 DisplayInfo(lineup);
+                rank++;
             }
         }
 

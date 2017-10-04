@@ -105,6 +105,7 @@
     <Compile Include="Daily\DailyModel2.cs" />
     <Compile Include="Daily\DailyPlayer.cs" />
     <Compile Include="Daily\FantasyPros.cs" />
+    <Compile Include="Daily\LinqLineupGeneratorProducer.cs" />
     <Compile Include="Daily\LineupGeneratorProducer.cs" />
     <Compile Include="Daily\LineupGenerator.cs" />
     <Compile Include="Database\ByeOperations.cs" />

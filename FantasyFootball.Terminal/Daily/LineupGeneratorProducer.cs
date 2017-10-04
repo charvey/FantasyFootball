@@ -18,10 +18,12 @@ namespace FantasyFootball.Terminal.Daily
         }
 
         public long Total;
-        public long Done;
+        public long Skipped;
+        public long Returned;
+        public long Done => Skipped + Returned;
 
 
-        public void Start(ConcurrentQueue<DailyPlayer[]> output, int buffer = 100000)
+        public void Start(ConcurrentQueue<DailyPlayer[]> output, int buffer = 1000000)
         {
             foreach(var lineup in Generate())
             {
@@ -50,14 +52,15 @@ namespace FantasyFootball.Terminal.Daily
             Total = 1L * rbPairs.Length * wrSets.Length
                 * playersByPosition["TE"].Length * playersByPosition["QB"].Length * playersByPosition["DEF"].Length
                 * (playersByPosition["RB"].Length + playersByPosition["WR"].Length + playersByPosition["TE"].Length - 5);
-            Done = 0;
+            Skipped = 0;
+            Returned = 0;
 
             foreach (var rbs in rbPairs)
             {
                 var budgetUpToRbs = rbs.Sum(p => p.Salary);
                 if (budgetUpToRbs > budget)
                 {
-                    Done += 1L
+                    Skipped += 1L
                         * wrSets.Length * playersByPosition["TE"].Length
                         * (playersByPosition["RB"].Length + playersByPosition["WR"].Length + playersByPosition["TE"].Length - 5)
                         * playersByPosition["QB"].Length * playersByPosition["DEF"].Length;
@@ -69,7 +72,7 @@ namespace FantasyFootball.Terminal.Daily
                     var budgetUpToWrs = budgetUpToRbs + wrs.Sum(p => p.Salary);
                     if (budgetUpToWrs > budget)
                     {
-                        Done +=11L
+                        Skipped += 11L
                             * playersByPosition["TE"].Length
                             * (playersByPosition["RB"].Length + playersByPosition["WR"].Length + playersByPosition["TE"].Length - 5)
                             * playersByPosition["QB"].Length * playersByPosition["DEF"].Length;
@@ -81,7 +84,7 @@ namespace FantasyFootball.Terminal.Daily
                         var budgetUpToTe = budgetUpToWrs + te.Salary;
                         if (budgetUpToTe > budget)
                         {
-                            Done += 1L
+                            Skipped += 1L
                                 * (playersByPosition["RB"].Length + playersByPosition["WR"].Length + playersByPosition["TE"].Length - 5)
                                 * playersByPosition["QB"].Length * playersByPosition["DEF"].Length;
                             continue;
@@ -92,7 +95,7 @@ namespace FantasyFootball.Terminal.Daily
                             var budgetUpToQb = budgetUpToTe + qb.Salary;
                             if (budgetUpToQb > budget)
                             {
-                                Done += 1L
+                                Skipped += 1L
                                     * (playersByPosition["RB"].Length + playersByPosition["WR"].Length + playersByPosition["TE"].Length - 5)
                                      * playersByPosition["DEF"].Length;
                                 continue;
@@ -103,14 +106,14 @@ namespace FantasyFootball.Terminal.Daily
                                 var budgetUpToDef = budgetUpToQb + def.Salary;
                                 if (budgetUpToDef > budget)
                                 {
-                                    Done += 1L
+                                    Skipped += 1L
                                         * (playersByPosition["RB"].Length + playersByPosition["WR"].Length + playersByPosition["TE"].Length - 5);
                                     continue;
                                 }
 
                                 foreach (var flex in FlexPlayers(playersByPosition, rbs, wrs, te, budget - budgetUpToDef).ToArray())
                                 {
-                                    Done += 1L;
+                                    Returned += 1L;
                                     yield return rbs.Concat(wrs).Concat(new[] { qb, def, te, flex }).ToArray();
                                 }
                             }

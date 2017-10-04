@@ -44,6 +44,7 @@ namespace FantasyFootball.Terminal.Daily
             else if (player.Name == "Mitchell Trubisky") return "Mitch Trubisky";
             else if (player.Name == "Rob Kelley") return "Robert Kelley";
             else if (player.Name == "C.J. Ham") return "CJ Ham";
+            else if (player.Name == "Will Fuller V") return "Will Fuller";
             return player.Name;
         }
 

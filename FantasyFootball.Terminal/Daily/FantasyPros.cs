@@ -40,6 +40,7 @@ namespace FantasyFootball.Terminal.Daily
         {
             if (player.Name == "Todd Gurley II") return "Todd Gurley";
             else if (player.Name == "Terrelle Pryor Sr.") return "Terrelle Pryor";
+            else if (player.Name == "Marvin Jones Jr.") return "Marvin Jones";
             else if (player.Name == "Patrick Mahomes II") return "Patrick Mahomes";
             else if (player.Name == "Mitchell Trubisky") return "Mitch Trubisky";
             else if (player.Name == "Rob Kelley") return "Robert Kelley";

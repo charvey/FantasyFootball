@@ -6,6 +6,7 @@ using FantasyFootball.Data.Yahoo.Actions;
 using FantasyFootball.Data.Yahoo.Models;
 using Newtonsoft.Json;
 using System.Xml.XPath;
+using System;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -58,11 +59,21 @@ namespace FantasyFootball.Data.Yahoo
 
         public IEnumerable<Player> LeaguePlayers(string league_key)
         {
+            return ReadAllPlayers(s => webService.LeaguePlayersResults(league_key, s));
+        }
+
+        public IEnumerable<Player> LeaguePlayers(string league_key, string status)
+        {
+            return ReadAllPlayers(s => webService.LeaguePlayersResults(league_key, status, s));
+        }
+
+        private static IEnumerable<Player> ReadAllPlayers(Func<int, string> xmlByStart)
+        {
             int start = 0;
             const int size = 25;
             while (true)
             {
-                var xml = webService.LeaguePlayersResults(league_key, start);
+                var xml = xmlByStart(start);
                 var players = XDocument.Parse(xml).XPathSelectElement("//*[local-name() = 'players']");
 
                 foreach (var player in players.Elements())
@@ -137,6 +148,12 @@ namespace FantasyFootball.Data.Yahoo
             var doc = XDocument.Parse(xml);
             var teams = doc.XPathSelectElements("//*[local-name() = 'team']");
             return teams.Select(t => XmlConvert.Deserialize<Team>(t.ToString()));
+        }
+
+        public Roster TeamRoster(string team_key)
+        {
+            var xml = webService.TeamRoster(team_key);
+            return XmlConvert.Deserialize<FantasyContentXml>(xml)?.team?.roster;
         }
 
         public Roster TeamRoster(string team_key, int week)

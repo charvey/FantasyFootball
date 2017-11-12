@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -31,12 +30,11 @@ namespace FantasyFootball.Core.Objects
 
         public static Player From(FantasyFootball.Data.Yahoo.Models.Player player)
         {
-            Debug.Assert(player.display_position.All(char.IsLetter));
             return new Player
             {
                 Id = player.player_id,
                 Name = player.name.full,
-                Positions = new[] { player.display_position },
+                Positions = player.display_position.Split(','),
                 Team = player.editorial_team_abbr
             };
         }

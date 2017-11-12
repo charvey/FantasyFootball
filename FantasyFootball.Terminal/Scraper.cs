@@ -6,7 +6,9 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using Polly;
 using System;
+using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
@@ -41,7 +43,8 @@ namespace FantasyFootball.Terminal
             var players = service.LeaguePlayers(league_key).ToList();
             var teams = players.Where(p => p.display_position == "DEF");
 
-            connection.Open();
+            if (connection.State != ConnectionState.Open)
+                connection.Open();
             using (var transaction = connection.BeginTransaction())
             {
                 foreach (var team in teams)
@@ -120,7 +123,7 @@ namespace FantasyFootball.Terminal
             {
                 var nextGroup = connection.Query<ScrapeGroup>($@"
 					SELECT TeamId AS Team, Positions AS Position, w.Week FROM Player
-					CROSS JOIN(SELECT DISTINCT Week FROM Predictions) w
+					CROSS JOIN(SELECT DISTINCT Week FROM Predictions WHERE Week >= {service.League(league_key).current_week}) w
 					LEFT JOIN Predictions ON Predictions.PlayerId = Id AND Predictions.Week = w.Week AND Year = 2017
 					WHERE Predictions.Value IS NULL AND Player.Id IN ({string.Join(",", playerIds)})"
                     ).FirstOrDefault();
@@ -186,14 +189,28 @@ namespace FantasyFootball.Terminal
             new SelectElement(webDriver.FindElementById("posselect")).SelectByText(position);
             new SelectElement(webDriver.FindElementById("statselect")).SelectByText($"Week {week} (proj)");
 
+            var playersTable = webDriver.FindElementById("players-table");
+            var lastRequest = DateTime.Now;
             webDriver.FindElementById("playerfilter").FindElement(By.ClassName("Btn-primary")).Click();
             do
             {
-                Thread.Sleep(TimeSpan.FromSeconds(5));
+                while (true)
+                {
+                    try
+                    {
+                        if (!playersTable.Displayed)
+                            throw new NotImplementedException();
+                        Thread.Yield();
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        break;
+                    }
+                }
+                playersTable = webDriver.FindElementById("players-table");
 
                 Func<int, bool> isPredictionColumn =
-                    column => webDriver
-                           .FindElementById("players-table")
+                    column => playersTable
                            .FindElement(By.TagName("thead"))
                            .FindElements(By.TagName("tr"))[1]
                            .FindElements(By.TagName("th"))[column]
@@ -204,7 +221,7 @@ namespace FantasyFootball.Terminal
                 else if (isPredictionColumn(7)) pointsColumn = 7;
                 else throw new IndexOutOfRangeException();
 
-                var rows = webDriver.FindElementById("players-table").FindElement(By.TagName("tbody")).FindElements(By.TagName("tr"));
+                var rows = playersTable.FindElement(By.TagName("tbody")).FindElements(By.TagName("tr"));
                 foreach (var row in rows)
                 {
                     var infoElement = row.FindElement(By.ClassName("ysf-player-name"));
@@ -237,6 +254,10 @@ namespace FantasyFootball.Terminal
 
                 try
                 {
+                    var timeWaited = DateTime.Now - lastRequest;
+                    if (timeWaited < TimeSpan.FromSeconds(3))
+                        Thread.Sleep(TimeSpan.FromSeconds(3) - timeWaited);
+                    lastRequest = DateTime.Now;
                     webDriver.FindElementByClassName("pagingnav").FindElement(By.ClassName("last")).FindElement(By.TagName("a")).Click();
                 }
                 catch (NoSuchElementException) { break; }

@@ -15,14 +15,14 @@ namespace FantasyFootball.Terminal.Draft.Measures
     public class ValueAddedMeasure : Measure
     {
         private readonly SQLiteConnection connection;
-        private readonly Draft draft;
-        private readonly DraftParticipant participant;
+        private readonly Func<IReadOnlyList<Player>> currentPlayersFactory;
+        private readonly IEnumerable<int> weeks;
 
         public ValueAddedMeasure(SQLiteConnection connection, Draft draft, DraftParticipant participant)
         {
             this.connection = connection;
-            this.draft = draft;
-            this.participant = participant;
+            this.currentPlayersFactory = () => draft.PickedPlayersByParticipant(participant);
+            this.weeks = Enumerable.Range(1, SeasonWeek.ChampionshipWeek);
         }
 
         public override string Name => "Value Added";
@@ -33,7 +33,7 @@ namespace FantasyFootball.Terminal.Draft.Measures
 
         public override IComparable[] Compute(Player[] players)
         {
-            var currentPlayers = draft.PickedPlayersByParticipant(participant);
+            var currentPlayers = currentPlayersFactory();
             var baseScore = GetTotalScore(currentPlayers);
             return players.Select(p => GetTotalScore(p.cons(currentPlayers)) - baseScore)
                 .Cast<IComparable>()
@@ -42,17 +42,17 @@ namespace FantasyFootball.Terminal.Draft.Measures
 
         private double GetTotalScore(IEnumerable<Player> players)
         {
-            return Enumerable.Range(1, 16).Select(w => GetWeekScore(players, w)).Sum();
+            return weeks.Select(w => GetWeekScore(players, 2017, w)).Sum();
         }
 
         private readonly ConcurrentDictionary<Tuple<string, int>, double> predictions = new ConcurrentDictionary<Tuple<string, int>, double>();
 
-        private double GetWeekScore(IEnumerable<Player> players, int week)
+        private double GetWeekScore(IEnumerable<Player> players, int year, int week)
         {
             return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => connection.GetPrediction(t.Item1, 2017, t.Item2))))
                 .Model(new RosterSituation(players.ToArray(), week))
                 .Outcomes.Single().Players
-                .Sum(p => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => connection.GetPrediction(t.Item1, 2017, t.Item2)));
+                .Sum(p => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => connection.GetPrediction(t.Item1, year, t.Item2)));
         }
     }
 

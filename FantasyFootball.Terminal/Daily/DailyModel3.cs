@@ -117,7 +117,7 @@ namespace FantasyFootball.Terminal.Daily
 
         private static Normal Estimate(float mean)
         {
-            return new Normal(mean, Math.Sqrt(mean));
+            return new Normal(mean, Math.Sqrt(Math.Abs(mean)));
         }
 
         private class LineupEqualityComparer : IEqualityComparer<DailyPlayer[]>
@@ -144,13 +144,13 @@ namespace FantasyFootball.Terminal.Daily
             {
                 {"QB",1 },
                 {"DEF",1 },
-                {"RB",5 },
-                {"WR",6 },
-                {"TE",3 }
+                {"RB",2 },
+                {"WR",2 },
+                {"TE",2 }
             };
 
             output.WriteLine($"Filtering by targets of {string.Join(",", baseLineByPosition.Select(x => x.Key + ":" + x.Value))}");
-            players = players.Where(player => points[player.Id].Mean >= baseLineByPosition[player.Position]).ToArray();
+            players = players.Where(player => points[player.Id].InverseCumulativeDistribution(.4125) >= baseLineByPosition[player.Position]).ToArray();
             output.WriteLine($"{sw.Elapsed} {players.Length} players who are above targets ({string.Join(",", players.GroupBy(p => p.Position).Select(g => g.Key + ":" + g.Count()))})");
 
             var queue = new BlockingCollectionSlim<DailyPlayer[]>(1000000);

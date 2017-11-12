@@ -124,6 +124,7 @@
     <Compile Include="JinglePlayer.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="MenuState.cs" />
+    <Compile Include="Midseason\WaiverHelper.cs" />
     <Compile Include="MiniMaxer.cs" />
     <Compile Include="PreseasonPicks.cs" />
     <Compile Include="Preseason\ChooseDraftOrder.cs" />

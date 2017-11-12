@@ -7,6 +7,7 @@ using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Daily;
 using FantasyFootball.Terminal.Database;
 using FantasyFootball.Terminal.Draft;
+using FantasyFootball.Terminal.Midseason;
 using FantasyFootball.Terminal.Preseason;
 using FantasyFootball.Terminal.Scraping;
 using System;
@@ -138,6 +139,7 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Midseason",new List<Menu>{
                     new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out,(p,w)=>connection.GetPrediction(p.Id,2017,w), league_key,team_id)),
+                    new Menu("Waiver Helper",_=>new WaiverHelper().Help(connection,Console.Out, league_key,team_id)),
                     new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out,league_key,team_id)),
                     new Menu("Transactions", _ =>
                     {

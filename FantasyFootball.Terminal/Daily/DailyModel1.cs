@@ -37,9 +37,8 @@ namespace FantasyFootball.Terminal.Daily
                 throw new ArgumentOutOfRangeException();
         }
 
-        static double CurrentPoints(SQLiteConnection connection, string game_key, DailyPlayer player)
+        static double CurrentPoints(FantasySportsService service, SQLiteConnection connection, string game_key, DailyPlayer player)
         {
-            var service = new FantasySportsService();
             var gameStats = service.GameStatCategories(game_key);
             var modifiers = new Dictionary<int, double>();
 
@@ -94,9 +93,8 @@ namespace FantasyFootball.Terminal.Daily
             private string ConcatIds(DailyPlayer[] players) => string.Join(":", players.OrderBy(p => p.Id).Select(p => p.Id));
         }
 
-        public void Do(SQLiteConnection connection, int contestId)
+        public void Do(FantasySportsService service, SQLiteConnection connection, int contestId)
         {
-            var service = new FantasySportsService();
             var contest = DailyFantasyService.GetContest(contestId);
             var year = new DateTime(1970, 1, 1).AddMilliseconds(contest.startTime).Year;
             var game_key = service.Games().Single(g => g.season == year).game_key;
@@ -134,8 +132,8 @@ namespace FantasyFootball.Terminal.Daily
             }).ToArray();
             output.WriteLine($"{sw.Elapsed} {players.Length} players who are strictly best with regard to salary");
 
-            foreach (var player in players.OrderByDescending(p => CurrentPoints(connection, game_key, p)).Take(5))
-                output.WriteLine($"{player.Name} {CurrentPoints(connection, game_key, player)}");
+            foreach (var player in players.OrderByDescending(p => CurrentPoints(service, connection, game_key, p)).Take(5))
+                output.WriteLine($"{player.Name} {CurrentPoints(service, connection, game_key, player)}");
 
             var average = players.Average(p => points[p.Id]);
             var threshold = average * 9 * (10.0 / 9);
@@ -157,7 +155,7 @@ namespace FantasyFootball.Terminal.Daily
                         $"Total: {lineup.Sum(p => points[p.Id])}",
                         $"Without DEF: {lineup.Where(p => p.Position != "DEF").Sum(p => points[p.Id])}",
                         $"Salary: ${lineup.Sum(p => p.Salary)}",
-                        $"Current Score: {lineup.Sum(p=>CurrentPoints(connection,game_key,p))}"
+                        $"Current Score: {lineup.Sum(p=>CurrentPoints(service, connection,game_key,p))}"
                     }));
                 output.WriteLine($"\t{string.Join(",", orderedLineup.Skip(0).Take(3).Select(p => p.Name))}");
                 output.WriteLine($"\t{string.Join(",", orderedLineup.Skip(3).Take(3).Select(p => p.Name))}");

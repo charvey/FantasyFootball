@@ -55,9 +55,9 @@ namespace FantasyFootball.Terminal
         }
 
 
-        public static void RunTest(SQLiteConnection connection, string league_key)
+        public static void RunTest(FantasySportsService service, SQLiteConnection connection, string league_key)
         {
-            var players = new HashSet<string>(new FantasySportsService().LeaguePlayers(league_key).Select(p => p.player_id));
+            var players = new HashSet<string>(service.LeaguePlayers(league_key).Select(p => p.player_id));
             var scores = players.ToDictionary(p => p, p => connection.GetPredictions(p, 2017, Enumerable.Range(1, 17)));
             var previous = new Dictionary<string, double>();
             File.Delete("sbpi.csv");

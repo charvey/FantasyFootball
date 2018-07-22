@@ -6,20 +6,14 @@ namespace FantasyFootball.Data.Yahoo
 {
     public class YahooApiConfig
     {
-        private const string filepath = "Yahoo.json";
+        private string filepath;
 
-        private static YahooApiConfig instance;
-        public static YahooApiConfig Instance
+        public static YahooApiConfig FromFile(string filepath)
         {
-            get
-            {
-                if (instance == null)
-                {
-                    var json = File.ReadAllText(filepath);
-                    instance = JsonConvert.DeserializeObject<YahooApiConfig>(json);
-                }
-                return instance;
-            }
+            var json = File.ReadAllText(filepath);
+            var instance = JsonConvert.DeserializeObject<YahooApiConfig>(json);
+            instance.filepath = filepath;
+            return instance;
         }
 
         private YahooApiConfig() { }

@@ -12,9 +12,8 @@ namespace FantasyFootball.Core.Rosters
 {
     public class RosterHelper
     {
-        public void Help(TextWriter output, Func<Player, int, double> scores, string league_key, int team_id)
+        public void Help(FantasySportsService service, TextWriter output, Func<Player, int, double> scores, string league_key, int team_id)
         {
-            var service = new FantasySportsService();
             var week = service.League(league_key).current_week;
             var players = service.TeamRoster($"{league_key}.t.{team_id}", week).players.Select(Players.From).ToArray();
             var rosterPicker = new MostLikelyScoreRosterModeler(new RealityScoreModeler(scores));

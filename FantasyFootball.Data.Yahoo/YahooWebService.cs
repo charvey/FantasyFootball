@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
-using System.Diagnostics;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -11,8 +11,13 @@ namespace FantasyFootball.Data.Yahoo
     {
         protected HttpClient client = new HttpClient();
         private const string GetTokenUrl = "https://api.login.yahoo.com/oauth2/get_token";
-        private readonly YahooApiConfig apiConfig = YahooApiConfig.Instance;
-               
+        private readonly YahooApiConfig apiConfig;
+
+        protected YahooWebService(YahooApiConfig config)
+        {
+            apiConfig = config;
+        }
+
         private string BasicAuthorizationHeader
         {
             get

@@ -30,18 +30,19 @@ namespace FantasyFootball.Terminal
 
             ConsolePrepper.Prep();
 
+            var service = new FantasySportsService(YahooApiConfig.FromFile(Path.Combine(dataDirectory, "Yahoo.json")));
+
             using (var connection = new SQLiteConnection(connectionString))
-                new Menu("Main Menu", new List<Menu>
+            new Menu("Main Menu", new List<Menu>
             {
                 new Menu("Preseason", new List<Menu>
                 {
                     new Menu("Find Odds", _=> PreseasonPicks.Do()),
-                    new Menu("Choose Draft Order", _ => ChooseDraftOrder.Do(connection,league_key))
+                    new Menu("Choose Draft Order", _ => ChooseDraftOrder.Do(service, connection, league_key))
                 }),
                 new Menu("Draft", new List<Menu>
                 {
                     new Menu("Create Mock Draft",_=>{
-                        var service=new FantasySportsService();
                         using(var transaction=connection.BeginTransaction())
                         {
                             var draftId=league_key+"_Mock_"+UniqueId.Create();
@@ -102,10 +103,10 @@ namespace FantasyFootball.Terminal
                             new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.PredictionMeasures(league_key,connection));
                         }),
                         new Menu("Value", _ => {
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.ValueMeasures(connection, league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId"))));
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.ValueMeasures(service, connection, league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId"))));
                         }),
                         new Menu("Flex Value", _ => {
-                            var m=MeasureSource.ValueMeasures(connection, league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId")));
+                            var m=MeasureSource.ValueMeasures(service, connection, league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId")));
                             m=m.ToArray();
                             var t=m[3];
                             m[3]=m[2];
@@ -123,7 +124,7 @@ namespace FantasyFootball.Terminal
                             new ByeMeasure(connection)
                         }.Concat(Enumerable.Range(1,17).Select(w=>new WeekScoreMeasure(connection,w) as Measure))
                         .Concat(new Measure[]{
-                            new TotalScoreMeasure(connection),new VBDMeasure(connection, league_key)
+                            new TotalScoreMeasure(connection),new VBDMeasure(service, connection, league_key)
                         });
                         File.Delete("output.csv");
                         File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
@@ -133,17 +134,16 @@ namespace FantasyFootball.Terminal
                 new Menu("Play Jingle",_=>JinglePlayer.Play()),
                 new Menu("Scrape Data", new List<Menu>
                 {
-                    new Menu("All", _ => new Scraper().Scrape(league_key, new FantasySportsService(), connection)),
-                    new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, new FantasySportsService(), connection)),
+                    new Menu("All", _ => new Scraper().Scrape(league_key, service, connection)),
+                    new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, service, connection)),
                     new Menu ("Fantasy Pros", _ =>Scraping.FantasyPros.Scrape(dataDirectory))
                 }),
                 new Menu("Midseason",new List<Menu>{
-                    new Menu("Roster Helper",_=>new RosterHelper().Help(Console.Out,(p,w)=>connection.GetPrediction(p.Id,2017,w), league_key,team_id)),
-                    new Menu("Waiver Helper",_=>new WaiverHelper().Help(connection,Console.Out, league_key,team_id)),
-                    new Menu("Trade Helper",_=>new TradeHelper().Help(Console.Out,league_key,team_id)),
+                    new Menu("Roster Helper",_=>new RosterHelper().Help(service,Console.Out,(p,w)=>connection.GetPrediction(p.Id,2017,w), league_key,team_id)),
+                    new Menu("Waiver Helper",_=>new WaiverHelper().Help(service,connection,Console.Out, league_key,team_id)),
+                    new Menu("Trade Helper",_=>new TradeHelper().Help(service,Console.Out,league_key,team_id)),
                     new Menu("Transactions", _ =>
                     {
-                        var service = new FantasySportsService();
                         foreach (var x in service.LeagueTransactions(league_key))
                         {
                             Console.WriteLine($"{x.transaction_key} {x.type}");
@@ -152,7 +152,7 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Daily", new List<Menu>{
                     new Menu("Backtest", _=>BackTester.Do(dataDirectory)),
-                    new Menu("Model1", _=>new DailyModel1(Console.Out).Do(connection,2045014)),
+                    new Menu("Model1", _=>new DailyModel1(Console.Out).Do(service,connection,2045014)),
                     new Menu("Model2", _=>new DailyModel2(connection,Console.Out,dataDirectory).Do(2046081)),
                     new Menu("Model3 Large", _=>new DailyModel3(connection,Console.Out,dataDirectory).Do(2077321)),
                     new Menu("Model3 Medium", _=>new DailyModel3(connection,Console.Out,dataDirectory).Do(2076696)),
@@ -160,9 +160,9 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Experiments",new List<Menu>{
                     new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),
-                    new Menu("Minimax",_=>MiniMaxer.Testminimax(connection, league_key)),
-                    new Menu("Predict Winners",_=> new WinnerPredicter().PredictWinners(league_key)),
-                    new Menu("Strictly Better Players",_=> StrictlyBetterPlayerFilter.RunTest(connection, league_key)),
+                    new Menu("Minimax",_=>MiniMaxer.Testminimax(service,connection, league_key)),
+                    new Menu("Predict Winners",_=> new WinnerPredicter(service).PredictWinners(league_key)),
+                    new Menu("Strictly Better Players",_=> StrictlyBetterPlayerFilter.RunTest(service, connection, league_key)),
                 })
             }).Display(new MenuState());
         }

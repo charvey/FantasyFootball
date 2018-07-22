@@ -70,12 +70,12 @@ namespace FantasyFootball.Terminal.Draft
         }
 
         private static ConcurrentDictionary<string, Measure[]> valueMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] ValueMeasures(SQLiteConnection connection, string league_key, Draft draft)
+        public static Measure[] ValueMeasures(FantasySportsService service, SQLiteConnection connection, string league_key, Draft draft)
         {
             return valueMeasures.GetOrAdd(league_key, l_k => new Measure[] {
                 new NameMeasure(),new PositionMeasure(),
-                new FlexVBDMeasure(connection,league_key),
-                new VBDMeasure(connection,league_key),
+                new FlexVBDMeasure(service, connection,league_key),
+                new VBDMeasure(service, connection,league_key),
                 //new ValueAddedMeasure(connection,draft,draft.Participants.Single(p=>p.Name=="Money Ballers")),
             });
         }
@@ -179,9 +179,9 @@ namespace FantasyFootball.Terminal.Draft
             return scores.Skip(count - 1).First();
         }
 
-        public VBDMeasure(SQLiteConnection connection, string league_key)
+        public VBDMeasure(FantasySportsService service, SQLiteConnection connection, string league_key)
         {
-            var players = new FantasySportsService().LeaguePlayers(league_key)
+            var players = service.LeaguePlayers(league_key)
                 .Select(p => connection.GetPlayer(p.player_id));
             var scores = players
                 .ToDictionary(p => p.Id, p => GetScore(connection, p.Id));
@@ -209,10 +209,9 @@ namespace FantasyFootball.Terminal.Draft
         private readonly double replacement;
         private readonly SQLiteConnection connection;
 
-        public FlexVBDMeasure(SQLiteConnection connection, string league_key)
+        public FlexVBDMeasure(FantasySportsService service, SQLiteConnection connection, string league_key)
         {
             this.connection = connection;
-            var service = new FantasySportsService();
             replacement = service.LeaguePlayers(league_key)
                 .Select(p => connection.GetPlayer(p.player_id))
                 .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())

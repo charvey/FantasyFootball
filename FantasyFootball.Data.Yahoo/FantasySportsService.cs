@@ -14,9 +14,9 @@ namespace FantasyFootball.Data.Yahoo
     {
         private readonly FantasySportsWebService webService;
 
-        public FantasySportsService()
+        public FantasySportsService(YahooApiConfig apiConfig)
         {
-            webService = new FantasySportsWebService();
+            webService = new FantasySportsWebService(apiConfig);
         }
 
         public Game Game(string gameId)
@@ -35,7 +35,7 @@ namespace FantasyFootball.Data.Yahoo
         {
             var filepath = "GameKeys";
             if (!File.Exists(filepath))
-                new YearGameIdMapBuilder(filepath).Build();
+                new YearGameIdMapBuilder(filepath, this).Build();
             var ids = File.ReadAllLines(filepath).Select(x => x.Split(':')[1]);
             return Games(ids.ToArray());
         }

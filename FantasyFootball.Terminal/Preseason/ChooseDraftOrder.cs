@@ -13,9 +13,8 @@ namespace FantasyFootball.Terminal.Preseason
 {
     public static class ChooseDraftOrder
     {
-        public static void Do(SQLiteConnection connection, string league_key)
+        public static void Do(FantasySportsService service, SQLiteConnection connection, string league_key)
         {
-            var service = new FantasySportsService();
             var players = service.LeaguePlayers(league_key)
                     .Select(p => connection.GetPlayer(p.player_id))
                     .PutInDraftOrder(connection)

@@ -16,13 +16,12 @@ namespace FantasyFootball.Terminal.Midseason
 {
     public class WaiverHelper
     {
-        public void Help(SQLiteConnection connection, TextWriter output, string league_key, int team_id)
+        public void Help(FantasySportsService service, SQLiteConnection connection, TextWriter output, string league_key, int team_id)
         {
-            var fantasyService = new FantasySportsService();
-            var league = fantasyService.League(league_key);
-            var all = fantasyService.LeaguePlayers(league_key).Select(Players.From).ToList();
-            var available = fantasyService.LeaguePlayers(league_key, status: "A").Select(Players.From).ToList();
-            var mine = fantasyService.TeamRoster($"{league_key}.t.{team_id}").players.Select(Players.From).ToList();
+            var league = service.League(league_key);
+            var all = service.LeaguePlayers(league_key).Select(Players.From).ToList();
+            var available = service.LeaguePlayers(league_key, status: "A").Select(Players.From).ToList();
+            var mine = service.TeamRoster($"{league_key}.t.{team_id}").players.Select(Players.From).ToList();
 
             var baseScore = GetRemainingScore(connection, mine, league);
 

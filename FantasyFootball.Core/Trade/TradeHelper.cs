@@ -26,9 +26,8 @@ namespace FantasyFootball.Core.Trade
             public TeamPlayers TeamB { get; set; }
         }
 
-        public void Help(TextWriter output, string league_key, int myTeamId)
+        public void Help(FantasySportsService service, TextWriter output, string league_key, int myTeamId)
         {
-            var service = new FantasySportsService();
             var week = service.League(league_key).current_week;
             var teams = service.Teams(league_key)
                 .Select(Teams.From)

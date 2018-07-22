@@ -37,11 +37,12 @@ namespace FantasyFootball.Core.Simulation
     public class WinnerPredicter
     {
         private int CurrentWeek = SeasonWeek.Current;
-        private readonly FantasySportsService service = new FantasySportsService();
+        private readonly FantasySportsService service;
         private readonly CandidateScoreProvider scoreProvider;
 
-        public WinnerPredicter()
+        public WinnerPredicter(FantasySportsService service)
         {
+            this.service = service;
             var candidate = new ComplexScoreCandidate(
                 new PredictedToScoreAtLeastAndNotFlukeHistoricalDataFilter(1, 0.1),
                 new ByPlayerHistoricalGroupSpecifier(),
@@ -175,7 +176,7 @@ namespace FantasyFootball.Core.Simulation
                 });
             }
 
-            foreach (var matchup in Matchups.GetByWeek(league_key, week))
+            foreach (var matchup in Matchups.GetByWeek(service, league_key, week))
                 universe.AddFact(new AddMatchup { Matchup = matchup });
 
             foreach (var team in universe.GetTeams())
@@ -191,7 +192,7 @@ namespace FantasyFootball.Core.Simulation
 
         private void PredictWeek(Universe universe, string league_key, int week)
         {
-            foreach (var matchup in Matchups.GetByWeek(league_key, week))
+            foreach (var matchup in Matchups.GetByWeek(service, league_key, week))
                 universe.AddFact(new AddMatchup { Matchup = matchup });
 
             PredictTeamsForWeek(universe, league_key, universe.GetTeams(), week);

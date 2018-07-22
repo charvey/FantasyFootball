@@ -15,6 +15,9 @@ namespace FantasyFootball.Data.Yahoo
 
         private static DateTime WaitUntil = DateTime.MinValue;
 
+        public FantasySportsWebService(YahooApiConfig apiConfig) : base(apiConfig)
+        {
+        }
 
         private Task<string> MakeCall(string url, string format = "json")
         {

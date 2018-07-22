@@ -17,9 +17,8 @@ namespace FantasyFootball.Terminal
         private static IReadOnlyDictionary<string, double[]> playerScores;
         private static StrictlyBetterPlayerFilter strictlyBetterPlayers;
 
-        public static void Testminimax(SQLiteConnection connection, string league_key)
+        public static void Testminimax(FantasySportsService service, SQLiteConnection connection, string league_key)
         {
-            var service = new FantasySportsService();
             playerScores = service.LeaguePlayers(league_key).ToDictionary(p => p.player_id, p => connection.GetPredictions(p.player_id, 2017, Enumerable.Range(1, 17)));
             strictlyBetterPlayers = new StrictlyBetterPlayerFilter(connection, playerScores.Keys);
             GlobalConfiguration.Configuration.UseMemoryStorage();

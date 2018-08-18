@@ -12,10 +12,15 @@ namespace FantasyFootball.Terminal
 
         private const int SW_MAXIMIZE = 3;
 
+        public static void Maximize(IntPtr hWnd)
+        {
+            ShowWindow(hWnd, SW_MAXIMIZE);
+        }
+
         public static void Prep()
         {
             Process proc = Process.GetCurrentProcess();
-            ShowWindow(proc.MainWindowHandle, SW_MAXIMIZE);
+            Maximize(proc.MainWindowHandle);
 
             //Console.WindowWidth = Console.BufferWidth = 192;
             //Console.WindowHeight = Console.BufferHeight = 50;

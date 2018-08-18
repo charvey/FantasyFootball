@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Core", "FantasyFootball.Core\FantasyFootball.Core.csproj", "{8B6A934C-AEE7-42A7-AE33-854D25E8BB19}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Terminal", "FantasyFootball.Terminal\FantasyFootball.Terminal.csproj", "{3BF0C6B9-DCE8-4C8D-BD61-15C8DB5F1F49}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Data.Yahoo", "FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj", "{58A43CCA-74A7-4138-A760-67933E231CD0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProFootballReference", "ProFootballReference\ProFootballReference.csproj", "{45F97597-B0E9-4762-A645-ED2C07C97CDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bovada", "Bovada\Bovada.csproj", "{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,8 +37,19 @@ Global
 		{58A43CCA-74A7-4138-A760-67933E231CD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58A43CCA-74A7-4138-A760-67933E231CD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58A43CCA-74A7-4138-A760-67933E231CD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45F97597-B0E9-4762-A645-ED2C07C97CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45F97597-B0E9-4762-A645-ED2C07C97CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45F97597-B0E9-4762-A645-ED2C07C97CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45F97597-B0E9-4762-A645-ED2C07C97CDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {21726231-0DDA-4CB9-AE5C-30114F4DF02E}
 	EndGlobalSection
 EndGlobal

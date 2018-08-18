@@ -18,7 +18,7 @@ namespace FantasyFootball.Data.Yahoo.Models
         public PlayerStats player_stats;
         public Position[] eligible_positions;
         public SelectedPosition selected_position;
-        public TransactionData transactioin_data;
+        public TransactionData transaction_data;
     }
 
     [XmlType("name")]

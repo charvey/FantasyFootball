@@ -7,9 +7,11 @@ using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Daily;
 using FantasyFootball.Terminal.Database;
 using FantasyFootball.Terminal.Draft;
+using FantasyFootball.Terminal.Experiments;
 using FantasyFootball.Terminal.Midseason;
 using FantasyFootball.Terminal.Preseason;
 using FantasyFootball.Terminal.Scraping;
+using ProFootballReference;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -37,7 +39,8 @@ namespace FantasyFootball.Terminal
             {
                 new Menu("Preseason", new List<Menu>
                 {
-                    new Menu("Find Odds", _=> PreseasonPicks.Do()),
+                    new Menu("Find Odds", _=> PreseasonPicks.Do(new Bovada.BovadaClient())),
+                    new Menu("Predict Scores",_=>PredictScores.Do(new PreseasonPicksClient(dataDirectory),new ProFootballReferenceClient(),today)),
                     new Menu("Choose Draft Order", _ => ChooseDraftOrder.Do(service, connection, league_key))
                 }),
                 new Menu("Draft", new List<Menu>
@@ -161,6 +164,7 @@ namespace FantasyFootball.Terminal
                 new Menu("Experiments",new List<Menu>{
                     new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),
                     new Menu("Minimax",_=>MiniMaxer.Testminimax(service,connection, league_key)),
+                    new Menu("Popular Names",_=>PopularNames.Analyze(service,Console.Out,league_key)),
                     new Menu("Predict Winners",_=> new WinnerPredicter(service).PredictWinners(league_key)),
                     new Menu("Strictly Better Players",_=> StrictlyBetterPlayerFilter.RunTest(service, connection, league_key)),
                 })

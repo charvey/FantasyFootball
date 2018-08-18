@@ -55,12 +55,6 @@
     <Compile Include="Modeling\ScoreModelers\ComplexCandidate\HistoricalDataFilter.cs" />
     <Compile Include="Analysis\ProbabilityDistribution.cs" />
     <Compile Include="Analysis\ProbabilityDistributionAnalysis.cs" />
-    <Compile Include="Maths\BandwidthSelector.cs" />
-    <Compile Include="Maths\BandwidthSelectors\ConstantBandwidthSelector.cs" />
-    <Compile Include="Maths\Kernel.cs" />
-    <Compile Include="Maths\KernelDensityEstimate.cs" />
-    <Compile Include="Maths\Kernels\GaussianKernel.cs" />
-    <Compile Include="Maths\Kernels\UniformKernel.cs" />
     <Compile Include="Modeling\MatchupModeler.cs" />
     <Compile Include="Modeling\ScoreModeler.cs" />
     <Compile Include="Modeling\ScoreModelers\ComplexCandidate\FooModel.cs" />

@@ -58,8 +58,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Maths\Kernels\GaussianKernelTests.cs" />
-    <Compile Include="Maths\Kernels\UniformKernelTests.cs" />
     <Compile Include="SeasonWeekTests.cs" />
     <Compile Include="Simulation\RecordTests.cs" />
     <Compile Include="Preseason\PreseasonHelperTests.cs" />

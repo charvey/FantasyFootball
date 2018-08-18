@@ -123,6 +123,7 @@
     <Compile Include="Draft\DraftTeam.cs" />
     <Compile Include="Draft\DraftWriter.cs" />
     <Compile Include="Draft\Measures\ValueAddedMeasure.cs" />
+    <Compile Include="Experiments\PopularNames.cs" />
     <Compile Include="JinglePlayer.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="MenuState.cs" />

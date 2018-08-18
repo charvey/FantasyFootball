@@ -27,6 +27,7 @@ namespace FantasyFootball.Terminal
         {
             var league_key = "371.l.88448";
             var team_id = 9;
+            var today = DateTime.Today;
             var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
             var dataDirectory = ConfigurationManager.AppSettings["DataDirectory"];
 

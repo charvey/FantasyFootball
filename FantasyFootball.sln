@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Core", "FantasyFootball.Core\FantasyFootball.Core.csproj", "{8B6A934C-AEE7-42A7-AE33-854D25E8BB19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Core", "FantasyFootball.Core\FantasyFootball.Core.csproj", "{8B6A934C-AEE7-42A7-AE33-854D25E8BB19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Core.Tests", "FantasyFootball.Core.Tests\FantasyFootball.Core.Tests.csproj", "{735AA370-9583-4D4D-8721-E45E42F6B7FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Core.Tests", "FantasyFootball.Core.Tests\FantasyFootball.Core.Tests.csproj", "{735AA370-9583-4D4D-8721-E45E42F6B7FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Terminal", "FantasyFootball.Terminal\FantasyFootball.Terminal.csproj", "{3BF0C6B9-DCE8-4C8D-BD61-15C8DB5F1F49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Data.Yahoo", "FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj", "{58A43CCA-74A7-4138-A760-67933E231CD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Data.Yahoo", "FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj", "{58A43CCA-74A7-4138-A760-67933E231CD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProFootballReference", "ProFootballReference\ProFootballReference.csproj", "{45F97597-B0E9-4762-A645-ED2C07C97CDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bovada", "Bovada\Bovada.csproj", "{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bovada", "Bovada\Bovada.csproj", "{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

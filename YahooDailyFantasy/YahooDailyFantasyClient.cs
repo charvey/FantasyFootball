@@ -5,34 +5,44 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 
-namespace FantasyFootball.Terminal.Daily
+namespace YahooDailyFantasy
 {
-    public static class DailyFantasyService
+    public class YahooDailyPlayer
     {
-        private static HttpClient httpClient = new HttpClient();
+        public string Id;
+        public string FirstName;
+        public string LastName;
+        public string Position;
+        public int Salary;
+    }
 
-        public static List<DailyPlayer> GetPlayers(int contestId)
+    public class YahooDailyFantasyClient
+    {
+        private HttpClient httpClient = new HttpClient();
+
+        public List<YahooDailyPlayer> GetPlayers(int contestId)
         {
             var playerUrl = $"https://dfyql-ro.sports.yahoo.com/v2/export/contestPlayers?contestId={contestId}";
             var lines = httpClient.GetStringAsync(playerUrl).Result.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Skip(1);
 
             return lines
-                .Select(l => l.Split(',')).Select(l => new DailyPlayer
+                .Select(l => l.Split(',')).Select(l => new YahooDailyPlayer
                 {
                     Id = l[0],
-                    Name = l[1] + " " + l[2],
+                    FirstName = l[1],
+                    LastName = l[2],
                     Position = l[3],
                     Salary = int.Parse(l[8])
                 }).ToList();
         }
 
-        public static Contest GetContest(int contestId)
+        public Contest GetContest(int contestId)
         {
             var json = httpClient.GetStringAsync($"https://dfyql-ro.sports.yahoo.com/v2/contest/{contestId}").Result;
             return JsonConvert.DeserializeObject<ContestResponse>(json).contests.result.Single();
         }
 
-        public static IEnumerable<UserContest> MyContests(string dataDirectory)
+        public IEnumerable<UserContest> MyContests(string dataDirectory)
         {
             var json = File.ReadAllText(Path.Combine(dataDirectory, "userContests.json"));
             return JsonConvert.DeserializeObject<UserContestResponse>(json).contests.result;

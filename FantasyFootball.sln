@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Core", "Fan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Core.Tests", "FantasyFootball.Core.Tests\FantasyFootball.Core.Tests.csproj", "{735AA370-9583-4D4D-8721-E45E42F6B7FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Terminal", "FantasyFootball.Terminal\FantasyFootball.Terminal.csproj", "{3BF0C6B9-DCE8-4C8D-BD61-15C8DB5F1F49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Terminal", "FantasyFootball.Terminal\FantasyFootball.Terminal.csproj", "{3BF0C6B9-DCE8-4C8D-BD61-15C8DB5F1F49}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Data.Yahoo", "FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj", "{58A43CCA-74A7-4138-A760-67933E231CD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProFootballReference", "ProFootballReference\ProFootballReference.csproj", "{45F97597-B0E9-4762-A645-ED2C07C97CDE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bovada", "Bovada\Bovada.csproj", "{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YahooDailyFantasy", "YahooDailyFantasy\YahooDailyFantasy.csproj", "{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

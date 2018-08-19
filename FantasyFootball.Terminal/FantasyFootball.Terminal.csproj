@@ -19,7 +19,6 @@
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="2.41.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.109.1" />
-    <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +26,7 @@
     <ProjectReference Include="..\FantasyFootball.Core\FantasyFootball.Core.csproj" />
     <ProjectReference Include="..\FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj" />
     <ProjectReference Include="..\ProFootballReference\ProFootballReference.csproj" />
+    <ProjectReference Include="..\YahooDailyFantasy\YahooDailyFantasy.csproj" />
   </ItemGroup>
 
 </Project>

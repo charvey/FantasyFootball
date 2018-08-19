@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using YahooDailyFantasy;
 
 namespace FantasyFootball.Terminal.Daily
 {
@@ -146,15 +147,21 @@ namespace FantasyFootball.Terminal.Daily
             private string ConcatIds(DailyPlayer[] players) => string.Join(":", players.OrderBy(p => p.Id).Select(p => p.Id));
         }
 
-        public void Do(int contestId)
+        public void Do(YahooDailyFantasyClient yahooDailyFantasyClient, int contestId)
         {
-            var contest = DailyFantasyService.GetContest(contestId);
+            var contest = yahooDailyFantasyClient.GetContest(contestId);
             var budget = contest.salaryCap;
             var startTime = new DateTime(1970, 1, 1).AddMilliseconds(contest.startTime);
 
             var sw = Stopwatch.StartNew();
 
-            var players = DailyFantasyService.GetPlayers(contestId).ToArray();
+            var players = yahooDailyFantasyClient.GetPlayers(contestId).Select(ydp => new DailyPlayer
+            {
+                Id = ydp.Id,
+                Name = $"{ydp.FirstName} {ydp.LastName}",
+                Position = ydp.Position,
+                Salary = ydp.Salary
+            }).ToArray();
             var playerLookup = players.ToDictionary(p => p.Id);
 
             output.WriteLine($"{sw.Elapsed} {players.Length} players eligible");

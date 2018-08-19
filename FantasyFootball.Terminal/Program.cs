@@ -18,6 +18,7 @@ using System.Configuration;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using YahooDailyFantasy;
 
 namespace FantasyFootball.Terminal
 {

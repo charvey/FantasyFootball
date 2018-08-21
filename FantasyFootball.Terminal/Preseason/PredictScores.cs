@@ -2,22 +2,34 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace FantasyFootball.Terminal.Preseason
 {
-    public static class PredictScores
+    public class PredictScores
     {
-        public static void Do(PreseasonPicksClient preseasonPicksClient, ProFootballReferenceClient proFootballReferenceClient, DateTime today)
+        private readonly PreseasonPicksClient preseasonPicksClient;
+        private readonly ProFootballReferenceClient proFootballReferenceClient;
+        private readonly TextWriter textWriter;
+
+        public PredictScores(PreseasonPicksClient preseasonPicksClient, ProFootballReferenceClient proFootballReferenceClient, TextWriter textWriter)
+        {
+            this.preseasonPicksClient = preseasonPicksClient;
+            this.proFootballReferenceClient = proFootballReferenceClient;
+            this.textWriter = textWriter;
+        }
+
+        public void Do(DateTime today)
         {
             var games = proFootballReferenceClient.GetPreseasonSchedule(today.Year);
-            Console.WriteLine($"Total games: {games.Count}");
+            textWriter.WriteLine($"Total games: {games.Count}");
             var playedGames = games.Where(g =>g.Day < today);
-            Console.WriteLine($"Games played: {playedGames.Count()}");
+            textWriter.WriteLine($"Games played: {playedGames.Count()}");
             var unplayedGames = games.Where(g =>  g.Day >= today);
-            Console.WriteLine($"Games not played: {unplayedGames.Count()}");
+            textWriter.WriteLine($"Games not played: {unplayedGames.Count()}");
             var currentWeek = games.Where(g => g.Day < today.AddDays(2)).Max(g => g.Week);
-            Console.WriteLine($"Current Week: {currentWeek}");
+            textWriter.WriteLine($"Current Week: {currentWeek}");
 
             var picks = preseasonPicksClient.Get(today.Year, currentWeek);
 
@@ -63,12 +75,12 @@ namespace FantasyFootball.Terminal.Preseason
             var orderedPlayers = expectedPoints.OrderByDescending(x => x.Value).ToList();
             for(var i = 0; i < orderedPlayers.Count(); i++)
             {
-                Console.WriteLine($"{i + 1} {orderedPlayers[i].Key} {1.0 * orderedPlayers[i].Value / finalWinners.Count}");
+                textWriter.WriteLine($"{i + 1} {orderedPlayers[i].Key} {1.0 * orderedPlayers[i].Value / finalWinners.Count}");
             }
 
             foreach (var ranking in new[] { expectedPlacements, expectedFinalPlacements })
             {
-                Console.WriteLine($"{"Name",10}|{string.Join("|", Enumerable.Range(1, ranking.Count).Select(i => $"{i,7}"))}");
+                textWriter.WriteLine($"{"Name",10}|{string.Join("|", Enumerable.Range(1, ranking.Count).Select(i => $"{i,7}"))}");
                 var orderedRanking = ranking.OrderByDescending(ep => ep.Value[0]);
                 for (var i = 1; i < ranking.Count; i++)
                 {
@@ -78,7 +90,7 @@ namespace FantasyFootball.Terminal.Preseason
                 foreach (var player in orderedRanking)
                 {
                     var values = player.Value.Select(n => 1.0 * n / finalWinners.Count);
-                    Console.WriteLine($"{player.Key,10}|{string.Join("|", values.Select(p => $"{$"{p:P}",7}"))}");
+                    textWriter.WriteLine($"{player.Key,10}|{string.Join("|", values.Select(p => $"{$"{p:P}",7}"))}");
                 }
             }
         }

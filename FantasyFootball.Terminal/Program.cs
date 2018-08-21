@@ -42,7 +42,7 @@ namespace FantasyFootball.Terminal
                 new Menu("Preseason", new List<Menu>
                 {
                     new Menu("Find Odds", _=> PreseasonPicks.Do(new Bovada.BovadaClient())),
-                    new Menu("Predict Scores",_=>PredictScores.Do(new PreseasonPicksClient(dataDirectory),new ProFootballReferenceClient(),today)),
+                    new Menu("Predict Scores",_=> new PredictScores(new PreseasonPicksClient(dataDirectory),new ProFootballReferenceClient(),Console.Out).Do(today)),
                     new Menu("Choose Draft Order", _ => ChooseDraftOrder.Do(service, connection, league_key))
                 }),
                 new Menu("Draft", new List<Menu>
@@ -54,7 +54,7 @@ namespace FantasyFootball.Terminal
                             connection.Execute("INSERT INTO Draft (Id,Year,Description) VALUES (@id,@year,@description)", new
                             {
                                 id=draftId,
-                                year=2017,
+                                year=today.Year,
                                 description=$"Mock draft based on {league_key}"
                             });
                             int order=1;

@@ -32,9 +32,9 @@ namespace FantasyFootball.Terminal
             UpdatePlayers(league_key, service, connection);
             GetPredictions(league_key, service, connection, webDriver =>
              {
-                 var week = service.League(league_key).current_week;
+                 var league=service.League(league_key);
                  foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
-                     Scrape(connection, webDriver, null, pos, week);
+                     Scrape(connection, webDriver, league.season, null, pos, league.current_week);
              });
         }
 
@@ -102,11 +102,11 @@ namespace FantasyFootball.Terminal
             }
         }
 
-        private void ScrapeAll(SQLiteConnection connection, ChromeDriver webDriver)
+        private void ScrapeAll(SQLiteConnection connection, ChromeDriver webDriver, int year)
         {
             foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
                 foreach (var week in Enumerable.Range(1, 17))
-                    Scrape(connection, webDriver, null, pos, week);
+                    Scrape(connection, webDriver, year, null, pos, week);
         }
 
         private class ScrapeGroup
@@ -119,12 +119,13 @@ namespace FantasyFootball.Terminal
         private void ScrapeMissing(SQLiteConnection connection, string league_key, FantasySportsService service, ChromeDriver webDriver)
         {
             var playerIds = service.LeaguePlayers(league_key).Select(p => p.player_id).ToArray();
+            var year = service.League(league_key).season;
             while (true)
             {
                 var nextGroup = connection.Query<ScrapeGroup>($@"
 					SELECT TeamId AS Team, Positions AS Position, w.Week FROM Player
 					CROSS JOIN(SELECT DISTINCT Week FROM Predictions WHERE Week >= {service.League(league_key).current_week}) w
-					LEFT JOIN Predictions ON Predictions.PlayerId = Id AND Predictions.Week = w.Week AND Year = 2017
+					LEFT JOIN Predictions ON Predictions.PlayerId = Id AND Predictions.Week = w.Week AND Year = {year}
 					WHERE Predictions.Value IS NULL AND Player.Id IN ({string.Join(",", playerIds)})"
                     ).FirstOrDefault();
 
@@ -134,12 +135,13 @@ namespace FantasyFootball.Terminal
                 Policy.
                     Handle<WebDriverException>()
                     .Retry()
-                    .Execute(() => Scrape(connection, webDriver, nextGroup.Team, nextGroup.Position, nextGroup.Week));
+                    .Execute(() => Scrape(connection, webDriver, year, nextGroup.Team, nextGroup.Position, nextGroup.Week));
             }
         }
 
         private void ScrapeOld(SQLiteConnection connection, string league_key, FantasySportsService service, ChromeDriver webDriver)
         {
+            var year = service.League(league_key).season;
             while (true)
             {
                 var nextGroups = connection.Query<ScrapeGroup>(@"
@@ -149,13 +151,14 @@ namespace FantasyFootball.Terminal
 						FROM Predictions
 						JOIN Player ON Predictions.PlayerId = Player.Id
 						JOIN Team ON Player.TeamId = Team.Id
-						WHERE Year = 2017 AND Positions NOT LIKE '%,%'
+						WHERE Year = @year AND Positions NOT LIKE '%,%'
 						GROUP BY Team.Id, Positions, Week
 					)
 					WHERE AsOf < @before AND Week >= @week
 					ORDER BY AsOF",
                     new
                     {
+                        year = year,
                         before = DateTime.Now.AddDays(-2).ToString("O"),
                         week = service.League(league_key).current_week
                     });
@@ -174,11 +177,11 @@ namespace FantasyFootball.Terminal
                 Policy.
                     Handle<WebDriverException>()
                     .Retry()
-                    .Execute(() => Scrape(connection, webDriver, team, nextGroup.Position, nextGroup.Week));
+                    .Execute(() => Scrape(connection, webDriver, year, team, nextGroup.Position, nextGroup.Week));
             }
         }
 
-        private void Scrape(SQLiteConnection connection, ChromeDriver webDriver, int? team, string position, int week)
+        private void Scrape(SQLiteConnection connection, ChromeDriver webDriver, int year, int? team, string position, int week)
         {
             Console.WriteLine($"Scraping {team} {position} {week}");
 
@@ -249,14 +252,15 @@ namespace FantasyFootball.Terminal
 
                     var points = double.Parse(row.FindElements(By.TagName("td"))[pointsColumn].FindElement(By.TagName("span")).Text);
 
-                    RecordPrediction(connection, id, week, points);
+                    RecordPrediction(connection, id, year, week, points);
                 }
 
                 try
                 {
                     var timeWaited = DateTime.Now - lastRequest;
-                    if (timeWaited < TimeSpan.FromSeconds(3))
-                        Thread.Sleep(TimeSpan.FromSeconds(3) - timeWaited);
+                    var waitTime = TimeSpan.FromSeconds(5);
+                    if (timeWaited < waitTime)
+                        Thread.Sleep(waitTime - timeWaited);
                     lastRequest = DateTime.Now;
                     webDriver.FindElementByClassName("pagingnav").FindElement(By.ClassName("last")).FindElement(By.TagName("a")).Click();
                 }
@@ -264,9 +268,9 @@ namespace FantasyFootball.Terminal
             } while (true);
         }
 
-        private void RecordPrediction(SQLiteConnection connection, string playerId, int week, double value)
+        private void RecordPrediction(SQLiteConnection connection, string playerId, int year, int week, double value)
         {
-            connection.AddPrediction(playerId, week: week, year: 2017, value: value, asOf: DateTime.Now);
+            connection.AddPrediction(playerId, week: week, year: year, value: value, asOf: DateTime.Now);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace FantasyFootball.Terminal.Preseason
         {
             var players = service.LeaguePlayers(league_key)
                     .Select(p => connection.GetPlayer(p.player_id))
-                    .PutInDraftOrder(connection)
+                    .PutInDraftOrder(connection, service.League(league_key).season)
                     .ToList();
             var teams = service.League(league_key).num_teams;
             var rounds = service.LeagueSettings(league_key)
@@ -35,16 +35,18 @@ namespace FantasyFootball.Terminal.Preseason
                     results[team].Add(pickedPlayers.ElementAt(team));
             }
 
+            var year = service.League(league_key).season;
+
             for (var position = 1; position <= teams; position++)
             {
-                Console.WriteLine($"{position:#0}. {results[position - 1].Evaluate(connection)}");
+                Console.WriteLine($"{position:#0}. {results[position - 1].Evaluate(connection, year)}");
             }
         }
 
-        private static IEnumerable<Player> PutInDraftOrder(this IEnumerable<Player> players, SQLiteConnection connection)
+        private static IEnumerable<Player> PutInDraftOrder(this IEnumerable<Player> players, SQLiteConnection connection, int year)
         {
             var scores = players
-                .ToDictionary(p => p.Id, p => GetScore(connection, p.Id));
+                .ToDictionary(p => p.Id, p => GetScore(connection, year, p.Id));
             var replacementScores = players
                 .SelectMany(p => p.Positions.Select(pos => Tuple.Create(pos, p)))
                 .GroupBy(p => p.Item1, p => scores[p.Item2.Id])
@@ -75,23 +77,23 @@ namespace FantasyFootball.Terminal.Preseason
             return scores.Skip(count - 1).First();
         }
 
-        private static double GetScore(SQLiteConnection connection, string playerId)
+        private static double GetScore(SQLiteConnection connection, int year, string playerId)
         {
-            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 16)).Sum();
+            return connection.GetPredictions(playerId, year, Enumerable.Range(1, 16)).Sum();
         }
         #endregion
 
-        private static double Evaluate(this List<Player> team, SQLiteConnection connection)
+        private static double Evaluate(this List<Player> team, SQLiteConnection connection, int year)
         {
-            return Enumerable.Range(1, 16).Select(w => GetWeekScore(connection, team, w)).Sum();
+            return Enumerable.Range(1, 16).Select(w => GetWeekScore(connection, team, year, w)).Sum();
         }
 
-        private static double GetWeekScore(SQLiteConnection connection, IEnumerable<Player> players, int week)
+        private static double GetWeekScore(SQLiteConnection connection, IEnumerable<Player> players, int year, int week)
         {
-            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => connection.GetPrediction(p.Id, 2017, w)))
+            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => connection.GetPrediction(p.Id, year, w)))
                 .Model(new RosterSituation(players.ToArray(), week))
                 .Outcomes.Single().Players
-                .Sum(p => connection.GetPrediction(p.Id, 2017, week));
+                .Sum(p => connection.GetPrediction(p.Id, year, week));
         }
     }
 }

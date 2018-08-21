@@ -22,6 +22,7 @@ namespace FantasyFootball.Terminal.Database
             });
         }
 
+        //TODO replace year with league identifier
         public static double GetPrediction(this SQLiteConnection connection, string playerId, int year, int week)
         {
             return connection.QueryFirst<double>(@"

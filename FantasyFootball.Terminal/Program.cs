@@ -54,7 +54,7 @@ namespace FantasyFootball.Terminal
                             connection.Execute("INSERT INTO Draft (Id,Year,Description) VALUES (@id,@year,@description)", new
                             {
                                 id=draftId,
-                                year=today.Year,
+                                year=service.League(league_key).season,
                                 description=$"Mock draft based on {league_key}"
                             });
                             int order=1;
@@ -102,10 +102,10 @@ namespace FantasyFootball.Terminal
                     }),
                     new Menu("Show Stats", new List<Menu>{
                         new Menu("Basic Stats", _ => {
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.BasicMeasures(league_key,connection));
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.BasicMeasures(service, league_key,connection));
                         }),
                         new Menu("Predictions", _ => {
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.PredictionMeasures(league_key,connection));
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.PredictionMeasures(service, league_key,connection));
                         }),
                         new Menu("Value", _ => {
                             new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.ValueMeasures(service, connection, league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId"))));
@@ -126,10 +126,10 @@ namespace FantasyFootball.Terminal
                         var players = draft.UnpickedPlayers;
                         var measure = new Measure[] {
                             new NameMeasure(), new TeamMeasure(), new PositionMeasure(),
-                            new ByeMeasure(connection)
-                        }.Concat(Enumerable.Range(1,17).Select(w=>new WeekScoreMeasure(connection,w) as Measure))
+                            new ByeMeasure(connection, service.League(league_key).season)
+                        }.Concat(Enumerable.Range(1,17).Select(w=>new WeekScoreMeasure(service,league_key,connection,w) as Measure))
                         .Concat(new Measure[]{
-                            new TotalScoreMeasure(connection),new VBDMeasure(service, connection, league_key)
+                            new TotalScoreMeasure(service,league_key,connection),new VBDMeasure(service, connection, league_key)
                         });
                         File.Delete("output.csv");
                         File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
@@ -144,7 +144,7 @@ namespace FantasyFootball.Terminal
                     new Menu ("Fantasy Pros", _ =>Scraping.FantasyPros.Scrape(dataDirectory))
                 }),
                 new Menu("Midseason",new List<Menu>{
-                    new Menu("Roster Helper",_=>new RosterHelper().Help(service,Console.Out,(p,w)=>connection.GetPrediction(p.Id,2017,w), league_key,team_id)),
+                    new Menu("Roster Helper",_=>new RosterHelper().Help(service,Console.Out,(p,w)=>connection.GetPrediction(p.Id,service.League(league_key).season,w), league_key,team_id)),
                     new Menu("Waiver Helper",_=>new WaiverHelper().Help(service,connection,Console.Out, league_key,team_id)),
                     new Menu("Trade Helper",_=>new TradeHelper().Help(service,Console.Out,league_key,team_id)),
                     new Menu("Transactions", _ =>

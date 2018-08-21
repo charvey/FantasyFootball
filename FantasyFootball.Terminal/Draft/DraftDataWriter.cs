@@ -49,23 +49,23 @@ namespace FantasyFootball.Terminal.Draft
     public static class MeasureSource
     {
         private static ConcurrentDictionary<string, Measure[]> basicMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] BasicMeasures(string league_key, SQLiteConnection connection)
+        public static Measure[] BasicMeasures(FantasySportsService service, string league_key, SQLiteConnection connection)
         {
             return basicMeasures.GetOrAdd(league_key, l_ => new Measure[] {
                 new NameMeasure(),
                 new TeamMeasure(),
                 new PositionMeasure(),
-                new ByeMeasure(connection)
+                new ByeMeasure(connection,service.League(league_key).season)
              });
         }
 
         private static ConcurrentDictionary<string, Measure[]> predictionMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] PredictionMeasures(string league_key, SQLiteConnection connection)
+        public static Measure[] PredictionMeasures(FantasySportsService service, string league_key, SQLiteConnection connection)
         {
             return predictionMeasures.GetOrAdd(league_key, l_k =>
               new[] { new NameMeasure() }.Cast<Measure>()
-                 .Concat(Enumerable.Range(1, 17).Select(w => new WeekScoreMeasure(connection, w)))
-                 .Concat(new[] { new TotalScoreMeasure(connection) })
+                 .Concat(Enumerable.Range(1, 17).Select(w => new WeekScoreMeasure(service,league_key,connection, w)))
+                 .Concat(new[] { new TotalScoreMeasure(service,league_key,connection) })
                  .ToArray());
         }
 
@@ -107,15 +107,17 @@ namespace FantasyFootball.Terminal.Draft
         private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
         private readonly SQLiteConnection connection;
         private readonly int week;
+        private readonly int year;
 
-        public WeekScoreMeasure(SQLiteConnection connection, int week)
+        public WeekScoreMeasure(FantasySportsService service, string league_key, SQLiteConnection connection, int week)
         {
             this.connection = connection;
             this.week = week;
+            this.year = service.League(league_key).season;
         }
 
         public override string Name => $"Week {week}";
-        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, p => connection.GetPrediction(p, 2017, week));
+        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, p => connection.GetPrediction(p, year, week));
         public override int Width => Math.Min(6, Name.Length);
     }
 
@@ -123,15 +125,17 @@ namespace FantasyFootball.Terminal.Draft
     {
         private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
         private readonly SQLiteConnection connection;
+        private readonly int year;
 
-        public TotalScoreMeasure(SQLiteConnection connection)
+        public TotalScoreMeasure(FantasySportsService service, string league_key, SQLiteConnection connection)
         {
             this.connection = connection;
+            this.year = service.League(league_key).season;
         }
 
         private double GetScore(string playerId)
         {
-            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 17)).Sum();
+            return connection.GetPredictions(playerId, year, Enumerable.Range(1, 17)).Sum();
         }
 
         public override string Name => "Total";
@@ -143,14 +147,16 @@ namespace FantasyFootball.Terminal.Draft
     {
         private readonly ConcurrentDictionary<string, int> byes = new ConcurrentDictionary<string, int>();
         private readonly SQLiteConnection connection;
+        private readonly int year;
 
-        public ByeMeasure(SQLiteConnection connection)
+        public ByeMeasure(SQLiteConnection connection, int year)
         {
             this.connection = connection;
+            this.year = year;
         }
 
         public override string Name => "Bye Week";
-        public override IComparable Compute(Player player) => byes.GetOrAdd(player.Team, t => connection.GetByeWeek(2017, t));
+        public override IComparable Compute(Player player) => byes.GetOrAdd(player.Team, t => connection.GetByeWeek(year, t));
         public override int Width => 3;
     }
 
@@ -181,10 +187,11 @@ namespace FantasyFootball.Terminal.Draft
 
         public VBDMeasure(FantasySportsService service, SQLiteConnection connection, string league_key)
         {
+            var year = service.League(league_key).season;
             var players = service.LeaguePlayers(league_key)
                 .Select(p => connection.GetPlayer(p.player_id));
             var scores = players
-                .ToDictionary(p => p.Id, p => GetScore(connection, p.Id));
+                .ToDictionary(p => p.Id, p => GetScore(connection, year, p.Id));
             var replacementScores = players
                 .SelectMany(p => p.Positions.Select(pos => Tuple.Create(pos, p)))
                 .GroupBy(p => p.Item1, p => scores[p.Item2.Id])
@@ -193,9 +200,9 @@ namespace FantasyFootball.Terminal.Draft
                 .ToDictionary(p => p.Id, p => scores[p.Id] - p.Positions.Min(pos => replacementScores[pos]));
         }
 
-        private double GetScore(SQLiteConnection connection, string playerId)
+        private double GetScore(SQLiteConnection connection, int year, string playerId)
         {
-            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 16)).Sum();
+            return connection.GetPredictions(playerId, year, Enumerable.Range(1, 16)).Sum();
         }
 
         public override string Name => "VBD";
@@ -208,6 +215,7 @@ namespace FantasyFootball.Terminal.Draft
         private readonly ConcurrentDictionary<string, double> values = new ConcurrentDictionary<string, double>();
         private readonly double replacement;
         private readonly SQLiteConnection connection;
+        private readonly int year;
 
         public FlexVBDMeasure(FantasySportsService service, SQLiteConnection connection, string league_key)
         {
@@ -217,11 +225,12 @@ namespace FantasyFootball.Terminal.Draft
                 .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())
                 .Select(p => GetScore(connection, p.Id))
                 .OrderByDescending(x => x).Skip(12 * (2 + 2 + 1 + 2) - 1).First();
+            this.year = service.League(league_key).season;
         }
 
         private double GetScore(SQLiteConnection connection, string playerId)
         {
-            return connection.GetPredictions(playerId, 2017, Enumerable.Range(1, 16)).Sum();
+            return connection.GetPredictions(playerId, year, Enumerable.Range(1, 16)).Sum();
         }
 
         public override string Name => "Flex VBD";

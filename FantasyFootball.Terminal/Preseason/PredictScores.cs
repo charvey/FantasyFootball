@@ -24,21 +24,21 @@ namespace FantasyFootball.Terminal.Preseason
         {
             var games = proFootballReferenceClient.GetPreseasonSchedule(today.Year);
             textWriter.WriteLine($"Total games: {games.Count}");
-            var playedGames = games.Where(g =>g.Day < today);
+            var playedGames = games.Where(g => g.Over);
             textWriter.WriteLine($"Games played: {playedGames.Count()}");
-            var unplayedGames = games.Where(g =>  g.Day >= today);
+            var unplayedGames = games.Where(g => !g.Over);
             textWriter.WriteLine($"Games not played: {unplayedGames.Count()}");
             var currentWeek = games.Where(g => g.Day < today.AddDays(2)).Max(g => g.Week);
             textWriter.WriteLine($"Current Week: {currentWeek}");
 
             var picks = preseasonPicksClient.Get(today.Year, currentWeek);
 
-            var winners = playedGames.GroupBy(g => g.Week).ToDictionary(grp => grp.Key, grp => grp.Select(g =>
-                   {
-                       if (g.HomeTmPts > g.VisTmPts) return g.HomeTm;
-                       else if (g.HomeTmPts < g.VisTmPts) return g.VisTm;
-                       else throw new InvalidOperationException();
-                   }));
+            var winners = games.GroupBy(g => g.Week).ToDictionary(grp => grp.Key, grp => grp.Where(g => g.Day < today).Select(g =>
+                       {
+                           if (g.HomeTmPts > g.VisTmPts) return g.HomeTm;
+                           else if (g.HomeTmPts < g.VisTmPts) return g.VisTm;
+                           else throw new InvalidOperationException();
+                       }));
             var players = picks.Select(p => p.Player).Distinct().ToList();
 
             var existingPoints = players.ToDictionary(p => p, player =>

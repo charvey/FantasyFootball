@@ -24,7 +24,8 @@ namespace ProFootballReference
                     VisTm = columns[2].InnerText,
                     VisTmPts = int.Parse(columns[3].InnerText),
                     HomeTm = columns[5].InnerText,
-                    HomeTmPts = int.Parse(columns[6].InnerText)
+                    HomeTmPts = int.Parse(columns[6].InnerText),
+                    Over = columns.Any(c => c.SelectNodes("strong")?.Any() ?? false)
                 };
             }).ToList();
         }

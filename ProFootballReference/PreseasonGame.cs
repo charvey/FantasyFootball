@@ -10,5 +10,6 @@ namespace ProFootballReference
         public int VisTmPts { get; internal set; }
         public string HomeTm { get; internal set; }
         public int HomeTmPts { get; internal set; }
+        public bool Over { get; internal set; }
     }
 }

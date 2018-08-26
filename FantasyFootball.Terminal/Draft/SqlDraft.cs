@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Terminal.Database;
 using System;
@@ -8,20 +9,37 @@ using System.Linq;
 
 namespace FantasyFootball.Terminal.Draft
 {
-    public class SqlDraft : Draft
+    public class SqlDraft : IDraft
     {
         private readonly SQLiteConnection connection;
+        private readonly SqlPlayerRepository playerRepository;
         private readonly string draftId;
 
         public SqlDraft(SQLiteConnection connection, string draftId)
         {
             this.connection = connection;
+            this.playerRepository = new SqlPlayerRepository(connection);
             this.draftId = draftId;
         }
 
         public IReadOnlyList<DraftParticipant> Participants => connection.Query<DraftParticipant>("SELECT * FROM DraftParticipant WHERE DraftId=@draftId ORDER BY [Order]", new { draftId = draftId }).ToList();
+        public DraftParticipant ParticipantByPlayer(Player player) =>
+            connection.Query<DraftParticipant>(@"
+                SELECT DraftParticipant.*
+                FROM DraftParticipant
+                JOIN DraftPick ON DraftPick.DraftParticipantId=DraftParticipant.Id
+                JOIN DraftOption ON DraftPick.DraftOptionId = DraftOption.Id
+                WHERE DraftOption.DraftId=@draftId AND DraftOption.PlayerId=@playerId",
+                new { draftId = draftId, playerId = player.Id })
+            .SingleOrDefault();
 
-        public IReadOnlyList<Player> AllPlayers => throw new NotImplementedException();
+        public IReadOnlyList<Player> AllPlayers => connection.Query<PlayerDto>(@"
+            SELECT Player.*
+            FROM DraftOption
+            JOIN Player ON Player.Id = DraftOption.PlayerId
+            WHERE DraftOption.DraftId=@draftId",
+            new { draftId = draftId })
+            .Select(FromPlayerDto).ToList();
         public IReadOnlyList<Player> PickedPlayers => connection.Query<PlayerDto>(@"
             SELECT Player.*
             FROM DraftPick
@@ -68,7 +86,7 @@ namespace FantasyFootball.Terminal.Draft
 
             var playerId = connection.QuerySingle<string>("SELECT PlayerId FROM DraftOption WHERE Id=@id", new { id = draftOptionId });
 
-            return connection.GetPlayer(playerId);
+            return playerRepository.GetPlayer(playerId);
         }
 
         private Player FromPlayerDto(PlayerDto playerDto)

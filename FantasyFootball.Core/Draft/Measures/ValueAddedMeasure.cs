@@ -1,28 +1,26 @@
-﻿using FantasyFootball.Core;
+﻿using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Modeling;
 using FantasyFootball.Core.Modeling.RosterModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
-using FantasyFootball.Terminal.Database;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.Linq;
 
-namespace FantasyFootball.Terminal.Draft.Measures
+namespace FantasyFootball.Core.Draft.Measures
 {
     public class ValueAddedMeasure : Measure
     {
-        private readonly SQLiteConnection connection;
+        private readonly IPredictionRepository predictionRepository;
         private readonly Func<IReadOnlyList<Player>> currentPlayersFactory;
         private readonly IEnumerable<int> weeks;
         private readonly int year;
 
-        public ValueAddedMeasure(FantasySportsService service, string league_key, SQLiteConnection connection, Draft draft, DraftParticipant participant)
+        public ValueAddedMeasure(FantasySportsService service, string league_key, IPredictionRepository predictionRepository, IDraft draft, DraftParticipant participant)
         {
-            this.connection = connection;
+            this.predictionRepository = predictionRepository;
             this.currentPlayersFactory = () => draft.PickedPlayersByParticipant(participant);
             this.weeks = Enumerable.Range(1, SeasonWeek.ChampionshipWeek);
             this.year = service.League(league_key).season;
@@ -52,10 +50,10 @@ namespace FantasyFootball.Terminal.Draft.Measures
 
         private double GetWeekScore(IEnumerable<Player> players, int year, int week)
         {
-            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => connection.GetPrediction(t.Item1, year, t.Item2))))
+            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => predictionRepository.GetPrediction(t.Item1, year, t.Item2))))
                 .Model(new RosterSituation(players.ToArray(), week))
                 .Outcomes.Single().Players
-                .Sum(p => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => connection.GetPrediction(t.Item1, year, t.Item2)));
+                .Sum(p => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => predictionRepository.GetPrediction(t.Item1, year, t.Item2)));
         }
     }
 

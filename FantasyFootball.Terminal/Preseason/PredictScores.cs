@@ -33,7 +33,7 @@ namespace FantasyFootball.Terminal.Preseason
 
             var picks = preseasonPicksClient.Get(today.Year, currentWeek);
 
-            var winners = games.GroupBy(g => g.Week).ToDictionary(grp => grp.Key, grp => grp.Where(g => g.Day < today).Select(g =>
+            var winners = games.GroupBy(g => g.Week).ToDictionary(grp => grp.Key, grp => grp.Where(g => g.Over).Select(g =>
                        {
                            if (g.HomeTmPts > g.VisTmPts) return g.HomeTm;
                            else if (g.HomeTmPts < g.VisTmPts) return g.VisTm;

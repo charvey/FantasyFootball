@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FantasyFootball.Core.Draft;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace FantasyFootball.Terminal.Draft
             }
         }
 
-        public void WriteDraft(TextWriter writer, Draft draft)
+        public void WriteDraft(TextWriter writer, IDraft draft)
         {
             writer.WriteLine(BuildRow("Round", draft.Participants.Select(t => t.Owner)));
             writer.WriteLine(BuildRow(string.Empty, draft.Participants.Select(t => t.Name)));

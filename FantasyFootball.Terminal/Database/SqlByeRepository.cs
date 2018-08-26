@@ -1,11 +1,19 @@
 ﻿using Dapper;
+using FantasyFootball.Core.Data;
 using System.Data.SQLite;
 
 namespace FantasyFootball.Terminal.Database
 {
-    public static class ByeOperations
+    public class SqlByeRepository : IByeRepository
     {
-        public static int GetByeWeek(this SQLiteConnection connection, int year, string teamName)
+        private readonly SQLiteConnection connection;
+
+        public SqlByeRepository(SQLiteConnection connection)
+        {
+            this.connection = connection;
+        }
+
+        public int GetByeWeek(int year, string teamName)
         {
             return connection.QuerySingle<int>(@"
                 SELECT Week

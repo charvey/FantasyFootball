@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using FantasyFootball.Core.Data;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Database;
 using Hangfire;
@@ -17,10 +18,10 @@ namespace FantasyFootball.Terminal
         private static IReadOnlyDictionary<string, double[]> playerScores;
         private static StrictlyBetterPlayerFilter strictlyBetterPlayers;
 
-        public static void Testminimax(FantasySportsService service, SQLiteConnection connection, string league_key)
+        public static void Testminimax(FantasySportsService service, IPredictionRepository predictionRepository, SQLiteConnection connection, string league_key)
         {
-            playerScores = service.LeaguePlayers(league_key).ToDictionary(p => p.player_id, p => connection.GetPredictions(p.player_id, service.League(league_key).season, Enumerable.Range(1, 17)));
-            strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service,league_key,connection, playerScores.Keys);
+            playerScores = service.LeaguePlayers(league_key).ToDictionary(p => p.player_id, p => new SqlPredictionRepository(connection).GetPredictions(p.player_id, service.League(league_key).season, Enumerable.Range(1, 17)));
+            strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service,league_key,connection, predictionRepository, playerScores.Keys);
             GlobalConfiguration.Configuration.UseMemoryStorage();
 
             var server = new BackgroundJobServer();

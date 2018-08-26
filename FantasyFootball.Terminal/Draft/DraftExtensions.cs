@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using FantasyFootball.Core.Draft;
+using System.Linq;
 
 namespace FantasyFootball.Terminal.Draft
 {
     public static class DraftExtensions
     {
-        public static DraftParticipant GetNextDraftTeam(this Draft draft)
+        public static DraftParticipant GetNextDraftTeam(this IDraft draft)
         {
             foreach (var round in Enumerable.Range(1, 15))
             {
@@ -23,7 +24,7 @@ namespace FantasyFootball.Terminal.Draft
             return null;
         }
 
-        public static int? GetNextDraftRound(this Draft draft)
+        public static int? GetNextDraftRound(this IDraft draft)
         {
             foreach (var round in Enumerable.Range(1, 15))
             {

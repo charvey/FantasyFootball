@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FantasyFootball.Core.Draft;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace FantasyFootball.Terminal.Draft
 {
     public class DraftChanger
     {
-        public void Change(TextWriter output, TextReader input, Draft draft)
+        public void Change(TextWriter output, TextReader input, IDraft draft)
         {
             var team = draft.GetNextDraftTeam();
             var players = draft.UnpickedPlayers.AsEnumerable();

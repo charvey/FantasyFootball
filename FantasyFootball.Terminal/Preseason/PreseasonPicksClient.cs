@@ -40,7 +40,7 @@ namespace FantasyFootball.Terminal.Preseason
                     Player = data[xy[0]][xy[1]],
                     Team = data[xy[0] + i + 1][xy[1]],
                     PointsBid = int.Parse(data[xy[0] + i + 1][xy[1] + 1])
-                })
+                }).Where(p => !string.IsNullOrWhiteSpace(p.Team))
             ).ToList();
         }
     }

@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using FantasyFootball.Core.Analysis;
+using FantasyFootball.Core.Draft;
+using FantasyFootball.Core.Draft.Measures;
 using FantasyFootball.Core.Rosters;
 using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
@@ -16,8 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using YahooDailyFantasy;
 
 namespace FantasyFootball.Terminal
@@ -43,11 +47,12 @@ namespace FantasyFootball.Terminal
                 {
                     new Menu("Find Odds", _=> PreseasonPicks.Do(new Bovada.BovadaClient())),
                     new Menu("Predict Scores",_=> new PredictScores(new PreseasonPicksClient(dataDirectory),new ProFootballReferenceClient(),Console.Out).Do(today)),
-                    new Menu("Choose Draft Order", _ => ChooseDraftOrder.Do(service, connection, league_key))
+                    new Menu("Choose Draft Order", _ => ChooseDraftOrder.Do(service, new SqlPlayerRepository(connection), new SqlPredictionRepository(connection), league_key))
                 }),
                 new Menu("Draft", new List<Menu>
                 {
                     new Menu("Create Mock Draft",_=>{
+                        if(connection.State!=System.Data.ConnectionState.Open)connection.Open();
                         using(var transaction=connection.BeginTransaction())
                         {
                             var draftId=league_key+"_Mock_"+UniqueId.Create();
@@ -92,7 +97,8 @@ namespace FantasyFootball.Terminal
                         var draftIds = connection.GetDraftIds();
                         var option = Menu.Options("Pick Draft", draftIds);
                         var id = draftIds[option-1];
-                        connection.DeleteDraft(id);
+                        if(Menu.Prompt("Type DELETE to delete:")=="DELETE")
+                            connection.DeleteDraft(id);
                     }),
                     new Menu("Draft Board",_=>{
                         new DraftWriter().WriteDraft(Console.Out, new SqlDraft(connection,_.Load<string>("CurrentDraftId")));
@@ -102,16 +108,16 @@ namespace FantasyFootball.Terminal
                     }),
                     new Menu("Show Stats", new List<Menu>{
                         new Menu("Basic Stats", _ => {
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.BasicMeasures(service, league_key,connection));
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.BasicMeasures(service, league_key,new SqlByeRepository(connection),new SqlDraft(connection,_.Load<string>("CurrentDraftId"))));
                         }),
                         new Menu("Predictions", _ => {
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.PredictionMeasures(service, league_key,connection));
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.PredictionMeasures(service, league_key,new SqlPredictionRepository(connection)));
                         }),
                         new Menu("Value", _ => {
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.ValueMeasures(service, connection, league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId"))));
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.ValueMeasures(service, new SqlPlayerRepository(connection), new SqlPredictionRepository(connection), league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId"))));
                         }),
                         new Menu("Flex Value", _ => {
-                            var m=MeasureSource.ValueMeasures(service, connection, league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId")));
+                            var m=MeasureSource.ValueMeasures(service, new SqlPlayerRepository(connection), new SqlPredictionRepository(connection), league_key,new SqlDraft(connection,_.Load<string>("CurrentDraftId")));
                             m=m.ToArray();
                             var t=m[3];
                             m[3]=m[2];
@@ -123,29 +129,36 @@ namespace FantasyFootball.Terminal
                     new Menu("Write Stats to File", _ =>
                     {
                         var draft = new SqlDraft(connection,_.Load<string>("CurrentDraftId"));
-                        var players = draft.UnpickedPlayers;
+                        var players = draft.AllPlayers;
+                        var predictionRepository=new CachedPredictionRepository(new SqlPredictionRepository(connection));
                         var measure = new Measure[] {
-                            new NameMeasure(), new TeamMeasure(), new PositionMeasure(),
-                            new ByeMeasure(connection, service.League(league_key).season)
-                        }.Concat(Enumerable.Range(1,17).Select(w=>new WeekScoreMeasure(service,league_key,connection,w) as Measure))
+                            new NameMeasure(), new TeamMeasure(), new PositionMeasure(),new DraftedTeamMeasure(draft),
+                            new ByeMeasure(new SqlByeRepository(connection), service.League(league_key).season)
+                        }.Concat(Enumerable.Range(1,17).Select(w=>new WeekScoreMeasure(service,league_key,predictionRepository,w) as Measure))
                         .Concat(new Measure[]{
-                            new TotalScoreMeasure(service,league_key,connection),new VBDMeasure(service, connection, league_key)
+                            new TotalScoreMeasure(service,league_key,predictionRepository),new VBDMeasure(service, new SqlPlayerRepository(connection),predictionRepository, league_key)
                         });
+                        { var ___=players.SelectMany(p=>measure.Select(m=>m.Compute(p))).ToArray(); }
+                        while(true){
+                            var stopwatch=Stopwatch.StartNew();
                         File.Delete("output.csv");
                         File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
-                        File.AppendAllLines("output.csv", players.Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));
+                        File.AppendAllLines("output.csv", players.AsParallel().Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));
+                            Console.WriteLine($"{DateTime.Now} - {stopwatch.Elapsed}");
+                            Thread.Sleep(TimeSpan.FromSeconds(1));
+                        }
                     })
                 }),
                 new Menu("Play Jingle",_=>JinglePlayer.Play()),
                 new Menu("Scrape Data", new List<Menu>
                 {
-                    new Menu("All", _ => new Scraper().Scrape(league_key, service, connection)),
-                    new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, service, connection)),
+                    new Menu("All", _ => new Scraper().Scrape(league_key, service, connection, new SqlPredictionRepository(connection))),
+                    new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, service, connection, new SqlPredictionRepository(connection))),
                     new Menu ("Fantasy Pros", _ =>Scraping.FantasyPros.Scrape(dataDirectory))
                 }),
                 new Menu("Midseason",new List<Menu>{
-                    new Menu("Roster Helper",_=>new RosterHelper().Help(service,Console.Out,(p,w)=>connection.GetPrediction(p.Id,service.League(league_key).season,w), league_key,team_id)),
-                    new Menu("Waiver Helper",_=>new WaiverHelper().Help(service,connection,Console.Out, league_key,team_id)),
+                    new Menu("Roster Helper",_=>new RosterHelper().Help(service,Console.Out,(p,w)=>new SqlPredictionRepository(connection).GetPrediction(p.Id,service.League(league_key).season,w), league_key,team_id)),
+                    new Menu("Waiver Helper",_=>new WaiverHelper().Help(service,new SqlPredictionRepository(connection),Console.Out, league_key,team_id)),
                     new Menu("Trade Helper",_=>new TradeHelper().Help(service,Console.Out,league_key,team_id)),
                     new Menu("Transactions", _ =>
                     {
@@ -165,10 +178,10 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Experiments",new List<Menu>{
                     new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),
-                    new Menu("Minimax",_=>MiniMaxer.Testminimax(service,connection, league_key)),
+                    new Menu("Minimax",_=>MiniMaxer.Testminimax(service,new SqlPredictionRepository(connection),connection, league_key)),
                     new Menu("Popular Names",_=>PopularNames.Analyze(service,Console.Out,league_key)),
                     new Menu("Predict Winners",_=> new WinnerPredicter(service).PredictWinners(league_key)),
-                    new Menu("Strictly Better Players",_=> StrictlyBetterPlayerFilter.RunTest(service, connection, league_key)),
+                    new Menu("Strictly Better Players",_=> StrictlyBetterPlayerFilter.RunTest(service, connection, league_key, new SqlPredictionRepository(connection))),
                 })
             }).Display(new MenuState());
         }

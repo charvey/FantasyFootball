@@ -22,7 +22,7 @@ namespace FantasyFootball.Terminal.Daily
 
         static double ExpectedPoints(SQLiteConnection connection, DailyPlayer player, int seriesId)
         {
-            return connection.GetPrediction(GetPlayerIdForDailyPlayer(connection, player),
+            return new SqlPredictionRepository(connection).GetPrediction(GetPlayerIdForDailyPlayer(connection, player),
                 connection.QuerySingle<int>("SELECT Year FROM DailyFantasySeries WHERE Id=@id", new { id = seriesId }),
                 connection.QuerySingle<int>("SELECT Week FROM DailyFantasySeries WHERE Id=@id", new { id = seriesId })
                 );
@@ -118,7 +118,7 @@ namespace FantasyFootball.Terminal.Daily
                 try
                 {
                     var playerId = GetPlayerIdForDailyPlayer(connection, player);
-                    return connection.GetPlayer(playerId) != null;
+                    return new SqlPlayerRepository(connection).GetPlayer(playerId) != null;
                 }
                 catch
                 {

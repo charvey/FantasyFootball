@@ -1,13 +1,16 @@
 ﻿using Dapper;
+using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
 using System.Data.SQLite;
 using System.Linq;
 
 namespace FantasyFootball.Terminal.Database
 {
-    public static class PlayerOpertations
+    public class SqlPlayerRepository : IPlayerRepository
     {
-        public class PlayerDto
+        private SQLiteConnection connection;
+
+        private class PlayerDto
         {
             public string Id;
             public string Name;
@@ -15,7 +18,12 @@ namespace FantasyFootball.Terminal.Database
             public int TeamId;
         }
 
-        private static Player FromPlayerDto(SQLiteConnection connection, PlayerDto playerDto)
+        public SqlPlayerRepository(SQLiteConnection connection)
+        {
+            this.connection = connection;
+        }
+
+        private Player FromPlayerDto(PlayerDto playerDto)
         {
             return new Player
             {
@@ -26,10 +34,10 @@ namespace FantasyFootball.Terminal.Database
             };
         }
 
-        public static Player GetPlayer(this SQLiteConnection connection, string playerId)
+        public Player GetPlayer(string playerId)
         {
             return connection.Query<PlayerDto>("SELECT * FROM Player WHERE Id=@id", new { id = playerId })
-                .Select(p => FromPlayerDto(connection, p)).Single();
+                .Select(p => FromPlayerDto(p)).Single();
         }
     }
 }

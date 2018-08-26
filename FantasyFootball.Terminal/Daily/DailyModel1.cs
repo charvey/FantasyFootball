@@ -1,6 +1,7 @@
 using Dapper;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Database;
+using FantasyPros;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;

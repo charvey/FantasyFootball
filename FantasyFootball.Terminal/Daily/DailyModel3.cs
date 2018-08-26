@@ -1,3 +1,4 @@
+using FantasyPros;
 using HtmlAgilityPack;
 using MathNet.Numerics.Distributions;
 using System;
@@ -17,7 +18,7 @@ namespace FantasyFootball.Terminal.Daily
         private readonly TextWriter output;
         private readonly string dataDirectory;
         private readonly SQLiteConnection connection;
-        private readonly FantasyPros fantasyPros;
+        private readonly FantasyProsClient fantasyPros;
 
         private Dictionary<string, Normal> points;
         private float threshold;
@@ -27,7 +28,7 @@ namespace FantasyFootball.Terminal.Daily
             this.connection = connection;
             this.output = output;
             this.dataDirectory = dataDirectory;
-            this.fantasyPros = new FantasyPros(dataDirectory);
+            this.fantasyPros = new FantasyProsClient(dataDirectory);
         }
 
         static Normal Combine(Normal a, Normal b)

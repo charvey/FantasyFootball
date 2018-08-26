@@ -1,4 +1,4 @@
-﻿namespace FantasyFootball.Terminal.Daily
+﻿namespace FantasyPros
 {
     public class DailyPlayer
     {

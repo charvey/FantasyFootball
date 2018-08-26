@@ -13,6 +13,7 @@ using FantasyFootball.Terminal.Experiments;
 using FantasyFootball.Terminal.Midseason;
 using FantasyFootball.Terminal.Preseason;
 using FantasyFootball.Terminal.Scraping;
+using FantasyPros;
 using ProFootballReference;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using YahooDailyFantasy;
 
@@ -108,7 +110,11 @@ namespace FantasyFootball.Terminal
                     }),
                     new Menu("Show Stats", new List<Menu>{
                         new Menu("Basic Stats", _ => {
-                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.BasicMeasures(service, league_key,new SqlByeRepository(connection),new SqlDraft(connection,_.Load<string>("CurrentDraftId"))));
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.BasicMeasures(service, league_key,new SqlByeRepository(connection)));
+                        }),
+                        new Menu("Draft Stats", _ =>
+                        {
+                            new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.DraftMeasures(service, league_key,new SqlByeRepository(connection),new SqlDraft(connection,_.Load<string>("CurrentDraftId")),new FantasyProsClient(dataDirectory)));
                         }),
                         new Menu("Predictions", _ => {
                             new DraftDataWriter().WriteData(new SqlDraft(connection,_.Load<string>("CurrentDraftId")),MeasureSource.PredictionMeasures(service, league_key,new SqlPredictionRepository(connection)));
@@ -133,17 +139,21 @@ namespace FantasyFootball.Terminal
                         var predictionRepository=new CachedPredictionRepository(new SqlPredictionRepository(connection));
                         var measure = new Measure[] {
                             new NameMeasure(), new TeamMeasure(), new PositionMeasure(),new DraftedTeamMeasure(draft),
+                            new ADPMeasure(new FantasyProsClient(dataDirectory)),
                             new ByeMeasure(new SqlByeRepository(connection), service.League(league_key).season)
                         }.Concat(Enumerable.Range(1,17).Select(w=>new WeekScoreMeasure(service,league_key,predictionRepository,w) as Measure))
                         .Concat(new Measure[]{
                             new TotalScoreMeasure(service,league_key,predictionRepository),new VBDMeasure(service, new SqlPlayerRepository(connection),predictionRepository, league_key)
                         });
-                        { var ___=players.SelectMany(p=>measure.Select(m=>m.Compute(p))).ToArray(); }
                         while(true){
                             var stopwatch=Stopwatch.StartNew();
-                        File.Delete("output.csv");
-                        File.WriteAllText("output.csv", string.Join(",", measure.Select(m => m.Name)) + "\n");
-                        File.AppendAllLines("output.csv", players.AsParallel().Select(player => string.Join(",", measure.Select(m => m.Compute(player)))));
+                            var newContents=new StringBuilder();
+                            newContents.AppendLine(string.Join(",", measure.Select(m => m.Name)));
+                            foreach(var player in players)
+                            {
+                                newContents.AppendLine(string.Join(",", measure.Select(m => m.Compute(player))));
+                            }
+                            File.WriteAllText("output.csv", newContents.ToString());
                             Console.WriteLine($"{DateTime.Now} - {stopwatch.Elapsed}");
                             Thread.Sleep(TimeSpan.FromSeconds(1));
                         }

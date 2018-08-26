@@ -1,3 +1,4 @@
+using FantasyPros;
 using HtmlAgilityPack;
 using MathNet.Numerics.Distributions;
 using System;
@@ -17,14 +18,14 @@ namespace FantasyFootball.Terminal.Daily
         private readonly SQLiteConnection connection;
         private readonly TextWriter output;
         private readonly string dataDirectory;
-        private readonly FantasyPros fantasyPros;
+        private readonly FantasyProsClient fantasyPros;
 
         public DailyModel2(SQLiteConnection connection, TextWriter output, string dataDirectory)
         {
             this.connection = connection;
             this.output = output;
             this.dataDirectory = dataDirectory;
-            this.fantasyPros = new FantasyPros(dataDirectory);
+            this.fantasyPros = new FantasyProsClient(dataDirectory);
         }
 
         static Dictionary<float, double> Combine(IReadOnlyDictionary<float, double> A, IReadOnlyDictionary<float, double> B)

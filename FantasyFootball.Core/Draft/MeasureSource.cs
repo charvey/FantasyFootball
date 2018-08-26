@@ -2,6 +2,7 @@
 using FantasyFootball.Core.Draft.Measures;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
+using FantasyPros;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,14 +13,23 @@ namespace FantasyFootball.Core.Draft
     public static class MeasureSource
     {
         private static ConcurrentDictionary<string, Measure[]> basicMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] BasicMeasures(FantasySportsService service, string league_key, IByeRepository byeRepository, IDraft draft)
+        public static Measure[] BasicMeasures(FantasySportsService service, string league_key, IByeRepository byeRepository)
         {
             return basicMeasures.GetOrAdd(league_key, l_ => new Measure[] {
                 new NameMeasure(),
                 new TeamMeasure(),
                 new PositionMeasure(),
-                new ByeMeasure(byeRepository,service.League(league_key).season),
-                new DraftedTeamMeasure(draft)
+                new ByeMeasure(byeRepository,service.League(league_key).season)
+             });
+        }
+
+        private static ConcurrentDictionary<string, Measure[]> draftMeasures = new ConcurrentDictionary<string, Measure[]>();
+        public static Measure[] DraftMeasures(FantasySportsService service, string league_key, IByeRepository byeRepository, IDraft draft, FantasyProsClient fantasyProsClient)
+        {
+            return basicMeasures.GetOrAdd(league_key, l_ => new Measure[] {
+                new NameMeasure(),
+                new DraftedTeamMeasure(draft),
+                new ADPMeasure(fantasyProsClient)
              });
         }
 
@@ -76,28 +86,6 @@ namespace FantasyFootball.Core.Draft
         public override string Name => $"Week {week}";
         public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, p => predictionRepository.GetPrediction(p, year, week));
         public override int Width => Math.Min(6, Name.Length);
-    }
-
-    public class TotalScoreMeasure : Measure
-    {
-        private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
-        private readonly IPredictionRepository predictionRepository;
-        private readonly int year;
-
-        public TotalScoreMeasure(FantasySportsService service, string league_key, IPredictionRepository predictionRepository)
-        {
-            this.predictionRepository = predictionRepository;
-            this.year = service.League(league_key).season;
-        }
-
-        private double GetScore(string playerId)
-        {
-            return predictionRepository.GetPredictions(playerId, year, Enumerable.Range(1, 17)).Sum();
-        }
-
-        public override string Name => "Total";
-        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, GetScore);
-        public override int Width => 6;
     }
 
     public class ByeMeasure : Measure

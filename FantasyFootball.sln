@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProFootballReference", "Pro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bovada", "Bovada\Bovada.csproj", "{7D14F610-E1E1-46E5-9FB4-E0A0EFD236DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YahooDailyFantasy", "YahooDailyFantasy\YahooDailyFantasy.csproj", "{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YahooDailyFantasy", "YahooDailyFantasy\YahooDailyFantasy.csproj", "{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyPros", "FantasyPros\FantasyPros.csproj", "{C7FCBA9C-C450-451E-8BDD-D9CC0BE42AB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDAD0A9D-8FC0-45E1-A4AC-6715DF571E9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7FCBA9C-C450-451E-8BDD-D9CC0BE42AB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7FCBA9C-C450-451E-8BDD-D9CC0BE42AB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7FCBA9C-C450-451E-8BDD-D9CC0BE42AB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7FCBA9C-C450-451E-8BDD-D9CC0BE42AB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

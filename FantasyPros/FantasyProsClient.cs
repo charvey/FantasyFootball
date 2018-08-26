@@ -81,7 +81,7 @@ namespace FantasyPros
                     if (l[1].EndsWith(" DST"))
                         return l[1].Replace(" DST", "");
                     else
-                        return l[1]
+                        return l[1];
                 }, l => {
                     if (l.Length == 13)
                         return double.Parse(l[12]);

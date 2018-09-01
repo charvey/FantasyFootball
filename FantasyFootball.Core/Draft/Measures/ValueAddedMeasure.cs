@@ -5,7 +5,6 @@ using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,22 +14,28 @@ namespace FantasyFootball.Core.Draft.Measures
     {
         private readonly IPredictionRepository predictionRepository;
         private readonly Func<IReadOnlyList<Player>> currentPlayersFactory;
+        private readonly DraftParticipant draftParticipant;
         private readonly IEnumerable<int> weeks;
         private readonly int year;
 
         public ValueAddedMeasure(FantasySportsService service, string league_key, IPredictionRepository predictionRepository, IDraft draft, DraftParticipant participant)
         {
             this.predictionRepository = predictionRepository;
+            this.draftParticipant = participant;
             this.currentPlayersFactory = () => draft.PickedPlayersByParticipant(participant);
             this.weeks = Enumerable.Range(1, SeasonWeek.ChampionshipWeek);
             this.year = service.League(league_key).season;
         }
 
-        public override string Name => "Value Added";
+        public override string Name => $"Value Added for {draftParticipant.Name}";
 
         public override int Width => Name.Length;
 
-        public override IComparable Compute(Player player) => throw new NotImplementedException();
+        public override IComparable Compute(Player player)
+        {
+            var currentPlayers = currentPlayersFactory();
+            return GetTotalScore(player.cons(currentPlayers), year) - GetTotalScore(currentPlayers, year);
+        }
 
         public override IComparable[] Compute(Player[] players)
         {
@@ -46,14 +51,12 @@ namespace FantasyFootball.Core.Draft.Measures
             return weeks.Select(w => GetWeekScore(players, year, w)).Sum();
         }
 
-        private readonly ConcurrentDictionary<Tuple<string, int>, double> predictions = new ConcurrentDictionary<Tuple<string, int>, double>();
-
         private double GetWeekScore(IEnumerable<Player> players, int year, int week)
         {
-            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => predictionRepository.GetPrediction(t.Item1, year, t.Item2))))
+            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(p.Id, year, week)))
                 .Model(new RosterSituation(players.ToArray(), week))
                 .Outcomes.Single().Players
-                .Sum(p => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => predictionRepository.GetPrediction(t.Item1, year, t.Item2)));
+                .Sum(p => predictionRepository.GetPrediction(p.Id, year, week));
         }
     }
 

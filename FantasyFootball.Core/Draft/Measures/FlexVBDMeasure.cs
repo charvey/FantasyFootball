@@ -19,7 +19,7 @@ namespace FantasyFootball.Core.Draft.Measures
             this.predictionRepository = predictionRepository;
             this.year = service.League(league_key).season;
             replacement = service.LeaguePlayers(league_key)
-                .Select(p => playerRepository.GetPlayer(p.player_id))
+                .Select(p => playerRepository.GetPlayer(p.player_id.ToString()))
                 .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())
                 .Select(p => GetScore(predictionRepository, p.Id))
                 .OrderByDescending(x => x).Skip(12 * (2 + 2 + 1 + 2) - 1).First();

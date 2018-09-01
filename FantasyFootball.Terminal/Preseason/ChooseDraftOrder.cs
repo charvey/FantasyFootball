@@ -16,7 +16,7 @@ namespace FantasyFootball.Terminal.Preseason
         public static void Do(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, string league_key)
         {
             var players = service.LeaguePlayers(league_key)
-                    .Select(p => playerRepository.GetPlayer(p.player_id))
+                    .Select(p => playerRepository.GetPlayer(p.player_id.ToString()))
                     .PutInDraftOrder(predictionRepository, service.League(league_key).season)
                     .ToList();
             var teams = service.League(league_key).num_teams;

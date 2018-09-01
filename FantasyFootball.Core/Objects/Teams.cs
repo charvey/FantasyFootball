@@ -8,7 +8,7 @@ namespace FantasyFootball.Core.Objects
         {
             return new Team
             {
-                Id = int.Parse(team.team_id),
+                Id = team.team_id,
                 Owner = team.managers.Single().nickname,
                 Name = team.name
             };

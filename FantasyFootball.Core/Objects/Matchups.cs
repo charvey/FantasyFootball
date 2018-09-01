@@ -16,8 +16,8 @@ namespace FantasyFootball.Core.Objects
                 Debug.Assert(m.teams.Length == 2);
                 return new Matchup
                 {
-                    TeamA = teams.Single(t => t.Id == int.Parse(m.teams.First().team_id)),
-                    TeamB = teams.Single(t => t.Id == int.Parse(m.teams.Last().team_id)),
+                    TeamA = teams.Single(t => t.Id == m.teams.First().team_id),
+                    TeamB = teams.Single(t => t.Id == m.teams.Last().team_id),
                     Week = m.week
                 };
             });

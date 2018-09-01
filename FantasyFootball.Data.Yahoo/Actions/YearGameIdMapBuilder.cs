@@ -19,7 +19,7 @@ namespace FantasyFootball.Data.Yahoo.Actions
 
         public void Build()
         {
-            var map = new Dictionary<int, string>();
+            var map = new Dictionary<int, int>();
             foreach (var potentialId in Enumerable.Range(0, int.MaxValue))
             {
                 if (map.ContainsKey(DateTime.Now.Year))

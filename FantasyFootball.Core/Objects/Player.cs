@@ -2,6 +2,7 @@
 {
     public class Player
     {
+        //TODO convert to int
         public string Id { get; set; }
         public string Name { get; set; }
         public string[] Positions { get; set; }

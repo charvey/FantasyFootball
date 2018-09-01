@@ -53,7 +53,7 @@ namespace FantasyFootball.Terminal.Draft
             FROM DraftPick
             JOIN DraftOption ON DraftPick.DraftOptionId = DraftOption.Id
             JOIN Player ON Player.Id = DraftOption.PlayerId
-            WHERE DraftPick.DraftId=@draftId AND DraftPick.DraftParticipantId=draftParticipantId",
+            WHERE DraftPick.DraftId=@draftId AND DraftPick.DraftParticipantId=@draftParticipantId",
             new { draftId = draftId, draftParticipantId = t.Id })
             .Select(FromPlayerDto).ToList();
         public IReadOnlyList<Player> UnpickedPlayers => connection.Query<PlayerDto>(@"

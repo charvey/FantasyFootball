@@ -32,7 +32,7 @@ namespace FantasyFootball.Core.Objects
         {
             return new Player
             {
-                Id = player.player_id,
+                Id = player.player_id.ToString(),
                 Name = player.name.full,
                 Positions = player.display_position.Split(','),
                 Team = player.editorial_team_abbr

@@ -6,7 +6,7 @@ namespace FantasyFootball.Data.Yahoo.Models
     public class Player
     {
         public string player_key;
-        public string player_id;
+        public int player_id;
         public PlayerName name;
         public Week[] bye_weeks;
         public string image_url;

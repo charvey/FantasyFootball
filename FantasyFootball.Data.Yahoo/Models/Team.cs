@@ -6,7 +6,7 @@ namespace FantasyFootball.Data.Yahoo.Models
     public class Team
     {
         public string team_key;
-        public string team_id;
+        public int team_id;
         public string name;
         public string url;
         public TeamLogos team_logos;

@@ -36,7 +36,7 @@ namespace FantasyFootball.Core.Draft.Measures
         {
             var year = service.League(league_key).season;
             var players = service.LeaguePlayers(league_key)
-                .Select(p => playerRepository.GetPlayer(p.player_id));
+                .Select(p => playerRepository.GetPlayer(p.player_id.ToString()));
             var scores = players
                 .ToDictionary(p => p.Id, p => GetScore(predictionRepository, year, p.Id));
             var replacementScores = players

@@ -44,13 +44,13 @@ namespace FantasyFootball.Core.Draft
         }
 
         private static ConcurrentDictionary<string, Measure[]> valueMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] ValueMeasures(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, string league_key, IDraft draft)
+        public static Measure[] ValueMeasures(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, string league_key, int team_id, IDraft draft)
         {
             return valueMeasures.GetOrAdd(league_key, l_k => new Measure[] {
                 new NameMeasure(),new PositionMeasure(),
                 new FlexVBDMeasure(service, playerRepository, predictionRepository,league_key),
                 new VBDMeasure(service, playerRepository, predictionRepository,league_key),
-                new ValueAddedMeasure(service,league_key,predictionRepository,draft,draft.Participants.Single(p=>p.Name=="Money Ballers")),
+                new ValueAddedMeasure(service,league_key,predictionRepository,draft,draft.Participants.Single(p=>p.Name==service.Teams(league_key).Single(t=>t.team_id==team_id).name)),
             });
         }
     }

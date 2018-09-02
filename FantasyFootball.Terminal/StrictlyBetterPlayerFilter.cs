@@ -14,7 +14,7 @@ namespace FantasyFootball.Terminal
     {
         private Dictionary<string, List<HashSet<string>>> betters;
 
-        public StrictlyBetterPlayerFilter(FantasySportsService service, LeagueKey leagueKey, SQLiteConnection connection, IPredictionRepository predictionRepository, IEnumerable<string> playerIds, double threshold = 0)
+        public StrictlyBetterPlayerFilter(FantasySportsService service, LeagueKey leagueKey, SQLiteConnection connection, ILatestPredictionRepository predictionRepository, IEnumerable<string> playerIds, double threshold = 0)
         {
             if (threshold < 0 || 1 < threshold)
                 throw new ArgumentException("Threshold must be between 0 and 1", nameof(threshold));
@@ -55,7 +55,7 @@ namespace FantasyFootball.Terminal
             return allPlayers.Where(p => !betters[p].Any(c => c.Any(op => allPlayers.Contains(op))));
         }
 
-        public static void RunTest(FantasySportsService service, SQLiteConnection connection, LeagueKey leagueKey, IPredictionRepository predictionRepository)
+        public static void RunTest(FantasySportsService service, SQLiteConnection connection, LeagueKey leagueKey, ILatestPredictionRepository predictionRepository)
         {
             var players = new HashSet<string>(service.LeaguePlayers(leagueKey).Select(p => p.player_id.ToString()));
             var scores = players.ToDictionary(p => p, p => predictionRepository.GetPredictions(leagueKey, p, Enumerable.Range(1, 17)));

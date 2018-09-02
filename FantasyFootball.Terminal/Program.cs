@@ -195,6 +195,7 @@ namespace FantasyFootball.Terminal
                     new Menu("Model3 Small", _=>new DailyModel3(connection,Console.Out,dataDirectory).Do(new YahooDailyFantasyClient(),2077312))
                 }),
                 new Menu("Experiments",new List<Menu>{
+                    new Menu("Analyze Prediction Accuracy",_=> new PredictionAccuracy(service,new SqlPredictionRepository(connection),Console.In,Console.Out).Do(LeagueKey.Parse(Menu.PromptFor<string>("Enter league_key")))),
                     new Menu("Analyze Probability Distributions",_=> ProbabilityDistributionAnalysis.Analyze(Console.Out)),
                     new Menu("Minimax",_=>MiniMaxer.Testminimax(service,new SqlPredictionRepository(connection),connection, league_key)),
                     new Menu("Popular Names",_=>PopularNames.Analyze(service,Console.Out,league_key)),

@@ -15,7 +15,7 @@ namespace Yahoo.Tests
 
         [Theory]
         [InlineData("123.l.56789.t.1")]
-        [InlineData("123.l.56789.p.1")]
+        [InlineData("123.p.1")]
         [InlineData("56789")]
         [InlineData("123.56789")]
         public void Parse_InvalidFormats(string value)
@@ -36,7 +36,7 @@ namespace Yahoo.Tests
         {
             var collection = new HashSet<LeagueKey> { LeagueKey.Parse(value) };
 
-            Assert.Contains(LeagueKey.Parse(value), collection);
+            Assert.Contains(LeagueKey.Parse(value.Substring(0)), collection);
         }
 
         [Theory]        
@@ -45,6 +45,14 @@ namespace Yahoo.Tests
         public void LeagueId_ParsedCorrectly(string value, int leagueId)
         {
             Assert.Equal(leagueId, LeagueKey.Parse(value).LeagueId);
+        }
+
+        [Theory]
+        [InlineData("123.l.12345", 123)]
+        [InlineData("456.l.67890", 456)]
+        public void GameId_ParsedCorrectly(string value, int gameId)
+        {
+            Assert.Equal(gameId, LeagueKey.Parse(value).GameId);
         }
     }
 }

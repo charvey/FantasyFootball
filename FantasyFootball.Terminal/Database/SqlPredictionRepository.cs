@@ -3,19 +3,44 @@ using FantasyFootball.Core.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Terminal.Database
 {
-    public class SqlPredictionRepository : IPredictionRepository
+    internal class LeagueKeyTypeHandler : SqlMapper.TypeHandler<LeagueKey>
     {
+        public override LeagueKey Parse(object value)
+        {
+            return LeagueKey.Parse(value.ToString());
+        }
+
+        public override void SetValue(IDbDataParameter parameter, LeagueKey value)
+        {
+            parameter.Value = value.ToString();
+        }
+    }
+
+    public class SqlPredictionRepository : ILatestPredictionRepository, IFullPredictionRepository
+    {
+        private class PredictionRow : Prediction
+        {
+            public LeagueKey LeagueKey { get; set; }
+            public string PlayerId { get; set; }
+            public int Week { get; set; }
+            public string AsOf { get; set; }
+            DateTime Prediction.AsOf => DateTime.Parse(AsOf);
+            public double Value { get; set; }
+        }
+
         private readonly SQLiteConnection connection;
 
         public SqlPredictionRepository(SQLiteConnection connection)
         {
             this.connection = connection;
+            SqlMapper.AddTypeHandler(new LeagueKeyTypeHandler());
         }
 
         public void AddPrediction(LeagueKey leagueKey, string playerId, int week, double value, DateTime asOf)
@@ -24,12 +49,21 @@ namespace FantasyFootball.Terminal.Database
                 INSERT INTO Predictions (LeagueKey,PlayerId,Week,Value,AsOf)
                 VALUES (@LeagueKey,@PlayerId,@Week,@Value,@AsOf)", new
             {
-                LeagueKey = leagueKey.ToString(),
+                LeagueKey = leagueKey,
                 PlayerId = playerId,
                 Week = week,
                 Value = value,
                 AsOf = asOf.ToString("O")
             });
+        }
+
+        public IReadOnlyList<Prediction> GetAll(LeagueKey leagueKey)
+        {
+            return connection.Query<PredictionRow>(@"
+                SELECT * FROM Predictions WHERE LeagueKey=@LeagueKey", new
+            {
+                LeagueKey = leagueKey
+            }).ToList();
         }
 
         public double GetPrediction(LeagueKey leagueKey, string playerId, int week)
@@ -38,9 +72,9 @@ namespace FantasyFootball.Terminal.Database
                 SELECT Value
                 FROM Predictions
                 WHERE LeagueKey=@leagueKey AND PlayerId=@playerId AND Week=@week
-                ORDER BY AsOf DESC", new
+                ORDER BY date(AsOf) DESC", new
             {
-                leagueKey = leagueKey.ToString(),
+                leagueKey = leagueKey,
                 playerId = playerId,
                 week = week
             });
@@ -52,18 +86,13 @@ namespace FantasyFootball.Terminal.Database
         }
     }
 
-    public class CachedPredictionRepository : IPredictionRepository
+    public class CachedPredictionRepository : ILatestPredictionRepository
     {
-        private readonly IPredictionRepository predictionRepository;
+        private readonly ILatestPredictionRepository predictionRepository;
 
-        public CachedPredictionRepository(IPredictionRepository predictionRepository)
+        public CachedPredictionRepository(ILatestPredictionRepository predictionRepository)
         {
             this.predictionRepository = predictionRepository;
-        }
-
-        public void AddPrediction(LeagueKey leagueKey, string playerId, int week, double value, DateTime asOf)
-        {
-            throw new NotImplementedException();
         }
 
         private readonly ConcurrentDictionary<Tuple<LeagueKey, string, int>, double> cache = new ConcurrentDictionary<Tuple<LeagueKey, string, int>, double>();

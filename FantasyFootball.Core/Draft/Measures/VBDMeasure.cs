@@ -33,7 +33,7 @@ namespace FantasyFootball.Core.Draft.Measures
             return scores.Skip(count - 1).First();
         }
 
-        public VBDMeasure(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, LeagueKey leagueKey)
+        public VBDMeasure(FantasySportsService service, IPlayerRepository playerRepository, ILatestPredictionRepository predictionRepository, LeagueKey leagueKey)
         {
             var players = service.LeaguePlayers(leagueKey)
                 .Select(p => playerRepository.GetPlayer(p.player_id.ToString()));
@@ -47,7 +47,7 @@ namespace FantasyFootball.Core.Draft.Measures
                 .ToDictionary(p => p.Id, p => scores[p.Id] - p.Positions.Min(pos => replacementScores[pos]));
         }
 
-        private double GetScore(IPredictionRepository predictionRepository, LeagueKey leagueKey, string playerId)
+        private double GetScore(ILatestPredictionRepository predictionRepository, LeagueKey leagueKey, string playerId)
         {
             return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, 16)).Sum();
         }

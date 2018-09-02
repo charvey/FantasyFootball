@@ -11,10 +11,10 @@ namespace FantasyFootball.Core.Draft.Measures
     public class TotalScoreMeasure : Measure
     {
         private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
-        private readonly IPredictionRepository predictionRepository;
+        private readonly ILatestPredictionRepository predictionRepository;
         private readonly LeagueKey leagueKey;
 
-        public TotalScoreMeasure(FantasySportsService service, LeagueKey leagueKey, IPredictionRepository predictionRepository)
+        public TotalScoreMeasure(FantasySportsService service, LeagueKey leagueKey, ILatestPredictionRepository predictionRepository)
         {
             this.predictionRepository = predictionRepository;
             this.leagueKey = leagueKey;

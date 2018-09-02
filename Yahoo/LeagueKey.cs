@@ -8,6 +8,7 @@ namespace Yahoo
 
         private readonly string value;
 
+        public int GameId => int.Parse(value.Split(new[] { GAME_LEAGUE_SPLIT }, 2, StringSplitOptions.None)[0]);
         public int LeagueId => int.Parse(value.Split(new[] { GAME_LEAGUE_SPLIT }, 2, StringSplitOptions.None)[1]);
 
         private LeagueKey(string value)

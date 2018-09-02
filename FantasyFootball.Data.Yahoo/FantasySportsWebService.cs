@@ -57,7 +57,9 @@ namespace FantasyFootball.Data.Yahoo
 
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("Authorization", BearerAuthorizationHeader);
-            return client.SendAsync(request).Result.Content.ReadAsStringAsync();
+            var response = client.SendAsync(request).Result;
+            var maxAge = response.Headers.CacheControl.MaxAge;
+            return response.Content.ReadAsStringAsync();
         }
 
         public string all(string gameId = "nfl")
@@ -116,6 +118,13 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url, "xml").Result;
         }
 
+        public string LeaguePlayersWeekStats(LeagueKey league_key, int week, int start=0)
+        {
+            var url = $"{BaseUrl}/league/{league_key}/players;start={start}/stats;type=week;week={week}";
+
+            return MakeCall(url, "xml").Result;
+        }
+
         public string LeaguePlayersResults(LeagueKey league_key, int start = 0)
         {
             var url = BaseUrl + "/league/" + league_key + "/players;start=" + start;
@@ -158,7 +167,7 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url).Result;
         }
 
-        public string Leagues(params string[] league_keys)
+        public string Leagues(params LeagueKey[] league_keys)
         {
             var url = BaseUrl + "/league;league_keys=" + string.Join(",", league_keys);
 

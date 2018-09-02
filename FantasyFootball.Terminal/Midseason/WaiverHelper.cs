@@ -15,7 +15,7 @@ namespace FantasyFootball.Terminal.Midseason
 {
     public class WaiverHelper
     {
-        public void Help(FantasySportsService service, IPredictionRepository predictionRepository, TextWriter output, LeagueKey leagueKey, int team_id)
+        public void Help(FantasySportsService service, ILatestPredictionRepository predictionRepository, TextWriter output, LeagueKey leagueKey, int team_id)
         {
             var league = service.League(leagueKey);
             var all = service.LeaguePlayers(leagueKey).Select(Players.From).ToList();
@@ -46,7 +46,7 @@ namespace FantasyFootball.Terminal.Midseason
             }
         }
 
-        private double GetRemainingScore(IPredictionRepository predictionRepository, IEnumerable<Player> players, Data.Yahoo.Models.League league)
+        private double GetRemainingScore(ILatestPredictionRepository predictionRepository, IEnumerable<Player> players, Data.Yahoo.Models.League league)
         {
             return Enumerable.Range(1, league.end_week)
                 .Where(w => w >= league.current_week)
@@ -55,7 +55,7 @@ namespace FantasyFootball.Terminal.Midseason
 
         private readonly ConcurrentDictionary<Tuple<string, int>, double> predictions = new ConcurrentDictionary<Tuple<string, int>, double>();
 
-        private double GetWeekScore(IPredictionRepository predictionRepository, LeagueKey leagueKey, IEnumerable<Player> players, int week)
+        private double GetWeekScore(ILatestPredictionRepository predictionRepository, LeagueKey leagueKey, IEnumerable<Player> players, int week)
         {
             return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictions.GetOrAdd(Tuple.Create(p.Id, week), t => predictionRepository.GetPrediction(leagueKey, t.Item1, t.Item2))))
                 .Model(new RosterSituation(players.ToArray(), week))

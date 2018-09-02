@@ -34,7 +34,7 @@ namespace FantasyFootball.Core.Draft
         }
 
         private static ConcurrentDictionary<LeagueKey, Measure[]> predictionMeasures = new ConcurrentDictionary<LeagueKey, Measure[]>();
-        public static Measure[] PredictionMeasures(FantasySportsService service, LeagueKey leagueKey, IPredictionRepository predictionRepository)
+        public static Measure[] PredictionMeasures(FantasySportsService service, LeagueKey leagueKey, ILatestPredictionRepository predictionRepository)
         {
             return predictionMeasures.GetOrAdd(leagueKey, l_k =>
               new[] { new NameMeasure() }.Cast<Measure>()
@@ -44,7 +44,7 @@ namespace FantasyFootball.Core.Draft
         }
 
         private static ConcurrentDictionary<LeagueKey, Measure[]> valueMeasures = new ConcurrentDictionary<LeagueKey, Measure[]>();
-        public static Measure[] ValueMeasures(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, LeagueKey leagueKey, int team_id, IDraft draft)
+        public static Measure[] ValueMeasures(FantasySportsService service, IPlayerRepository playerRepository, ILatestPredictionRepository predictionRepository, LeagueKey leagueKey, int team_id, IDraft draft)
         {
             return valueMeasures.GetOrAdd(leagueKey, l_k => new Measure[] {
                 new NameMeasure(),new PositionMeasure(),
@@ -72,11 +72,11 @@ namespace FantasyFootball.Core.Draft
     public class WeekScoreMeasure : Measure
     {
         private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
-        private readonly IPredictionRepository predictionRepository;
+        private readonly ILatestPredictionRepository predictionRepository;
         private readonly LeagueKey league_key;
         private readonly int week;
 
-        public WeekScoreMeasure(FantasySportsService service, LeagueKey league_key, IPredictionRepository predictionRepository, int week)
+        public WeekScoreMeasure(FantasySportsService service, LeagueKey league_key, ILatestPredictionRepository predictionRepository, int week)
         {
             this.predictionRepository = predictionRepository;
             this.league_key = league_key;

@@ -39,6 +39,7 @@ namespace FantasyFootball.Core.Simulation
     {
         private int CurrentWeek = SeasonWeek.Current;
         private readonly FantasySportsService service;
+        private readonly ILatestPredictionRepository predictionRepository;
         private readonly CandidateScoreProvider scoreProvider;
 
         public WinnerPredicter(FantasySportsService service)
@@ -204,7 +205,7 @@ namespace FantasyFootball.Core.Simulation
             foreach (var team in teams)
             {
                 var allPlayers = GetFuturePlayers(leagueKey, team, week);
-                var roster = new MostLikelyScoreRosterModeler(new RealityScoreModeler(DumpData.GetScore))
+                var roster = new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(leagueKey, p.Id, week)))
                     .Model(new RosterSituation(allPlayers, week)).Outcomes.Single();
 
                 foreach (var player in roster.Players)

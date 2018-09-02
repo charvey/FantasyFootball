@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace FantasyFootball.Core.Data
 {
+    [Obsolete]
     public static class DumpData
     {
         private const string filename = "dump.csv";

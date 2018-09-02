@@ -13,13 +13,13 @@ namespace FantasyFootball.Core.Draft.Measures
 {
     public class ValueAddedMeasure : Measure
     {
-        private readonly IPredictionRepository predictionRepository;
+        private readonly ILatestPredictionRepository predictionRepository;
         private readonly Func<IReadOnlyList<Player>> currentPlayersFactory;
         private readonly DraftParticipant draftParticipant;
         private readonly IEnumerable<int> weeks;
         private readonly LeagueKey leagueKey;
 
-        public ValueAddedMeasure(FantasySportsService service, LeagueKey leagueKey, IPredictionRepository predictionRepository, IDraft draft, DraftParticipant participant)
+        public ValueAddedMeasure(FantasySportsService service, LeagueKey leagueKey, ILatestPredictionRepository predictionRepository, IDraft draft, DraftParticipant participant)
         {
             this.predictionRepository = predictionRepository;
             this.draftParticipant = participant;

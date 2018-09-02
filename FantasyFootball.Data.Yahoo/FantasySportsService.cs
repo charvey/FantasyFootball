@@ -68,6 +68,11 @@ namespace FantasyFootball.Data.Yahoo
             return ReadAllPlayers(s => webService.LeaguePlayersResults(league_key, status, s));
         }
 
+        public IEnumerable<Player> LeaguePlayersWeekStats(LeagueKey league_key, int week)
+        {
+            return ReadAllPlayers(s => webService.LeaguePlayersWeekStats(league_key, week, s));
+        }
+
         private static IEnumerable<Player> ReadAllPlayers(Func<int, string> xmlByStart)
         {
             int start = 0;

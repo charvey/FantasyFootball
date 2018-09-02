@@ -11,10 +11,13 @@ namespace FantasyFootball.Data.Yahoo.Models
         public int num_teams;
         public int current_week;
         public int start_week;
+        public string start_date;
         public int end_week;
+        public string end_date;
         public string game_code;
         public int season;
         public DraftResult[] draft_results;
+        public Player[] players;
         public LeagueSettings settings;
         public LeagueScoreboard scoreboard;
         public Transaction[] transactions;

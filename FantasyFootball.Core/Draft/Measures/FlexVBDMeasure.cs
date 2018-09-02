@@ -12,10 +12,10 @@ namespace FantasyFootball.Core.Draft.Measures
     {
         private readonly ConcurrentDictionary<string, double> values = new ConcurrentDictionary<string, double>();
         private readonly double replacement;
-        private readonly IPredictionRepository predictionRepository;
+        private readonly ILatestPredictionRepository predictionRepository;
         private readonly LeagueKey leagueKey;
 
-        public FlexVBDMeasure(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, LeagueKey leagueKey)
+        public FlexVBDMeasure(FantasySportsService service, IPlayerRepository playerRepository, ILatestPredictionRepository predictionRepository, LeagueKey leagueKey)
         {
             this.predictionRepository = predictionRepository;
             this.leagueKey = leagueKey;
@@ -26,7 +26,7 @@ namespace FantasyFootball.Core.Draft.Measures
                 .OrderByDescending(x => x).Skip(12 * (2 + 2 + 1 + 2) - 1).First();
         }
 
-        private double GetScore(IPredictionRepository predictionRepository, string playerId)
+        private double GetScore(ILatestPredictionRepository predictionRepository, string playerId)
         {
             return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, 16)).Sum();
         }

@@ -4,6 +4,7 @@ using FantasyFootball.Data.Yahoo;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Core.Draft.Measures
 {
@@ -12,13 +13,13 @@ namespace FantasyFootball.Core.Draft.Measures
         private readonly ConcurrentDictionary<string, double> values = new ConcurrentDictionary<string, double>();
         private readonly double replacement;
         private readonly IPredictionRepository predictionRepository;
-        private readonly int year;
+        private readonly LeagueKey leagueKey;
 
-        public FlexVBDMeasure(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, string league_key)
+        public FlexVBDMeasure(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, LeagueKey leagueKey)
         {
             this.predictionRepository = predictionRepository;
-            this.year = service.League(league_key).season;
-            replacement = service.LeaguePlayers(league_key)
+            this.leagueKey = leagueKey;
+            replacement = service.LeaguePlayers(leagueKey)
                 .Select(p => playerRepository.GetPlayer(p.player_id.ToString()))
                 .Where(p => p.Positions.Intersect(new[] { "RB", "WR", "TE" }).Any())
                 .Select(p => GetScore(predictionRepository, p.Id))
@@ -27,7 +28,7 @@ namespace FantasyFootball.Core.Draft.Measures
 
         private double GetScore(IPredictionRepository predictionRepository, string playerId)
         {
-            return predictionRepository.GetPredictions(playerId, year, Enumerable.Range(1, 16)).Sum();
+            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, 16)).Sum();
         }
 
         public override string Name => "Flex VBD";

@@ -7,6 +7,7 @@ using FantasyFootball.Data.Yahoo;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Core.Trade
 {
@@ -26,15 +27,15 @@ namespace FantasyFootball.Core.Trade
             public TeamPlayers TeamB { get; set; }
         }
 
-        public void Help(FantasySportsService service, TextWriter output, string league_key, int myTeamId)
+        public void Help(FantasySportsService service, TextWriter output, LeagueKey leagueKey, int myTeamId)
         {
-            var week = service.League(league_key).current_week;
-            var teams = service.Teams(league_key)
+            var week = service.League(leagueKey).current_week;
+            var teams = service.Teams(leagueKey)
                 .Select(Teams.From)
                 .Select(t => new TeamPlayers
                 {
                     Team = t,
-                    Players = service.TeamRoster($"{league_key}.t.{t.Id}", week).players.Select(Players.From).ToArray()
+                    Players = service.TeamRoster($"{leagueKey}.t.{t.Id}", week).players.Select(Players.From).ToArray()
                 });
 
             var myPlayers = teams.Single(t => t.Team.Id == myTeamId);

@@ -14,6 +14,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Core.Simulation
 {
@@ -50,11 +51,11 @@ namespace FantasyFootball.Core.Simulation
             scoreProvider = new CandidateScoreProvider(candidate);
         }
 
-        public void PredictWinners(string league_key)
+        public void PredictWinners(LeagueKey leagueKey)
         {
             const int trials = 10000;
             var universe = new Universe();
-            StartSeason(universe, league_key);
+            StartSeason(universe, leagueKey);
 
             var stopwatch = Stopwatch.StartNew();
             var winners = new ConcurrentDictionary<Team, int>();
@@ -87,7 +88,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 Console.WriteLine($"Starting Trial #{_}");
                 var runUniverse = universe.Clone();
-                FinishSeason(runUniverse, league_key);
+                FinishSeason(runUniverse, leagueKey);
                 winners.AddOrUpdate(runUniverse.GetChampionshipResult().Winner, 1, (k, c) => c + 1);
                 foreach (var team in runUniverse.GetStandingsAtEndOfSeason().Take(6))
                     playoffAppearances.AddOrUpdate(team, 1, (k, c) => c + 1);
@@ -111,60 +112,60 @@ namespace FantasyFootball.Core.Simulation
             printProgress(trials);
         }
 
-        public void PredictWinner(string league_key)
+        public void PredictWinner(LeagueKey leagueKey)
         {
             var universe = new Universe();
-            StartSeason(universe, league_key);
-            FinishSeason(universe, league_key);
+            StartSeason(universe, leagueKey);
+            FinishSeason(universe, leagueKey);
             Console.WriteLine(universe.GetChampionshipResult().Winner.Owner);
         }
 
         private ConcurrentDictionary<Tuple<int, int>, Player[]> pastPlayers = new ConcurrentDictionary<Tuple<int, int>, Player[]>();
-        private Player[] GetPastPlayers(string league_key, Team team, int week)
+        private Player[] GetPastPlayers(LeagueKey leagueKey, Team team, int week)
         {
             var key = Tuple.Create(team.Id, week);
-            return pastPlayers.GetOrAdd(key, _ => service.TeamRoster($"{league_key}.t.{team.Id}", week).players
+            return pastPlayers.GetOrAdd(key, _ => service.TeamRoster($"{leagueKey}.t.{team.Id}", week).players
                 .Where(p => p.selected_position.position != "BN")
                 .Select(Players.From).ToArray());
         }
 
         private ConcurrentDictionary<Tuple<int, int>, Player[]> futurePlayers = new ConcurrentDictionary<Tuple<int, int>, Player[]>();
-        private Player[] GetFuturePlayers(string league_key, Team team, int week)
+        private Player[] GetFuturePlayers(LeagueKey leagueKey, Team team, int week)
         {
             var key = Tuple.Create(team.Id, week);
-            return futurePlayers.GetOrAdd(key, _ => service.TeamRoster($"{league_key}.t.{team.Id}", week).players
+            return futurePlayers.GetOrAdd(key, _ => service.TeamRoster($"{leagueKey}.t.{team.Id}", week).players
                 .Select(Players.From).ToArray());
         }
 
-        private void StartSeason(Universe universe, string league_key)
+        private void StartSeason(Universe universe, LeagueKey leagueKey)
         {
-            foreach (var team in service.Teams(league_key).Select(Teams.From))
+            foreach (var team in service.Teams(leagueKey).Select(Teams.From))
                 universe.AddFact(new AddTeam { Team = team });
 
             for (int week = 1; week < CurrentWeek; week++)
             {
                 Console.WriteLine($"Recording Week #{week}");
-                RecordWeek(universe, league_key, week);
+                RecordWeek(universe, leagueKey, week);
             }
         }
 
-        private void FinishSeason(Universe universe, string league_key)
+        private void FinishSeason(Universe universe, LeagueKey leagueKey)
         {
             for (int week = CurrentWeek; week <= SeasonWeek.RegularSeasonEnd; week++)
             {
                 Console.WriteLine($"Predicting Week #{week}");
-                PredictWeek(universe, league_key, week);
+                PredictWeek(universe, leagueKey, week);
             }
 
             Console.WriteLine($"Predicting Quarterfinals");
-            PredictQuarterfinals(universe, league_key);
+            PredictQuarterfinals(universe, leagueKey);
             Console.WriteLine($"Predicting Semifinals");
-            PredictSemifinals(universe, league_key);
+            PredictSemifinals(universe, leagueKey);
             Console.WriteLine($"Predicting Championship");
-            PredictChampionship(universe, league_key);
+            PredictChampionship(universe, leagueKey);
         }
 
-        private void RecordWeek(Universe universe, string league_key, int week)
+        private void RecordWeek(Universe universe, LeagueKey leagueKey, int week)
         {
             foreach (var player in Players.All())
             {
@@ -176,7 +177,7 @@ namespace FantasyFootball.Core.Simulation
                 });
             }
 
-            foreach (var matchup in Matchups.GetByWeek(service, league_key, week))
+            foreach (var matchup in Matchups.GetByWeek(service, leagueKey, week))
                 universe.AddFact(new AddMatchup { Matchup = matchup });
 
             foreach (var team in universe.GetTeams())
@@ -185,24 +186,24 @@ namespace FantasyFootball.Core.Simulation
                 {
                     Team = team,
                     Week = week,
-                    Players = GetPastPlayers(league_key, team, week)
+                    Players = GetPastPlayers(leagueKey, team, week)
                 });
             }
         }
 
-        private void PredictWeek(Universe universe, string league_key, int week)
+        private void PredictWeek(Universe universe, LeagueKey leagueKey, int week)
         {
-            foreach (var matchup in Matchups.GetByWeek(service, league_key, week))
+            foreach (var matchup in Matchups.GetByWeek(service, leagueKey, week))
                 universe.AddFact(new AddMatchup { Matchup = matchup });
 
-            PredictTeamsForWeek(universe, league_key, universe.GetTeams(), week);
+            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), week);
         }
 
-        private void PredictTeamsForWeek(Universe universe, string league_key, IEnumerable<Team> teams, int week)
+        private void PredictTeamsForWeek(Universe universe, LeagueKey leagueKey, IEnumerable<Team> teams, int week)
         {
             foreach (var team in teams)
             {
-                var allPlayers = GetFuturePlayers(league_key, team, week);
+                var allPlayers = GetFuturePlayers(leagueKey, team, week);
                 var roster = new MostLikelyScoreRosterModeler(new RealityScoreModeler(DumpData.GetScore))
                     .Model(new RosterSituation(allPlayers, week)).Outcomes.Single();
 
@@ -225,19 +226,19 @@ namespace FantasyFootball.Core.Simulation
             }
         }
 
-        private void PredictQuarterfinals(Universe universe, string league_key)
+        private void PredictQuarterfinals(Universe universe, LeagueKey leagueKey)
         {
-            PredictTeamsForWeek(universe, league_key, universe.GetTeams(), SeasonWeek.QuarterFinalWeek);
+            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), SeasonWeek.QuarterFinalWeek);
         }
 
-        private void PredictSemifinals(Universe universe, string league_key)
+        private void PredictSemifinals(Universe universe, LeagueKey leagueKey)
         {
-            PredictTeamsForWeek(universe, league_key, universe.GetTeams(), SeasonWeek.SemifinalWeek);
+            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), SeasonWeek.SemifinalWeek);
         }
 
-        private void PredictChampionship(Universe universe, string league_key)
+        private void PredictChampionship(Universe universe, LeagueKey leagueKey)
         {
-            PredictTeamsForWeek(universe, league_key, universe.GetTeams(), SeasonWeek.ChampionshipWeek);
+            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), SeasonWeek.ChampionshipWeek);
         }
     }
 }

@@ -24,6 +24,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Yahoo;
 using YahooDailyFantasy;
 
 namespace FantasyFootball.Terminal
@@ -33,7 +34,7 @@ namespace FantasyFootball.Terminal
         static void Main(string[] args)
         {
             var today = DateTime.Today;
-            var league_key = ConfigurationManager.AppSettings["league_key"];
+            var league_key = LeagueKey.Parse(ConfigurationManager.AppSettings["league_key"]);
             var team_id = int.Parse(ConfigurationManager.AppSettings["team_id"]);
             var connectionString = ConfigurationManager.ConnectionStrings["SQLite"].ConnectionString;
             var dataDirectory = ConfigurationManager.AppSettings["DataDirectory"];
@@ -175,7 +176,7 @@ namespace FantasyFootball.Terminal
                     new Menu ("Fantasy Pros", _ =>Scraping.FantasyPros.Scrape(dataDirectory))
                 }),
                 new Menu("Midseason",new List<Menu>{
-                    new Menu("Roster Helper",_=>new RosterHelper().Help(service,Console.Out,(p,w)=>new SqlPredictionRepository(connection).GetPrediction(p.Id,service.League(league_key).season,w), league_key,team_id)),
+                    new Menu("Roster Helper",_=>new RosterHelper().Help(service,Console.Out,(p,w)=>new SqlPredictionRepository(connection).GetPrediction(league_key,p.Id,w), league_key,team_id)),
                     new Menu("Waiver Helper",_=>new WaiverHelper().Help(service,new SqlPredictionRepository(connection),Console.Out, league_key,team_id)),
                     new Menu("Trade Helper",_=>new TradeHelper().Help(service,Console.Out,league_key,team_id)),
                     new Menu("Transactions", _ =>
@@ -188,7 +189,6 @@ namespace FantasyFootball.Terminal
                 }),
                 new Menu("Daily", new List<Menu>{
                     new Menu("Backtest", _=>BackTester.Do(new YahooDailyFantasyClient(), dataDirectory)),
-                    new Menu("Model1", _=>new DailyModel1(Console.Out).Do(new YahooDailyFantasyClient(),service,connection,2045014)),
                     new Menu("Model2", _=>new DailyModel2(connection,Console.Out,dataDirectory).Do(new YahooDailyFantasyClient(),2046081)),
                     new Menu("Model3 Large", _=>new DailyModel3(connection,Console.Out,dataDirectory).Do(new YahooDailyFantasyClient(),2077321)),
                     new Menu("Model3 Medium", _=>new DailyModel3(connection,Console.Out,dataDirectory).Do(new YahooDailyFantasyClient(),2076696)),

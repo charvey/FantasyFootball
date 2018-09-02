@@ -8,19 +8,20 @@ using FantasyFootball.Terminal.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Terminal.Preseason
 {
     public static class ChooseDraftOrder
     {
-        public static void Do(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, string league_key)
+        public static void Do(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, LeagueKey leagueKey)
         {
-            var players = service.LeaguePlayers(league_key)
+            var players = service.LeaguePlayers(leagueKey)
                     .Select(p => playerRepository.GetPlayer(p.player_id.ToString()))
-                    .PutInDraftOrder(predictionRepository, service.League(league_key).season)
+                    .PutInDraftOrder(predictionRepository, leagueKey)
                     .ToList();
-            var teams = service.League(league_key).num_teams;
-            var rounds = service.LeagueSettings(league_key)
+            var teams = service.League(leagueKey).num_teams;
+            var rounds = service.LeagueSettings(leagueKey)
                 .roster_positions.Sum(rp => rp.count);
 
             var results = Enumerable.Range(0, teams).Select(_ => new List<Player>()).ToArray();
@@ -35,18 +36,16 @@ namespace FantasyFootball.Terminal.Preseason
                     results[team].Add(pickedPlayers.ElementAt(team));
             }
 
-            var year = service.League(league_key).season;
-
             for (var position = 1; position <= teams; position++)
             {
-                Console.WriteLine($"{position:#0}. {results[position - 1].Evaluate(predictionRepository, year)}");
+                Console.WriteLine($"{position:#0}. {results[position - 1].Evaluate(predictionRepository, leagueKey)}");
             }
         }
 
-        private static IEnumerable<Player> PutInDraftOrder(this IEnumerable<Player> players, IPredictionRepository predictionRepository, int year)
+        private static IEnumerable<Player> PutInDraftOrder(this IEnumerable<Player> players, IPredictionRepository predictionRepository, LeagueKey leagueKey)
         {
             var scores = players
-                .ToDictionary(p => p.Id, p => GetScore(predictionRepository, year, p.Id));
+                .ToDictionary(p => p.Id, p => GetScore(predictionRepository, leagueKey, p.Id));
             var replacementScores = players
                 .SelectMany(p => p.Positions.Select(pos => Tuple.Create(pos, p)))
                 .GroupBy(p => p.Item1, p => scores[p.Item2.Id])
@@ -77,23 +76,23 @@ namespace FantasyFootball.Terminal.Preseason
             return scores.Skip(count - 1).First();
         }
 
-        private static double GetScore(IPredictionRepository predictionRepository, int year, string playerId)
+        private static double GetScore(IPredictionRepository predictionRepository, LeagueKey leagueKey, string playerId)
         {
-            return predictionRepository.GetPredictions(playerId, year, Enumerable.Range(1, 16)).Sum();
+            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, 16)).Sum();
         }
         #endregion
 
-        private static double Evaluate(this List<Player> team, IPredictionRepository predictionRepository, int year)
+        private static double Evaluate(this List<Player> team, IPredictionRepository predictionRepository, LeagueKey leagueKey)
         {
-            return Enumerable.Range(1, 16).Select(w => GetWeekScore(predictionRepository, team, year, w)).Sum();
+            return Enumerable.Range(1, 16).Select(w => GetWeekScore(predictionRepository, leagueKey, team, w)).Sum();
         }
 
-        private static double GetWeekScore(IPredictionRepository predictionRepository, IEnumerable<Player> players, int year, int week)
+        private static double GetWeekScore(IPredictionRepository predictionRepository, LeagueKey leagueKey, IEnumerable<Player> players, int week)
         {
-            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(p.Id, year, w)))
+            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(leagueKey, p.Id, w)))
                 .Model(new RosterSituation(players.ToArray(), week))
                 .Outcomes.Single().Players
-                .Sum(p => predictionRepository.GetPrediction(p.Id, year, week));
+                .Sum(p => predictionRepository.GetPrediction(leagueKey, p.Id, week));
         }
     }
 }

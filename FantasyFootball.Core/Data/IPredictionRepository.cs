@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Yahoo;
 
 namespace FantasyFootball.Core.Data
 {
     public interface IPredictionRepository
     {
-        void AddPrediction(string playerId, int week, int year, double value, DateTime asOf);
-        double GetPrediction(string playerId, int year, int week);
-        double[] GetPredictions(string playerId, int year, IEnumerable<int> weeks);
+        void AddPrediction(LeagueKey leagueKey, string playerId, int week, double value, DateTime asOf);
+        double GetPrediction(LeagueKey leagueKey, string playerId, int week);
+        double[] GetPredictions(LeagueKey leagueKey, string playerId, IEnumerable<int> weeks);
     }
 }

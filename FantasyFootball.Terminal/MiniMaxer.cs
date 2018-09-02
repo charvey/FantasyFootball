@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Terminal
 {
@@ -18,10 +19,10 @@ namespace FantasyFootball.Terminal
         private static IReadOnlyDictionary<string, double[]> playerScores;
         private static StrictlyBetterPlayerFilter strictlyBetterPlayers;
 
-        public static void Testminimax(FantasySportsService service, IPredictionRepository predictionRepository, SQLiteConnection connection, string league_key)
+        public static void Testminimax(FantasySportsService service, IPredictionRepository predictionRepository, SQLiteConnection connection, LeagueKey leagueKey)
         {
-            playerScores = service.LeaguePlayers(league_key).ToDictionary(p => p.player_id.ToString(), p => new SqlPredictionRepository(connection).GetPredictions(p.player_id.ToString(), service.League(league_key).season, Enumerable.Range(1, 17)));
-            strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service,league_key,connection, predictionRepository, playerScores.Keys);
+            playerScores = service.LeaguePlayers(leagueKey).ToDictionary(p => p.player_id.ToString(), p => new SqlPredictionRepository(connection).GetPredictions(leagueKey, p.player_id.ToString(), Enumerable.Range(1, 17)));
+            strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service,leagueKey,connection, predictionRepository, playerScores.Keys);
             GlobalConfiguration.Configuration.UseMemoryStorage();
 
             var server = new BackgroundJobServer();

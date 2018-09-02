@@ -7,6 +7,7 @@ using FantasyFootball.Data.Yahoo.Models;
 using Newtonsoft.Json;
 using System.Xml.XPath;
 using System;
+using Yahoo;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -45,24 +46,24 @@ namespace FantasyFootball.Data.Yahoo
             return gameIds.Select(Game);
         }
 
-        public League League(string league_key)
+        public League League(LeagueKey league_key)
         {
             var xml = webService.League(league_key);
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league;
         }
 
-        public DraftResult[] LeagueDraftResults(string league_key)
+        public DraftResult[] LeagueDraftResults(LeagueKey league_key)
         {
             var xml = webService.LeagueDraftResults(league_key);
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.draft_results;
         }
 
-        public IEnumerable<Player> LeaguePlayers(string league_key)
+        public IEnumerable<Player> LeaguePlayers(LeagueKey league_key)
         {
             return ReadAllPlayers(s => webService.LeaguePlayersResults(league_key, s));
         }
 
-        public IEnumerable<Player> LeaguePlayers(string league_key, string status)
+        public IEnumerable<Player> LeaguePlayers(LeagueKey league_key, string status)
         {
             return ReadAllPlayers(s => webService.LeaguePlayersResults(league_key, status, s));
         }
@@ -87,19 +88,19 @@ namespace FantasyFootball.Data.Yahoo
             }
         }
 
-        public LeagueScoreboard LeagueScoreboard(string league_key, int week)
+        public LeagueScoreboard LeagueScoreboard(LeagueKey league_key, int week)
         {
             var xml = webService.LeagueScoreboard(league_key, week);
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.scoreboard;
         }
 
-        public LeagueSettings LeagueSettings(string league_key)
+        public LeagueSettings LeagueSettings(LeagueKey league_key)
         {
             var xml = webService.LeagueSettings(league_key);
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.settings;
         }
 
-        public Transaction[] LeagueTransactions(string league_key)
+        public Transaction[] LeagueTransactions(LeagueKey league_key)
         {
             var xml = webService.LeagueTransactions(league_key);
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.league?.transactions;
@@ -142,7 +143,7 @@ namespace FantasyFootball.Data.Yahoo
             return XmlConvert.Deserialize<FantasyContentXml>(xml)?.team;
         }
 
-        public IEnumerable<Team> Teams(string league_key)
+        public IEnumerable<Team> Teams(LeagueKey league_key)
         {
             var xml = webService.Teams(league_key);
             var doc = XDocument.Parse(xml);

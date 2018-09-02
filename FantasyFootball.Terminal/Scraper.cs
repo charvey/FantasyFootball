@@ -8,39 +8,39 @@ using Polly;
 using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Yahoo;
 
 namespace FantasyFootball.Terminal
 {
     public class Scraper
     {
-        public void Scrape(string league_key, FantasySportsService service, SQLiteConnection connection, IPredictionRepository predictionRepository)
+        public void Scrape(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, IPredictionRepository predictionRepository)
         {
-            UpdatePlayers(league_key, service, connection);
-            GetPredictions(league_key, service, connection, webDriver =>
+            UpdatePlayers(leagueKey, service, connection);
+            GetPredictions(leagueKey, service, connection, webDriver =>
              {
-                 ScrapeMissing(connection, predictionRepository, league_key, service, webDriver);
-                 ScrapeOld(connection, predictionRepository, league_key, service, webDriver);
-                 ScrapeMissing(connection, predictionRepository, league_key, service, webDriver);
+                 ScrapeMissing(connection, predictionRepository, leagueKey, service, webDriver);
+                 ScrapeOld(connection, predictionRepository, leagueKey, service, webDriver);
+                 ScrapeMissing(connection, predictionRepository, leagueKey, service, webDriver);
              });
         }
 
-        public void ScrapeCurrentWeek(string league_key, FantasySportsService service, SQLiteConnection connection, IPredictionRepository predictionRepository)
+        public void ScrapeCurrentWeek(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, IPredictionRepository predictionRepository)
         {
-            UpdatePlayers(league_key, service, connection);
-            GetPredictions(league_key, service, connection, webDriver =>
+            UpdatePlayers(leagueKey, service, connection);
+            GetPredictions(leagueKey, service, connection, webDriver =>
              {
-                 var league=service.League(league_key);
+                 var league = service.League(leagueKey);
                  foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
-                     Scrape(connection, predictionRepository, webDriver, league.season, null, pos, league.current_week);
+                     Scrape(connection, predictionRepository, webDriver, leagueKey, null, pos, league.current_week);
              });
         }
 
-        private void UpdatePlayers(string league_key, FantasySportsService service, SQLiteConnection connection)
+        private void UpdatePlayers(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection)
         {
-            var players = service.LeaguePlayers(league_key).ToList();
+            var players = service.LeaguePlayers(leagueKey).ToList();
             var teams = players.Where(p => p.display_position == "DEF");
 
             if (connection.State != ConnectionState.Open)
@@ -58,7 +58,7 @@ namespace FantasyFootball.Terminal
                     connection.Execute("REPLACE INTO Bye (TeamId,Year,Week) VALUES (@teamId,@year,@week)", new
                     {
                         teamId = int.Parse(team.editorial_team_key.Split('.').Last()),
-                        year = service.League(league_key).season,
+                        year = service.League(leagueKey).season,
                         week = team.bye_weeks.Single().value
                     });
                 }
@@ -75,7 +75,7 @@ namespace FantasyFootball.Terminal
             }
         }
 
-        private void GetPredictions(string league_key, FantasySportsService service, SQLiteConnection connection, Action<ChromeDriver> payload)
+        private void GetPredictions(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, Action<ChromeDriver> payload)
         {
             using (var webDriver = new ChromeDriver())
             {
@@ -85,7 +85,7 @@ namespace FantasyFootball.Terminal
                     var username = Console.ReadLine();
                     Console.Write("Password: ");
                     var password = Console.ReadLine();
-                    var leagueId = league_key.Split('.').Last();
+                    var leagueId = leagueKey.LeagueId;
                     webDriver.Navigate().GoToUrl($"https://football.fantasysports.yahoo.com/f1/{leagueId}/players");
                     webDriver.FindElementById("login-username").SendKeys(username);
                     webDriver.FindElementById("login-signin").Click();
@@ -102,11 +102,11 @@ namespace FantasyFootball.Terminal
             }
         }
 
-        private void ScrapeAll(SQLiteConnection connection, IPredictionRepository predictionRepository, ChromeDriver webDriver, int year)
+        private void ScrapeAll(SQLiteConnection connection, IPredictionRepository predictionRepository, ChromeDriver webDriver, LeagueKey leagueKey)
         {
             foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
                 foreach (var week in Enumerable.Range(1, 17))
-                    Scrape(connection, predictionRepository, webDriver, year, null, pos, week);
+                    Scrape(connection, predictionRepository, webDriver, leagueKey, null, pos, week);
         }
 
         private class ScrapeGroup
@@ -116,16 +116,15 @@ namespace FantasyFootball.Terminal
             public int Week { get; set; }
         }
 
-        private void ScrapeMissing(SQLiteConnection connection, IPredictionRepository predictionRepository, string league_key, FantasySportsService service, ChromeDriver webDriver)
+        private void ScrapeMissing(SQLiteConnection connection, IPredictionRepository predictionRepository, LeagueKey leagueKey, FantasySportsService service, ChromeDriver webDriver)
         {
-            var playerIds = service.LeaguePlayers(league_key).Select(p => p.player_id).ToArray();
-            var year = service.League(league_key).season;
+            var playerIds = service.LeaguePlayers(leagueKey).Select(p => p.player_id).ToArray();
             while (true)
             {
                 var nextGroup = connection.Query<ScrapeGroup>($@"
 					SELECT TeamId AS Team, Positions AS Position, w.Week FROM Player
-					CROSS JOIN(SELECT DISTINCT Week FROM Predictions WHERE Week >= {service.League(league_key).current_week}) w
-					LEFT JOIN Predictions ON Predictions.PlayerId = Id AND Predictions.Week = w.Week AND Year = {year}
+					CROSS JOIN(SELECT DISTINCT Week FROM Predictions WHERE Week >= {service.League(leagueKey).current_week}) w
+					LEFT JOIN Predictions ON Predictions.LeagueKey = {leagueKey} AND Predictions.PlayerId = Id AND Predictions.Week = w.Week
 					WHERE Predictions.Value IS NULL AND Player.Id IN ({string.Join(",", playerIds)})"
                     ).FirstOrDefault();
 
@@ -142,13 +141,12 @@ namespace FantasyFootball.Terminal
                 Policy.
                     Handle<WebDriverException>()
                     .Retry()
-                    .Execute(() => Scrape(connection, predictionRepository, webDriver, year, team, nextGroup.Position, nextGroup.Week));
+                    .Execute(() => Scrape(connection, predictionRepository, webDriver, leagueKey, team, nextGroup.Position, nextGroup.Week));
             }
         }
 
-        private void ScrapeOld(SQLiteConnection connection, IPredictionRepository predictionRepository, string league_key, FantasySportsService service, ChromeDriver webDriver)
+        private void ScrapeOld(SQLiteConnection connection, IPredictionRepository predictionRepository, LeagueKey leagueKey, FantasySportsService service, ChromeDriver webDriver)
         {
-            var year = service.League(league_key).season;
             while (true)
             {
                 var nextGroups = connection.Query<ScrapeGroup>(@"
@@ -158,16 +156,16 @@ namespace FantasyFootball.Terminal
 						FROM Predictions
 						JOIN Player ON Predictions.PlayerId = Player.Id
 						JOIN Team ON Player.TeamId = Team.Id
-						WHERE Year = @year AND Positions NOT LIKE '%,%'
+						WHERE LeagueKey = @leagueKey AND Positions NOT LIKE '%,%'
 						GROUP BY Team.Id, Positions, Week
 					)
 					WHERE AsOf < @before AND Week >= @week
 					ORDER BY AsOF",
                     new
                     {
-                        year = year,
+                        leagueKey = leagueKey.ToString(),
                         before = DateTime.Now.AddDays(-2).ToString("O"),
-                        week = service.League(league_key).current_week
+                        week = service.League(leagueKey).current_week
                     });
 
                 if (!nextGroups.Any())
@@ -184,11 +182,11 @@ namespace FantasyFootball.Terminal
                 Policy.
                     Handle<WebDriverException>()
                     .Retry()
-                    .Execute(() => Scrape(connection, predictionRepository, webDriver, year, team, nextGroup.Position, nextGroup.Week));
+                    .Execute(() => Scrape(connection, predictionRepository, webDriver, leagueKey, team, nextGroup.Position, nextGroup.Week));
             }
         }
 
-        private void Scrape(SQLiteConnection connection, IPredictionRepository predictionRepository, ChromeDriver webDriver, int year, int? team, string position, int week)
+        private void Scrape(SQLiteConnection connection, IPredictionRepository predictionRepository, ChromeDriver webDriver, LeagueKey leagueKey, int? team, string position, int week)
         {
             Console.WriteLine($"Scraping {team} {position} {week}");
 
@@ -259,7 +257,7 @@ namespace FantasyFootball.Terminal
 
                     var points = double.Parse(row.FindElements(By.TagName("td"))[pointsColumn].FindElement(By.TagName("span")).Text);
 
-                    RecordPrediction(predictionRepository, id, year, week, points);
+                    RecordPrediction(predictionRepository, leagueKey, id, week, points);
                 }
 
                 try
@@ -275,9 +273,9 @@ namespace FantasyFootball.Terminal
             } while (true);
         }
 
-        private void RecordPrediction(IPredictionRepository predictionRepository, string playerId, int year, int week, double value)
+        private void RecordPrediction(IPredictionRepository predictionRepository, LeagueKey leagueKey, string playerId, int week, double value)
         {
-            predictionRepository.AddPrediction(playerId, week: week, year: year, value: value, asOf: DateTime.Now);
+            predictionRepository.AddPrediction(leagueKey, playerId, week: week, value: value, asOf: DateTime.Now);
         }
     }
 }

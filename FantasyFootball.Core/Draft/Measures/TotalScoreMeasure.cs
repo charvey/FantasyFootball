@@ -4,6 +4,7 @@ using FantasyFootball.Data.Yahoo;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Core.Draft.Measures
 {
@@ -11,17 +12,17 @@ namespace FantasyFootball.Core.Draft.Measures
     {
         private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
         private readonly IPredictionRepository predictionRepository;
-        private readonly int year;
+        private readonly LeagueKey leagueKey;
 
-        public TotalScoreMeasure(FantasySportsService service, string league_key, IPredictionRepository predictionRepository)
+        public TotalScoreMeasure(FantasySportsService service, LeagueKey leagueKey, IPredictionRepository predictionRepository)
         {
             this.predictionRepository = predictionRepository;
-            this.year = service.League(league_key).season;
+            this.leagueKey = leagueKey;
         }
 
         private double GetScore(string playerId)
         {
-            return predictionRepository.GetPredictions(playerId, year, Enumerable.Range(1, 17)).Sum();
+            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, 17)).Sum();
         }
 
         public override string Name => "Total";

@@ -5,52 +5,52 @@ using FantasyFootball.Data.Yahoo;
 using FantasyPros;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Core.Draft
 {
     public static class MeasureSource
     {
-        private static ConcurrentDictionary<string, Measure[]> basicMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] BasicMeasures(FantasySportsService service, string league_key, IByeRepository byeRepository)
+        private static ConcurrentDictionary<LeagueKey, Measure[]> basicMeasures = new ConcurrentDictionary<LeagueKey, Measure[]>();
+        public static Measure[] BasicMeasures(FantasySportsService service, LeagueKey leagueKey, IByeRepository byeRepository)
         {
-            return basicMeasures.GetOrAdd(league_key, l_ => new Measure[] {
+            return basicMeasures.GetOrAdd(leagueKey, l_ => new Measure[] {
                 new NameMeasure(),
                 new TeamMeasure(),
                 new PositionMeasure(),
-                new ByeMeasure(byeRepository,service.League(league_key).season)
+                new ByeMeasure(byeRepository,service.League(leagueKey).season)
              });
         }
 
-        private static ConcurrentDictionary<string, Measure[]> draftMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] DraftMeasures(FantasySportsService service, string league_key, IByeRepository byeRepository, IDraft draft, FantasyProsClient fantasyProsClient)
+        private static ConcurrentDictionary<LeagueKey, Measure[]> draftMeasures = new ConcurrentDictionary<LeagueKey, Measure[]>();
+        public static Measure[] DraftMeasures(FantasySportsService service, LeagueKey leagueKey, IByeRepository byeRepository, IDraft draft, FantasyProsClient fantasyProsClient)
         {
-            return basicMeasures.GetOrAdd(league_key, l_ => new Measure[] {
+            return basicMeasures.GetOrAdd(leagueKey, l_ => new Measure[] {
                 new NameMeasure(),
                 new DraftedTeamMeasure(draft),
                 new ADPMeasure(fantasyProsClient)
              });
         }
 
-        private static ConcurrentDictionary<string, Measure[]> predictionMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] PredictionMeasures(FantasySportsService service, string league_key, IPredictionRepository predictionRepository)
+        private static ConcurrentDictionary<LeagueKey, Measure[]> predictionMeasures = new ConcurrentDictionary<LeagueKey, Measure[]>();
+        public static Measure[] PredictionMeasures(FantasySportsService service, LeagueKey leagueKey, IPredictionRepository predictionRepository)
         {
-            return predictionMeasures.GetOrAdd(league_key, l_k =>
+            return predictionMeasures.GetOrAdd(leagueKey, l_k =>
               new[] { new NameMeasure() }.Cast<Measure>()
-                 .Concat(Enumerable.Range(1, 17).Select(w => new WeekScoreMeasure(service,league_key, predictionRepository, w)))
-                 .Concat(new[] { new TotalScoreMeasure(service,league_key, predictionRepository) })
+                 .Concat(Enumerable.Range(1, 17).Select(w => new WeekScoreMeasure(service, leagueKey, predictionRepository, w)))
+                 .Concat(new[] { new TotalScoreMeasure(service, leagueKey, predictionRepository) })
                  .ToArray());
         }
 
-        private static ConcurrentDictionary<string, Measure[]> valueMeasures = new ConcurrentDictionary<string, Measure[]>();
-        public static Measure[] ValueMeasures(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, string league_key, int team_id, IDraft draft)
+        private static ConcurrentDictionary<LeagueKey, Measure[]> valueMeasures = new ConcurrentDictionary<LeagueKey, Measure[]>();
+        public static Measure[] ValueMeasures(FantasySportsService service, IPlayerRepository playerRepository, IPredictionRepository predictionRepository, LeagueKey leagueKey, int team_id, IDraft draft)
         {
-            return valueMeasures.GetOrAdd(league_key, l_k => new Measure[] {
+            return valueMeasures.GetOrAdd(leagueKey, l_k => new Measure[] {
                 new NameMeasure(),new PositionMeasure(),
-                new FlexVBDMeasure(service, playerRepository, predictionRepository,league_key),
-                new VBDMeasure(service, playerRepository, predictionRepository,league_key),
-                new ValueAddedMeasure(service,league_key,predictionRepository,draft,draft.Participants.Single(p=>p.Name==service.Teams(league_key).Single(t=>t.team_id==team_id).name)),
+                new FlexVBDMeasure(service, playerRepository, predictionRepository,leagueKey),
+                new VBDMeasure(service, playerRepository, predictionRepository,leagueKey),
+                new ValueAddedMeasure(service,leagueKey,predictionRepository,draft,draft.Participants.Single(p=>p.Name==service.Teams(leagueKey).Single(t=>t.team_id==team_id).name)),
             });
         }
     }
@@ -73,18 +73,18 @@ namespace FantasyFootball.Core.Draft
     {
         private readonly ConcurrentDictionary<string, double> scores = new ConcurrentDictionary<string, double>();
         private readonly IPredictionRepository predictionRepository;
+        private readonly LeagueKey league_key;
         private readonly int week;
-        private readonly int year;
 
-        public WeekScoreMeasure(FantasySportsService service, string league_key, IPredictionRepository predictionRepository, int week)
+        public WeekScoreMeasure(FantasySportsService service, LeagueKey league_key, IPredictionRepository predictionRepository, int week)
         {
             this.predictionRepository = predictionRepository;
+            this.league_key = league_key;
             this.week = week;
-            this.year = service.League(league_key).season;
         }
 
         public override string Name => $"Week {week}";
-        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, p => predictionRepository.GetPrediction(p, year, week));
+        public override IComparable Compute(Player player) => scores.GetOrAdd(player.Id, p => predictionRepository.GetPrediction(league_key, p, week));
         public override int Width => Math.Min(6, Name.Length);
     }
 

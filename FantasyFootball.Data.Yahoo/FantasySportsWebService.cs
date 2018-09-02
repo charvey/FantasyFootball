@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Yahoo;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -102,49 +102,49 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url).Result;
         }
 
-        public string League(string league_key)
+        public string League(LeagueKey league_key)
         {
             var url = BaseUrl + "/league/" + league_key;
 
             return MakeCall(url, "xml").Result;
         }
 
-        public string LeagueDraftResults(string league_key)
+        public string LeagueDraftResults(LeagueKey league_key)
         {
             var url = BaseUrl + "/league/" + league_key + "/draftresults";
 
             return MakeCall(url, "xml").Result;
         }
 
-        public string LeaguePlayersResults(string league_key, int start = 0)
+        public string LeaguePlayersResults(LeagueKey league_key, int start = 0)
         {
             var url = BaseUrl + "/league/" + league_key + "/players;start=" + start;
 
             return MakeCall(url, "xml").Result;
         }
 
-        public string LeaguePlayersResults(string league_key, string status, int start = 0)
+        public string LeaguePlayersResults(LeagueKey league_key, string status, int start = 0)
         {
             var url = BaseUrl + $"/league/{league_key}/players;status={status};start={start}";
 
             return MakeCall(url, "xml").Result;
         }
 
-        public string LeagueScoreboard(string league_key, int week)
+        public string LeagueScoreboard(LeagueKey league_key, int week)
         {
             var url = BaseUrl + "/league/" + league_key + "/scoreboard;week=" + week;
 
             return MakeCall(url, "xml").Result;
         }
 
-        public string LeagueSettings(string league_key)
+        public string LeagueSettings(LeagueKey league_key)
         {
             var url = BaseUrl + "/league/" + league_key + "/settings";
 
             return MakeCall(url, "xml").Result;
         }
 
-        public string LeagueTransactions(string league_key)
+        public string LeagueTransactions(LeagueKey league_key)
         {
             var url = BaseUrl + "/league/" + league_key + "/transactions";
 
@@ -214,7 +214,7 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url, "xml").Result;
         }
 
-        public string Teams(string league_key)
+        public string Teams(LeagueKey league_key)
         {
             var url = BaseUrl + "/leagues;league_keys=" + league_key + "/teams";
 

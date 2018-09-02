@@ -7,6 +7,7 @@ using FantasyFootball.Data.Yahoo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Core.Draft.Measures
 {
@@ -16,15 +17,15 @@ namespace FantasyFootball.Core.Draft.Measures
         private readonly Func<IReadOnlyList<Player>> currentPlayersFactory;
         private readonly DraftParticipant draftParticipant;
         private readonly IEnumerable<int> weeks;
-        private readonly int year;
+        private readonly LeagueKey leagueKey;
 
-        public ValueAddedMeasure(FantasySportsService service, string league_key, IPredictionRepository predictionRepository, IDraft draft, DraftParticipant participant)
+        public ValueAddedMeasure(FantasySportsService service, LeagueKey leagueKey, IPredictionRepository predictionRepository, IDraft draft, DraftParticipant participant)
         {
             this.predictionRepository = predictionRepository;
             this.draftParticipant = participant;
             this.currentPlayersFactory = () => draft.PickedPlayersByParticipant(participant);
             this.weeks = Enumerable.Range(1, SeasonWeek.ChampionshipWeek);
-            this.year = service.League(league_key).season;
+            this.leagueKey = leagueKey;
         }
 
         public override string Name => $"Value Added for {draftParticipant.Name}";
@@ -34,29 +35,29 @@ namespace FantasyFootball.Core.Draft.Measures
         public override IComparable Compute(Player player)
         {
             var currentPlayers = currentPlayersFactory();
-            return GetTotalScore(player.cons(currentPlayers), year) - GetTotalScore(currentPlayers, year);
+            return GetTotalScore(leagueKey, player.cons(currentPlayers)) - GetTotalScore(leagueKey, currentPlayers);
         }
 
         public override IComparable[] Compute(Player[] players)
         {
             var currentPlayers = currentPlayersFactory();
-            var baseScore = GetTotalScore(currentPlayers, year);
-            return players.Select(p => GetTotalScore(p.cons(currentPlayers), year) - baseScore)
+            var baseScore = GetTotalScore(leagueKey, currentPlayers);
+            return players.Select(p => GetTotalScore(leagueKey, p.cons(currentPlayers)) - baseScore)
                 .Cast<IComparable>()
                 .ToArray();
         }
 
-        private double GetTotalScore(IEnumerable<Player> players, int year)
+        private double GetTotalScore(LeagueKey leagueKey, IEnumerable<Player> players)
         {
-            return weeks.Select(w => GetWeekScore(players, year, w)).Sum();
+            return weeks.Select(w => GetWeekScore(leagueKey, players, w)).Sum();
         }
 
-        private double GetWeekScore(IEnumerable<Player> players, int year, int week)
+        private double GetWeekScore(LeagueKey leagueKey, IEnumerable<Player> players, int week)
         {
-            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(p.Id, year, week)))
+            return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(leagueKey, p.Id, week)))
                 .Model(new RosterSituation(players.ToArray(), week))
                 .Outcomes.Single().Players
-                .Sum(p => predictionRepository.GetPrediction(p.Id, year, week));
+                .Sum(p => predictionRepository.GetPrediction(leagueKey, p.Id, week));
         }
     }
 

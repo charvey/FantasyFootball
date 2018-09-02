@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using Yahoo;
 
 namespace FantasyFootball.Terminal.Database
 {
@@ -17,38 +18,37 @@ namespace FantasyFootball.Terminal.Database
             this.connection = connection;
         }
 
-        public void AddPrediction(string playerId, int week, int year, double value, DateTime asOf)
+        public void AddPrediction(LeagueKey leagueKey, string playerId, int week, double value, DateTime asOf)
         {
             connection.Execute(@"
-                INSERT INTO Predictions (PlayerId,Week,Year,Value,AsOf)
-                VALUES (@PlayerId,@Week,@Year,@Value,@AsOf)", new
+                INSERT INTO Predictions (LeagueKey,PlayerId,Week,Value,AsOf)
+                VALUES (@LeagueKey,@PlayerId,@Week,@Value,@AsOf)", new
             {
+                LeagueKey = leagueKey.ToString(),
                 PlayerId = playerId,
                 Week = week,
-                Year = year,
                 Value = value,
                 AsOf = asOf.ToString("O")
             });
         }
 
-        //TODO replace year with league identifier
-        public double GetPrediction(string playerId, int year, int week)
+        public double GetPrediction(LeagueKey leagueKey, string playerId, int week)
         {
             return connection.QueryFirst<double>(@"
                 SELECT Value
                 FROM Predictions
-                WHERE PlayerId=@playerId AND Year=@year AND Week=@week
+                WHERE LeagueKey=@leagueKey AND PlayerId=@playerId AND Week=@week
                 ORDER BY AsOf DESC", new
             {
+                leagueKey = leagueKey.ToString(),
                 playerId = playerId,
-                year = year,
                 week = week
             });
         }
 
-        public double[] GetPredictions(string playerId, int year, IEnumerable<int> weeks)
+        public double[] GetPredictions(LeagueKey leagueKey, string playerId, IEnumerable<int> weeks)
         {
-            return weeks.Select(w => GetPrediction(playerId, year, w)).ToArray();
+            return weeks.Select(w => GetPrediction(leagueKey, playerId, w)).ToArray();
         }
     }
 
@@ -61,20 +61,20 @@ namespace FantasyFootball.Terminal.Database
             this.predictionRepository = predictionRepository;
         }
 
-        public void AddPrediction(string playerId, int week, int year, double value, DateTime asOf)
+        public void AddPrediction(LeagueKey leagueKey, string playerId, int week, double value, DateTime asOf)
         {
             throw new NotImplementedException();
         }
 
-        private readonly ConcurrentDictionary<Tuple<string, int, int>, double> cache = new ConcurrentDictionary<Tuple<string, int, int>, double>();
-        public double GetPrediction(string playerId, int year, int week)
+        private readonly ConcurrentDictionary<Tuple<LeagueKey, string, int>, double> cache = new ConcurrentDictionary<Tuple<LeagueKey, string, int>, double>();
+        public double GetPrediction(LeagueKey leagueKey, string playerId, int week)
         {
-            return cache.GetOrAdd(Tuple.Create(playerId, year, week), x => predictionRepository.GetPrediction(x.Item1, x.Item2, x.Item3));
+            return cache.GetOrAdd(Tuple.Create(leagueKey, playerId, week), x => predictionRepository.GetPrediction(x.Item1, x.Item2, x.Item3));
         }
 
-        public double[] GetPredictions(string playerId, int year, IEnumerable<int> weeks)
+        public double[] GetPredictions(LeagueKey leagueKey, string playerId, IEnumerable<int> weeks)
         {
-            return weeks.Select(w => GetPrediction(playerId, year, w)).ToArray();
+            return weeks.Select(w => GetPrediction(leagueKey, playerId, w)).ToArray();
         }
     }
 }

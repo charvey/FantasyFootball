@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using FantasyFootball.Core;
 using FantasyFootball.Core.Data;
 using FantasyFootball.Data.Yahoo;
 using System;
@@ -24,7 +25,7 @@ namespace FantasyFootball.Terminal
                     x => x,
                     p => connection.Query<string>($"SELECT Id FROM Player WHERE Positions LIKE '%{p}%'").Intersect(playerIds).ToArray()
                 );
-            var weeks = Enumerable.Range(1, 17).ToArray();
+            var weeks = Enumerable.Range(1, SeasonWeek.Maximum).ToArray();
             var playerScores = playerIds.ToDictionary(p => p, p => predictionRepository.GetPredictions(leagueKey, p, weeks));
             betters = new Dictionary<string, List<HashSet<string>>>();
             foreach (var players in playersByPosition.Values)
@@ -58,7 +59,7 @@ namespace FantasyFootball.Terminal
         public static void RunTest(FantasySportsService service, SQLiteConnection connection, LeagueKey leagueKey, ILatestPredictionRepository predictionRepository)
         {
             var players = new HashSet<string>(service.LeaguePlayers(leagueKey).Select(p => p.player_id.ToString()));
-            var scores = players.ToDictionary(p => p, p => predictionRepository.GetPredictions(leagueKey, p, Enumerable.Range(1, 17)));
+            var scores = players.ToDictionary(p => p, p => predictionRepository.GetPredictions(leagueKey, p, Enumerable.Range(1, SeasonWeek.Maximum)));
             var previous = new Dictionary<string, double>();
             File.Delete("sbpi.csv");
             for (var t = 0.00; t <= 1.00; t += 0.01)

@@ -7,7 +7,16 @@ namespace FantasyFootball.Terminal.Draft
 {
     public class DraftChanger
     {
-        public void Change(TextWriter output, TextReader input, IDraft draft)
+        private readonly TextReader input;
+        private readonly TextWriter output;
+
+        public DraftChanger(TextReader input, TextWriter output)
+        {
+            this.input = input;
+            this.output = output;
+        }
+
+        public void Change(IDraft draft)
         {
             var team = draft.GetNextDraftTeam();
             var players = draft.UnpickedPlayers.AsEnumerable();

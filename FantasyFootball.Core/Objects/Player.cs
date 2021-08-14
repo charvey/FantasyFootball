@@ -1,5 +1,8 @@
-﻿namespace FantasyFootball.Core.Objects
+﻿using System;
+
+namespace FantasyFootball.Core.Objects
 {
+    [Obsolete]
     public class Player
     {
         //TODO convert to int

@@ -38,7 +38,7 @@ namespace FantasyFootball.Core.Draft
         {
             return predictionMeasures.GetOrAdd(leagueKey, l_k =>
               new[] { new NameMeasure() }.Cast<Measure>()
-                 .Concat(Enumerable.Range(1, 17).Select(w => new WeekScoreMeasure(service, leagueKey, predictionRepository, w)))
+                 .Concat(Enumerable.Range(1, service.League(leagueKey).end_week).Select(w => new WeekScoreMeasure(service, leagueKey, predictionRepository, w)))
                  .Concat(new[] { new TotalScoreMeasure(service, leagueKey, predictionRepository) })
                  .ToArray());
         }

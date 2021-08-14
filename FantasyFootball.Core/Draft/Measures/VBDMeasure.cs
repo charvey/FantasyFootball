@@ -49,7 +49,7 @@ namespace FantasyFootball.Core.Draft.Measures
 
         private double GetScore(ILatestPredictionRepository predictionRepository, LeagueKey leagueKey, string playerId)
         {
-            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, 16)).Sum();
+            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, SeasonWeek.ChampionshipWeek)).Sum();
         }
 
         public override string Name => "VBD";

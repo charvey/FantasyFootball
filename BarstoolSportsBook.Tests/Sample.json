@@ -1,0 +1,3654 @@
+{
+  "events": [
+    {
+      "event": {
+        "id": 1007898135,
+        "name": "WAS Football Team @ NE Patriots",
+        "nameDelimiter": "@",
+        "englishName": "New England Patriots - Washington Football Team",
+        "homeName": "NE Patriots",
+        "awayName": "WAS Football Team",
+        "start": "2021-08-12T23:30:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000000175,
+            "name": "NE Patriots",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000000334,
+            "name": "WAS Football Team",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2273754153,
+          "closed": "2021-08-12T23:30:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898135,
+          "outcomes": [
+            {
+              "id": 2950344005,
+              "label": "NE Patriots",
+              "englishLabel": "New England Patriots",
+              "odds": 1890,
+              "line": 2500,
+              "participant": "NE Patriots",
+              "type": "OT_ONE",
+              "betOfferId": 2273754153,
+              "changedDate": "2021-08-11T09:06:29Z",
+              "participantId": 1000000175,
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-113",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950344011,
+              "label": "WAS Football Team",
+              "englishLabel": "Washington Football Team",
+              "odds": 1930,
+              "line": -2500,
+              "participant": "WAS Football Team",
+              "type": "OT_TWO",
+              "betOfferId": 2273754153,
+              "changedDate": "2021-08-11T09:06:29Z",
+              "participantId": 1000000334,
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-108",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273754159,
+          "closed": "2021-08-12T23:30:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898135,
+          "outcomes": [
+            {
+              "id": 2950344015,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 2100,
+              "participant": "NE Patriots",
+              "type": "OT_ONE",
+              "betOfferId": 2273754159,
+              "changedDate": "2021-08-11T11:45:59Z",
+              "participantId": 1000000175,
+              "oddsFractional": "11/10",
+              "oddsAmerican": "110",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950344029,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 1750,
+              "participant": "WAS Football Team",
+              "type": "OT_TWO",
+              "betOfferId": 2273754159,
+              "changedDate": "2021-08-11T11:45:59Z",
+              "participantId": 1000000334,
+              "oddsFractional": "3/4",
+              "oddsAmerican": "-134",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2275518699,
+          "closed": "2021-08-12T23:30:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898135,
+          "outcomes": [
+            {
+              "id": 2956553755,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1970,
+              "line": 36500,
+              "type": "OT_OVER",
+              "betOfferId": 2275518699,
+              "changedDate": "2021-08-11T09:06:29Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-104",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956553756,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1850,
+              "line": 36500,
+              "type": "OT_UNDER",
+              "betOfferId": 2275518699,
+              "changedDate": "2021-08-11T09:06:29Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-118",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898134,
+        "name": "PIT Steelers @ PHI Eagles",
+        "nameDelimiter": "@",
+        "englishName": "Philadelphia Eagles - Pittsburgh Steelers",
+        "homeName": "PHI Eagles",
+        "awayName": "PIT Steelers",
+        "start": "2021-08-12T23:30:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000000176,
+            "name": "PIT Steelers",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000065021,
+            "name": "PHI Eagles",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2273754188,
+          "closed": "2021-08-12T23:30:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898134,
+          "outcomes": [
+            {
+              "id": 2950344086,
+              "label": "PHI Eagles",
+              "englishLabel": "Philadelphia Eagles",
+              "odds": 2000,
+              "line": -1500,
+              "participant": "PHI Eagles",
+              "type": "OT_ONE",
+              "betOfferId": 2273754188,
+              "changedDate": "2021-08-11T16:51:29Z",
+              "participantId": 1000065021,
+              "oddsFractional": "Evens",
+              "oddsAmerican": "100",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950344090,
+              "label": "PIT Steelers",
+              "englishLabel": "Pittsburgh Steelers",
+              "odds": 1830,
+              "line": 1500,
+              "participant": "PIT Steelers",
+              "type": "OT_TWO",
+              "betOfferId": 2273754188,
+              "changedDate": "2021-08-11T16:51:29Z",
+              "participantId": 1000000176,
+              "oddsFractional": "41/50",
+              "oddsAmerican": "-121",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273754189,
+          "closed": "2021-08-12T23:30:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898134,
+          "outcomes": [
+            {
+              "id": 2950344087,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1900,
+              "participant": "PHI Eagles",
+              "type": "OT_ONE",
+              "betOfferId": 2273754189,
+              "changedDate": "2021-08-11T16:51:29Z",
+              "participantId": 1000065021,
+              "oddsFractional": "9/10",
+              "oddsAmerican": "-112",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950344089,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 1920,
+              "participant": "PIT Steelers",
+              "type": "OT_TWO",
+              "betOfferId": 2273754189,
+              "changedDate": "2021-08-11T16:51:29Z",
+              "participantId": 1000000176,
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-109",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273754190,
+          "closed": "2021-08-12T23:30:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898134,
+          "outcomes": [
+            {
+              "id": 2950344088,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1860,
+              "line": 34500,
+              "type": "OT_OVER",
+              "betOfferId": 2273754190,
+              "changedDate": "2021-08-11T16:51:29Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950344091,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1960,
+              "line": 34500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273754190,
+              "changedDate": "2021-08-11T16:51:29Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-105",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898138,
+        "name": "BUF Bills @ DET Lions",
+        "nameDelimiter": "@",
+        "englishName": "Detroit Lions - Buffalo Bills",
+        "homeName": "DET Lions",
+        "awayName": "BUF Bills",
+        "start": "2021-08-13T23:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000017217,
+            "name": "BUF Bills",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000047062,
+            "name": "DET Lions",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275565399,
+          "closed": "2021-08-13T23:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898138,
+          "outcomes": [
+            {
+              "id": 2956683653,
+              "label": "DET Lions",
+              "englishLabel": "Detroit Lions",
+              "odds": 1960,
+              "line": -1500,
+              "participant": "DET Lions",
+              "type": "OT_ONE",
+              "betOfferId": 2275565399,
+              "changedDate": "2021-08-11T14:19:08Z",
+              "participantId": 1000047062,
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-105",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956683654,
+              "label": "BUF Bills",
+              "englishLabel": "Buffalo Bills",
+              "odds": 1860,
+              "line": 1500,
+              "participant": "BUF Bills",
+              "type": "OT_TWO",
+              "betOfferId": 2275565399,
+              "changedDate": "2021-08-11T14:19:08Z",
+              "participantId": 1000017217,
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273712329,
+          "closed": "2021-08-13T23:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898138,
+          "outcomes": [
+            {
+              "id": 2950334203,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1860,
+              "participant": "DET Lions",
+              "type": "OT_ONE",
+              "betOfferId": 2273712329,
+              "changedDate": "2021-08-11T14:19:08Z",
+              "participantId": 1000047062,
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950334205,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 1960,
+              "participant": "BUF Bills",
+              "type": "OT_TWO",
+              "betOfferId": 2273712329,
+              "changedDate": "2021-08-11T14:19:08Z",
+              "participantId": 1000017217,
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-105",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273712327,
+          "closed": "2021-08-13T23:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898138,
+          "outcomes": [
+            {
+              "id": 2950334200,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1960,
+              "line": 36500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273712327,
+              "changedDate": "2021-08-11T14:19:08Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-105",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950334202,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1860,
+              "line": 36500,
+              "type": "OT_OVER",
+              "betOfferId": 2273712327,
+              "changedDate": "2021-08-11T14:19:08Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898141,
+        "name": "TEN Titans @ ATL Falcons",
+        "nameDelimiter": "@",
+        "englishName": "Atlanta Falcons - Tennessee Titans",
+        "homeName": "ATL Falcons",
+        "awayName": "TEN Titans",
+        "start": "2021-08-13T23:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000068767,
+            "name": "ATL Falcons",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000058218,
+            "name": "TEN Titans",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275510099,
+          "closed": "2021-08-13T23:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898141,
+          "outcomes": [
+            {
+              "id": 2956562647,
+              "label": "ATL Falcons",
+              "englishLabel": "Atlanta Falcons",
+              "odds": 2000,
+              "line": -1500,
+              "participant": "ATL Falcons",
+              "type": "OT_ONE",
+              "betOfferId": 2275510099,
+              "changedDate": "2021-08-11T09:23:01Z",
+              "participantId": 1000068767,
+              "oddsFractional": "Evens",
+              "oddsAmerican": "100",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956562648,
+              "label": "TEN Titans",
+              "englishLabel": "Tennessee Titans",
+              "odds": 1830,
+              "line": 1500,
+              "participant": "TEN Titans",
+              "type": "OT_TWO",
+              "betOfferId": 2275510099,
+              "changedDate": "2021-08-11T09:23:01Z",
+              "participantId": 1000058218,
+              "oddsFractional": "41/50",
+              "oddsAmerican": "-121",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273712275,
+          "closed": "2021-08-13T23:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898141,
+          "outcomes": [
+            {
+              "id": 2950334084,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1900,
+              "participant": "ATL Falcons",
+              "type": "OT_ONE",
+              "betOfferId": 2273712275,
+              "changedDate": "2021-08-11T09:23:01Z",
+              "participantId": 1000068767,
+              "oddsFractional": "9/10",
+              "oddsAmerican": "-112",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950334088,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 1920,
+              "participant": "TEN Titans",
+              "type": "OT_TWO",
+              "betOfferId": 2273712275,
+              "changedDate": "2021-08-11T09:23:01Z",
+              "participantId": 1000058218,
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-109",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273712281,
+          "closed": "2021-08-13T23:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898141,
+          "outcomes": [
+            {
+              "id": 2950334094,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1950,
+              "line": 37500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273712281,
+              "changedDate": "2021-08-11T09:23:01Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-106",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950334109,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1870,
+              "line": 37500,
+              "type": "OT_OVER",
+              "betOfferId": 2273712281,
+              "changedDate": "2021-08-11T09:23:01Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-115",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898133,
+        "name": "DAL Cowboys @ ARI Cardinals",
+        "nameDelimiter": "@",
+        "englishName": "Arizona Cardinals - Dallas Cowboys",
+        "homeName": "ARI Cardinals",
+        "awayName": "DAL Cowboys",
+        "start": "2021-08-14T02:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000020068,
+            "name": "DAL Cowboys",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000043092,
+            "name": "ARI Cardinals",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2273729034,
+          "closed": "2021-08-14T02:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898133,
+          "outcomes": [
+            {
+              "id": 2950337479,
+              "label": "ARI Cardinals",
+              "englishLabel": "Arizona Cardinals",
+              "odds": 1900,
+              "line": -1500,
+              "participant": "ARI Cardinals",
+              "type": "OT_ONE",
+              "betOfferId": 2273729034,
+              "changedDate": "2021-07-28T18:16:08Z",
+              "participantId": 1000043092,
+              "oddsFractional": "9/10",
+              "oddsAmerican": "-112",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950337481,
+              "label": "DAL Cowboys",
+              "englishLabel": "Dallas Cowboys",
+              "odds": 1920,
+              "line": 1500,
+              "participant": "DAL Cowboys",
+              "type": "OT_TWO",
+              "betOfferId": 2273729034,
+              "changedDate": "2021-07-28T18:16:08Z",
+              "participantId": 1000020068,
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-109",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273729033,
+          "closed": "2021-08-14T02:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898133,
+          "outcomes": [
+            {
+              "id": 2950337478,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1810,
+              "participant": "ARI Cardinals",
+              "type": "OT_ONE",
+              "betOfferId": 2273729033,
+              "changedDate": "2021-07-28T18:16:08Z",
+              "participantId": 1000043092,
+              "oddsFractional": "4/5",
+              "oddsAmerican": "-124",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950337480,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 2020,
+              "participant": "DAL Cowboys",
+              "type": "OT_TWO",
+              "betOfferId": 2273729033,
+              "changedDate": "2021-07-28T18:16:08Z",
+              "participantId": 1000020068,
+              "oddsFractional": "Evens",
+              "oddsAmerican": "102",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273729035,
+          "closed": "2021-08-14T02:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898133,
+          "outcomes": [
+            {
+              "id": 2950337482,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1950,
+              "line": 39500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273729035,
+              "changedDate": "2021-07-28T18:16:08Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-106",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950337483,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1880,
+              "line": 39500,
+              "type": "OT_OVER",
+              "betOfferId": 2273729035,
+              "changedDate": "2021-07-28T18:16:08Z",
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898131,
+        "name": "MIA Dolphins @ CHI Bears",
+        "nameDelimiter": "@",
+        "englishName": "Chicago Bears - Miami Dolphins",
+        "homeName": "CHI Bears",
+        "awayName": "MIA Dolphins",
+        "start": "2021-08-14T17:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000074777,
+            "name": "MIA Dolphins",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000000178,
+            "name": "CHI Bears",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275551696,
+          "closed": "2021-08-14T17:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898131,
+          "outcomes": [
+            {
+              "id": 2956611867,
+              "label": "CHI Bears",
+              "englishLabel": "Chicago Bears",
+              "odds": 1960,
+              "line": -4500,
+              "participant": "CHI Bears",
+              "type": "OT_ONE",
+              "betOfferId": 2275551696,
+              "changedDate": "2021-08-11T11:50:43Z",
+              "participantId": 1000000178,
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-105",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956611868,
+              "label": "MIA Dolphins",
+              "englishLabel": "Miami Dolphins",
+              "odds": 1860,
+              "line": 4500,
+              "participant": "MIA Dolphins",
+              "type": "OT_TWO",
+              "betOfferId": 2275551696,
+              "changedDate": "2021-08-11T11:50:43Z",
+              "participantId": 1000074777,
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273729064,
+          "closed": "2021-08-14T17:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898131,
+          "outcomes": [
+            {
+              "id": 2950337564,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1550,
+              "participant": "CHI Bears",
+              "type": "OT_ONE",
+              "betOfferId": 2273729064,
+              "changedDate": "2021-08-11T11:50:58Z",
+              "participantId": 1000000178,
+              "oddsFractional": "11/20",
+              "oddsAmerican": "-182",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950337581,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 2500,
+              "participant": "MIA Dolphins",
+              "type": "OT_TWO",
+              "betOfferId": 2273729064,
+              "changedDate": "2021-08-11T11:50:58Z",
+              "participantId": 1000074777,
+              "oddsFractional": "6/4",
+              "oddsAmerican": "150",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2274202117,
+          "closed": "2021-08-14T17:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898131,
+          "outcomes": [
+            {
+              "id": 2951944591,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1910,
+              "line": 35500,
+              "type": "OT_UNDER",
+              "betOfferId": 2274202117,
+              "changedDate": "2021-08-11T11:50:43Z",
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-110",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2951944592,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1910,
+              "line": 35500,
+              "type": "OT_OVER",
+              "betOfferId": 2274202117,
+              "changedDate": "2021-08-11T11:50:43Z",
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-110",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898132,
+        "name": "DEN Broncos @ MIN Vikings",
+        "nameDelimiter": "@",
+        "englishName": "Minnesota Vikings - Denver Broncos",
+        "homeName": "MIN Vikings",
+        "awayName": "DEN Broncos",
+        "start": "2021-08-14T20:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000000177,
+            "name": "DEN Broncos",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000029137,
+            "name": "MIN Vikings",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275308169,
+          "closed": "2021-08-14T20:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898132,
+          "outcomes": [
+            {
+              "id": 2955768693,
+              "label": "MIN Vikings",
+              "englishLabel": "Minnesota Vikings",
+              "odds": 1940,
+              "line": 2500,
+              "participant": "MIN Vikings",
+              "type": "OT_ONE",
+              "betOfferId": 2275308169,
+              "changedDate": "2021-08-11T11:51:48Z",
+              "participantId": 1000029137,
+              "oddsFractional": "23/25",
+              "oddsAmerican": "-107",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2955768694,
+              "label": "DEN Broncos",
+              "englishLabel": "Denver Broncos",
+              "odds": 1880,
+              "line": -2500,
+              "participant": "DEN Broncos",
+              "type": "OT_TWO",
+              "betOfferId": 2275308169,
+              "changedDate": "2021-08-11T11:51:48Z",
+              "participantId": 1000000177,
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273736732,
+          "closed": "2021-08-14T20:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898132,
+          "outcomes": [
+            {
+              "id": 2950348089,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 2140,
+              "participant": "MIN Vikings",
+              "type": "OT_ONE",
+              "betOfferId": 2273736732,
+              "changedDate": "2021-08-11T11:51:48Z",
+              "participantId": 1000029137,
+              "oddsFractional": "57/50",
+              "oddsAmerican": "114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950348097,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 1720,
+              "participant": "DEN Broncos",
+              "type": "OT_TWO",
+              "betOfferId": 2273736732,
+              "changedDate": "2021-08-11T11:52:00Z",
+              "participantId": 1000000177,
+              "oddsFractional": "7/10",
+              "oddsAmerican": "-139",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273736734,
+          "closed": "2021-08-14T20:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898132,
+          "outcomes": [
+            {
+              "id": 2950348093,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1880,
+              "line": 34500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273736734,
+              "changedDate": "2021-08-11T11:51:48Z",
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950348102,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1950,
+              "line": 34500,
+              "type": "OT_OVER",
+              "betOfferId": 2273736734,
+              "changedDate": "2021-08-11T11:51:48Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-106",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898137,
+        "name": "NO Saints @ BAL Ravens",
+        "nameDelimiter": "@",
+        "englishName": "Baltimore Ravens - New Orleans Saints",
+        "homeName": "BAL Ravens",
+        "awayName": "NO Saints",
+        "start": "2021-08-14T23:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000062103,
+            "name": "NO Saints",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000049533,
+            "name": "BAL Ravens",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2273736786,
+          "closed": "2021-08-14T23:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898137,
+          "outcomes": [
+            {
+              "id": 2950348198,
+              "label": "BAL Ravens",
+              "englishLabel": "Baltimore Ravens",
+              "odds": 1830,
+              "line": -2500,
+              "participant": "BAL Ravens",
+              "type": "OT_ONE",
+              "betOfferId": 2273736786,
+              "changedDate": "2021-07-28T18:28:28Z",
+              "participantId": 1000049533,
+              "oddsFractional": "41/50",
+              "oddsAmerican": "-121",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950348212,
+              "label": "NO Saints",
+              "englishLabel": "New Orleans Saints",
+              "odds": 2000,
+              "line": 2500,
+              "participant": "NO Saints",
+              "type": "OT_TWO",
+              "betOfferId": 2273736786,
+              "changedDate": "2021-07-28T18:28:28Z",
+              "participantId": 1000062103,
+              "oddsFractional": "Evens",
+              "oddsAmerican": "100",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273736775,
+          "closed": "2021-08-14T23:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898137,
+          "outcomes": [
+            {
+              "id": 2950348175,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1680,
+              "participant": "BAL Ravens",
+              "type": "OT_ONE",
+              "betOfferId": 2273736775,
+              "changedDate": "2021-08-11T11:53:18Z",
+              "participantId": 1000049533,
+              "oddsFractional": "4/6",
+              "oddsAmerican": "-148",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950348185,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 2230,
+              "participant": "NO Saints",
+              "type": "OT_TWO",
+              "betOfferId": 2273736775,
+              "changedDate": "2021-08-11T11:53:18Z",
+              "participantId": 1000062103,
+              "oddsFractional": "6/5",
+              "oddsAmerican": "123",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273736773,
+          "closed": "2021-08-14T23:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898137,
+          "outcomes": [
+            {
+              "id": 2950348173,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1970,
+              "line": 35500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273736773,
+              "changedDate": "2021-07-28T18:28:28Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-104",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950348182,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1860,
+              "line": 35500,
+              "type": "OT_OVER",
+              "betOfferId": 2273736773,
+              "changedDate": "2021-07-28T18:28:28Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898136,
+        "name": "CLE Browns @ JAX Jaguars",
+        "nameDelimiter": "@",
+        "englishName": "Jacksonville Jaguars - Cleveland Browns",
+        "homeName": "JAX Jaguars",
+        "awayName": "CLE Browns",
+        "start": "2021-08-14T23:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000031301,
+            "name": "CLE Browns",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000067383,
+            "name": "JAX Jaguars",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275621511,
+          "closed": "2021-08-14T23:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898136,
+          "outcomes": [
+            {
+              "id": 2956823662,
+              "label": "JAX Jaguars",
+              "englishLabel": "Jacksonville Jaguars",
+              "odds": 1930,
+              "line": -2500,
+              "participant": "JAX Jaguars",
+              "type": "OT_ONE",
+              "betOfferId": 2275621511,
+              "changedDate": "2021-08-11T22:39:18Z",
+              "participantId": 1000067383,
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-108",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956823663,
+              "label": "CLE Browns",
+              "englishLabel": "Cleveland Browns",
+              "odds": 1890,
+              "line": 2500,
+              "participant": "CLE Browns",
+              "type": "OT_TWO",
+              "betOfferId": 2275621511,
+              "changedDate": "2021-08-11T22:39:18Z",
+              "participantId": 1000031301,
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-113",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273712452,
+          "closed": "2021-08-14T23:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898136,
+          "outcomes": [
+            {
+              "id": 2950334549,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1750,
+              "participant": "JAX Jaguars",
+              "type": "OT_ONE",
+              "betOfferId": 2273712452,
+              "changedDate": "2021-08-11T22:39:18Z",
+              "participantId": 1000067383,
+              "oddsFractional": "3/4",
+              "oddsAmerican": "-134",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950334551,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 2100,
+              "participant": "CLE Browns",
+              "type": "OT_TWO",
+              "betOfferId": 2273712452,
+              "changedDate": "2021-08-11T22:39:18Z",
+              "participantId": 1000031301,
+              "oddsFractional": "11/10",
+              "oddsAmerican": "110",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273712453,
+          "closed": "2021-08-14T23:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898136,
+          "outcomes": [
+            {
+              "id": 2950334550,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1870,
+              "line": 37500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273712453,
+              "changedDate": "2021-08-11T22:39:18Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-115",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950334552,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1950,
+              "line": 37500,
+              "type": "OT_OVER",
+              "betOfferId": 2273712453,
+              "changedDate": "2021-08-11T22:39:18Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-106",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898139,
+        "name": "NY Jets @ NY Giants",
+        "nameDelimiter": "@",
+        "englishName": "New York Giants - New York Jets",
+        "homeName": "NY Giants",
+        "awayName": "NY Jets",
+        "start": "2021-08-14T23:30:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000019658,
+            "name": "NY Jets",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000070038,
+            "name": "NY Giants",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275371459,
+          "closed": "2021-08-14T23:30:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898139,
+          "outcomes": [
+            {
+              "id": 2955945184,
+              "label": "NY Giants",
+              "englishLabel": "New York Giants",
+              "odds": 1940,
+              "line": 1500,
+              "participant": "NY Giants",
+              "type": "OT_ONE",
+              "betOfferId": 2275371459,
+              "changedDate": "2021-08-11T11:54:22Z",
+              "participantId": 1000070038,
+              "oddsFractional": "23/25",
+              "oddsAmerican": "-107",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2955945185,
+              "label": "NY Jets",
+              "englishLabel": "New York Jets",
+              "odds": 1880,
+              "line": -1500,
+              "participant": "NY Jets",
+              "type": "OT_TWO",
+              "betOfferId": 2275371459,
+              "changedDate": "2021-08-11T11:54:22Z",
+              "participantId": 1000019658,
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273754972,
+          "closed": "2021-08-14T23:30:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898139,
+          "outcomes": [
+            {
+              "id": 2950346347,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 2040,
+              "participant": "NY Giants",
+              "type": "OT_ONE",
+              "betOfferId": 2273754972,
+              "changedDate": "2021-08-11T11:54:33Z",
+              "participantId": 1000070038,
+              "oddsFractional": "26/25",
+              "oddsAmerican": "104",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950346348,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 1800,
+              "participant": "NY Jets",
+              "type": "OT_TWO",
+              "betOfferId": 2273754972,
+              "changedDate": "2021-08-11T11:54:33Z",
+              "participantId": 1000019658,
+              "oddsFractional": "4/5",
+              "oddsAmerican": "-125",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2275461674,
+          "closed": "2021-08-14T23:30:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898139,
+          "outcomes": [
+            {
+              "id": 2956420639,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1960,
+              "line": 35500,
+              "type": "OT_OVER",
+              "betOfferId": 2275461674,
+              "changedDate": "2021-08-11T11:54:22Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-105",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956420640,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1860,
+              "line": 35500,
+              "type": "OT_UNDER",
+              "betOfferId": 2275461674,
+              "changedDate": "2021-08-11T11:54:22Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898147,
+        "name": "CIN Bengals @ TB Buccaneers",
+        "nameDelimiter": "@",
+        "englishName": "Tampa Bay Buccaneers - Cincinnati Bengals",
+        "homeName": "TB Buccaneers",
+        "awayName": "CIN Bengals",
+        "start": "2021-08-14T23:30:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000056258,
+            "name": "CIN Bengals",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000086605,
+            "name": "TB Buccaneers",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2273755024,
+          "closed": "2021-08-14T23:30:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898147,
+          "outcomes": [
+            {
+              "id": 2950346466,
+              "label": "TB Buccaneers",
+              "englishLabel": "Tampa Bay Buccaneers",
+              "odds": 1860,
+              "line": -5500,
+              "participant": "TB Buccaneers",
+              "type": "OT_ONE",
+              "betOfferId": 2273755024,
+              "changedDate": "2021-08-11T11:55:30Z",
+              "participantId": 1000086605,
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950346467,
+              "label": "CIN Bengals",
+              "englishLabel": "Cincinnati Bengals",
+              "odds": 1960,
+              "line": 5500,
+              "participant": "CIN Bengals",
+              "type": "OT_TWO",
+              "betOfferId": 2273755024,
+              "changedDate": "2021-08-11T11:55:30Z",
+              "participantId": 1000056258,
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-105",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273755025,
+          "closed": "2021-08-14T23:30:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898147,
+          "outcomes": [
+            {
+              "id": 2950346468,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1390,
+              "participant": "TB Buccaneers",
+              "type": "OT_ONE",
+              "betOfferId": 2273755025,
+              "changedDate": "2021-08-11T11:56:06Z",
+              "participantId": 1000086605,
+              "oddsFractional": "4/11",
+              "oddsAmerican": "-265",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950346470,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 3050,
+              "participant": "CIN Bengals",
+              "type": "OT_TWO",
+              "betOfferId": 2273755025,
+              "changedDate": "2021-08-11T11:56:06Z",
+              "participantId": 1000056258,
+              "oddsFractional": "41/20",
+              "oddsAmerican": "205",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2275519443,
+          "closed": "2021-08-14T23:30:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898147,
+          "outcomes": [
+            {
+              "id": 2956631848,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1970,
+              "line": 34500,
+              "type": "OT_OVER",
+              "betOfferId": 2275519443,
+              "changedDate": "2021-08-11T11:55:30Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-104",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956631849,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1860,
+              "line": 34500,
+              "type": "OT_UNDER",
+              "betOfferId": 2275519443,
+              "changedDate": "2021-08-11T11:55:30Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898140,
+        "name": "HOU Texans @ GB Packers",
+        "nameDelimiter": "@",
+        "englishName": "Green Bay Packers - Houston Texans",
+        "homeName": "GB Packers",
+        "awayName": "HOU Texans",
+        "start": "2021-08-15T00:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000055908,
+            "name": "GB Packers",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000080350,
+            "name": "HOU Texans",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2273755330,
+          "closed": "2021-08-15T00:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898140,
+          "outcomes": [
+            {
+              "id": 2950365384,
+              "label": "GB Packers",
+              "englishLabel": "Green Bay Packers",
+              "odds": 2000,
+              "line": -3500,
+              "participant": "GB Packers",
+              "type": "OT_ONE",
+              "betOfferId": 2273755330,
+              "changedDate": "2021-07-28T19:02:17Z",
+              "participantId": 1000055908,
+              "oddsFractional": "Evens",
+              "oddsAmerican": "100",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950365386,
+              "label": "HOU Texans",
+              "englishLabel": "Houston Texans",
+              "odds": 1830,
+              "line": 3500,
+              "participant": "HOU Texans",
+              "type": "OT_TWO",
+              "betOfferId": 2273755330,
+              "changedDate": "2021-07-28T19:02:17Z",
+              "participantId": 1000080350,
+              "oddsFractional": "41/50",
+              "oddsAmerican": "-121",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273755062,
+          "closed": "2021-08-15T00:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898140,
+          "outcomes": [
+            {
+              "id": 2950346566,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1640,
+              "participant": "GB Packers",
+              "type": "OT_ONE",
+              "betOfferId": 2273755062,
+              "changedDate": "2021-07-28T19:02:17Z",
+              "participantId": 1000055908,
+              "oddsFractional": "16/25",
+              "oddsAmerican": "-157",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950346567,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 2280,
+              "participant": "HOU Texans",
+              "type": "OT_TWO",
+              "betOfferId": 2273755062,
+              "changedDate": "2021-07-28T19:02:17Z",
+              "participantId": 1000080350,
+              "oddsFractional": "5/4",
+              "oddsAmerican": "128",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273755329,
+          "closed": "2021-08-15T00:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898140,
+          "outcomes": [
+            {
+              "id": 2950365383,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1860,
+              "line": 33500,
+              "type": "OT_OVER",
+              "betOfferId": 2273755329,
+              "changedDate": "2021-07-28T19:02:17Z",
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-117",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950365385,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1970,
+              "line": 33500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273755329,
+              "changedDate": "2021-07-28T19:02:17Z",
+              "oddsFractional": "19/20",
+              "oddsAmerican": "-104",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898145,
+        "name": "KC Chiefs @ SF 49ers",
+        "nameDelimiter": "@",
+        "englishName": "San Francisco 49ers - Kansas City Chiefs",
+        "homeName": "SF 49ers",
+        "awayName": "KC Chiefs",
+        "start": "2021-08-15T00:30:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000030413,
+            "name": "SF 49ers",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000091850,
+            "name": "KC Chiefs",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275218554,
+          "closed": "2021-08-15T00:30:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898145,
+          "outcomes": [
+            {
+              "id": 2955416363,
+              "label": "SF 49ers",
+              "englishLabel": "San Francisco 49ers",
+              "odds": 1850,
+              "line": -2500,
+              "participant": "SF 49ers",
+              "type": "OT_ONE",
+              "betOfferId": 2275218554,
+              "changedDate": "2021-08-11T11:58:13Z",
+              "participantId": 1000030413,
+              "oddsFractional": "17/20",
+              "oddsAmerican": "-118",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2955416364,
+              "label": "KC Chiefs",
+              "englishLabel": "Kansas City Chiefs",
+              "odds": 1980,
+              "line": 2500,
+              "participant": "KC Chiefs",
+              "type": "OT_TWO",
+              "betOfferId": 2275218554,
+              "changedDate": "2021-08-11T11:58:13Z",
+              "participantId": 1000091850,
+              "oddsFractional": "49/50",
+              "oddsAmerican": "-103",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273762871,
+          "closed": "2021-08-15T00:30:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898145,
+          "outcomes": [
+            {
+              "id": 2950327701,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1670,
+              "participant": "SF 49ers",
+              "type": "OT_ONE",
+              "betOfferId": 2273762871,
+              "changedDate": "2021-08-11T11:58:13Z",
+              "participantId": 1000030413,
+              "oddsFractional": "4/6",
+              "oddsAmerican": "-150",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950327703,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 2230,
+              "participant": "KC Chiefs",
+              "type": "OT_TWO",
+              "betOfferId": 2273762871,
+              "changedDate": "2021-08-11T11:58:13Z",
+              "participantId": 1000091850,
+              "oddsFractional": "6/5",
+              "oddsAmerican": "123",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2275330015,
+          "closed": "2021-08-15T00:30:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898145,
+          "outcomes": [
+            {
+              "id": 2955787316,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1910,
+              "line": 37500,
+              "type": "OT_OVER",
+              "betOfferId": 2275330015,
+              "changedDate": "2021-08-11T11:58:13Z",
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-110",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2955787317,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1910,
+              "line": 37500,
+              "type": "OT_UNDER",
+              "betOfferId": 2275330015,
+              "changedDate": "2021-08-11T11:58:13Z",
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-110",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898167,
+        "name": "SEA Seahawks @ LV Raiders",
+        "nameDelimiter": "@",
+        "englishName": "Las Vegas Raiders - Seattle Seahawks",
+        "homeName": "LV Raiders",
+        "awayName": "SEA Seahawks",
+        "start": "2021-08-15T01:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000085238,
+            "name": "LV Raiders",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000000333,
+            "name": "SEA Seahawks",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275551751,
+          "closed": "2021-08-15T01:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898167,
+          "outcomes": [
+            {
+              "id": 2956612147,
+              "label": "LV Raiders",
+              "englishLabel": "Las Vegas Raiders",
+              "odds": 1940,
+              "line": -2500,
+              "participant": "LV Raiders",
+              "type": "OT_ONE",
+              "betOfferId": 2275551751,
+              "changedDate": "2021-08-11T11:59:57Z",
+              "participantId": 1000085238,
+              "oddsFractional": "23/25",
+              "oddsAmerican": "-107",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956612148,
+              "label": "SEA Seahawks",
+              "englishLabel": "Seattle Seahawks",
+              "odds": 1880,
+              "line": 2500,
+              "participant": "SEA Seahawks",
+              "type": "OT_TWO",
+              "betOfferId": 2275551751,
+              "changedDate": "2021-08-11T11:59:57Z",
+              "participantId": 1000000333,
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273729342,
+          "closed": "2021-08-15T01:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898167,
+          "outcomes": [
+            {
+              "id": 2950338342,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1770,
+              "participant": "LV Raiders",
+              "type": "OT_ONE",
+              "betOfferId": 2273729342,
+              "changedDate": "2021-08-11T12:00:06Z",
+              "participantId": 1000085238,
+              "oddsFractional": "3/4",
+              "oddsAmerican": "-130",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950338343,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 2080,
+              "participant": "SEA Seahawks",
+              "type": "OT_TWO",
+              "betOfferId": 2273729342,
+              "changedDate": "2021-08-11T12:00:06Z",
+              "participantId": 1000000333,
+              "oddsFractional": "27/25",
+              "oddsAmerican": "108",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273729340,
+          "closed": "2021-08-15T01:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898167,
+          "outcomes": [
+            {
+              "id": 2950338338,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1910,
+              "line": 37500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273729340,
+              "changedDate": "2021-08-11T11:59:57Z",
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-110",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950338339,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1910,
+              "line": 37500,
+              "type": "OT_OVER",
+              "betOfferId": 2273729340,
+              "changedDate": "2021-08-11T11:59:57Z",
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-110",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898142,
+        "name": "LA Chargers @ LA Rams",
+        "nameDelimiter": "@",
+        "englishName": "Los Angeles Rams - Los Angeles Chargers",
+        "homeName": "LA Rams",
+        "awayName": "LA Chargers",
+        "start": "2021-08-15T02:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000083544,
+            "name": "LA Rams",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000037375,
+            "name": "LA Chargers",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2275543373,
+          "closed": "2021-08-15T02:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898142,
+          "outcomes": [
+            {
+              "id": 2956511470,
+              "label": "LA Rams",
+              "englishLabel": "Los Angeles Rams",
+              "odds": 1880,
+              "line": 4500,
+              "participant": "LA Rams",
+              "type": "OT_ONE",
+              "betOfferId": 2275543373,
+              "changedDate": "2021-08-11T12:03:48Z",
+              "participantId": 1000083544,
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2956511471,
+              "label": "LA Chargers",
+              "englishLabel": "Los Angeles Chargers",
+              "odds": 1940,
+              "line": -4500,
+              "participant": "LA Chargers",
+              "type": "OT_TWO",
+              "betOfferId": 2275543373,
+              "changedDate": "2021-08-11T12:03:48Z",
+              "participantId": 1000037375,
+              "oddsFractional": "23/25",
+              "oddsAmerican": "-107",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273762891,
+          "closed": "2021-08-15T02:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898142,
+          "outcomes": [
+            {
+              "id": 2950327752,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 2550,
+              "participant": "LA Rams",
+              "type": "OT_ONE",
+              "betOfferId": 2273762891,
+              "changedDate": "2021-08-11T12:03:48Z",
+              "participantId": 1000083544,
+              "oddsFractional": "31/20",
+              "oddsAmerican": "155",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950327754,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 1530,
+              "participant": "LA Chargers",
+              "type": "OT_TWO",
+              "betOfferId": 2273762891,
+              "changedDate": "2021-08-11T12:04:05Z",
+              "participantId": 1000037375,
+              "oddsFractional": "13/25",
+              "oddsAmerican": "-190",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273762992,
+          "closed": "2021-08-15T02:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898142,
+          "outcomes": [
+            {
+              "id": 2950327983,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1940,
+              "line": 34500,
+              "type": "OT_OVER",
+              "betOfferId": 2273762992,
+              "changedDate": "2021-08-11T12:03:48Z",
+              "oddsFractional": "23/25",
+              "oddsAmerican": "-107",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950327984,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1880,
+              "line": 34500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273762992,
+              "changedDate": "2021-08-11T12:03:48Z",
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1007898144,
+        "name": "CAR Panthers @ IND Colts",
+        "nameDelimiter": "@",
+        "englishName": "Indianapolis Colts - Carolina Panthers",
+        "homeName": "IND Colts",
+        "awayName": "CAR Panthers",
+        "start": "2021-08-15T17:00:00Z",
+        "group": "NFL Preseason",
+        "groupId": 2000066766,
+        "path": [
+          {
+            "id": 1000093199,
+            "name": "Football",
+            "englishName": "American Football",
+            "termKey": "american_football"
+          },
+          {
+            "id": 2000066766,
+            "name": "NFL Preseason",
+            "englishName": "NFL Preseason",
+            "termKey": "nfl_preseason"
+          }
+        ],
+        "nonLiveBoCount": 3,
+        "sport": "AMERICAN_FOOTBALL",
+        "tags": [
+          "AMERICAN_DISPLAY_FORMAT",
+          "AWAY_HOME",
+          "OFFERED_LIVE",
+          "MATCH"
+        ],
+        "state": "NOT_STARTED",
+        "participants": [
+          {
+            "participantId": 1000000174,
+            "name": "IND Colts",
+            "scratched": false,
+            "nonRunner": false,
+            "home": true,
+            "participantType": "TEAM"
+          },
+          {
+            "participantId": 1000000638,
+            "name": "CAR Panthers",
+            "scratched": false,
+            "nonRunner": false,
+            "home": false,
+            "participantType": "TEAM"
+          }
+        ]
+      },
+      "betOffers": [
+        {
+          "id": 2273762911,
+          "closed": "2021-08-15T17:00:00Z",
+          "criterion": {
+            "id": 1001159928,
+            "label": "Point Spread",
+            "englishLabel": "Handicap - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 1,
+            "name": "Handicap",
+            "englishName": "Handicap"
+          },
+          "eventId": 1007898144,
+          "outcomes": [
+            {
+              "id": 2950327796,
+              "label": "IND Colts",
+              "englishLabel": "Indianapolis Colts",
+              "odds": 1880,
+              "line": -1500,
+              "participant": "IND Colts",
+              "type": "OT_ONE",
+              "betOfferId": 2273762911,
+              "changedDate": "2021-07-28T18:48:14Z",
+              "participantId": 1000000174,
+              "oddsFractional": "22/25",
+              "oddsAmerican": "-114",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950327798,
+              "label": "CAR Panthers",
+              "englishLabel": "Carolina Panthers",
+              "odds": 1940,
+              "line": 1500,
+              "participant": "CAR Panthers",
+              "type": "OT_TWO",
+              "betOfferId": 2273762911,
+              "changedDate": "2021-07-28T18:48:14Z",
+              "participantId": 1000000638,
+              "oddsFractional": "23/25",
+              "oddsAmerican": "-107",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 1,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273762909,
+          "closed": "2021-08-15T17:00:00Z",
+          "criterion": {
+            "id": 1004709447,
+            "label": "Moneyline",
+            "englishLabel": "Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 2,
+            "name": "Match",
+            "englishName": "Match"
+          },
+          "eventId": 1007898144,
+          "outcomes": [
+            {
+              "id": 2950327793,
+              "label": "1",
+              "englishLabel": "1",
+              "odds": 1770,
+              "participant": "IND Colts",
+              "type": "OT_ONE",
+              "betOfferId": 2273762909,
+              "changedDate": "2021-08-11T12:05:06Z",
+              "participantId": 1000000174,
+              "oddsFractional": "3/4",
+              "oddsAmerican": "-130",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950327794,
+              "label": "2",
+              "englishLabel": "2",
+              "odds": 2070,
+              "participant": "CAR Panthers",
+              "type": "OT_TWO",
+              "betOfferId": 2273762909,
+              "changedDate": "2021-08-11T12:05:06Z",
+              "participantId": 1000000638,
+              "oddsFractional": "21/20",
+              "oddsAmerican": "107",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN"
+          ],
+          "sortOrder": 2,
+          "cashOutStatus": "ENABLED"
+        },
+        {
+          "id": 2273762910,
+          "closed": "2021-08-15T17:00:00Z",
+          "criterion": {
+            "id": 1001159490,
+            "label": "Total Points",
+            "englishLabel": "Total Points - Including Overtime",
+            "order": [],
+            "occurrenceType": "POINTS",
+            "lifetime": "FULL_TIME_OVERTIME"
+          },
+          "betOfferType": {
+            "id": 6,
+            "name": "Over/Under",
+            "englishName": "Over/Under"
+          },
+          "eventId": 1007898144,
+          "outcomes": [
+            {
+              "id": 2950327795,
+              "label": "Over",
+              "englishLabel": "Over",
+              "odds": 1920,
+              "line": 34500,
+              "type": "OT_OVER",
+              "betOfferId": 2273762910,
+              "changedDate": "2021-07-28T18:48:14Z",
+              "oddsFractional": "10/11",
+              "oddsAmerican": "-109",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            },
+            {
+              "id": 2950327797,
+              "label": "Under",
+              "englishLabel": "Under",
+              "odds": 1900,
+              "line": 34500,
+              "type": "OT_UNDER",
+              "betOfferId": 2273762910,
+              "changedDate": "2021-07-28T18:48:14Z",
+              "oddsFractional": "9/10",
+              "oddsAmerican": "-112",
+              "status": "OPEN",
+              "cashOutStatus": "ENABLED"
+            }
+          ],
+          "tags": [
+            "OFFERED_PREMATCH",
+            "MAIN_LINE"
+          ],
+          "sortOrder": 3,
+          "cashOutStatus": "ENABLED"
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "type": "SPORT",
+      "id": "/american_football",
+      "termKey": "american_football",
+      "localizedName": "Football",
+      "parentId": "/",
+      "englishName": "American Football"
+    },
+    {
+      "type": "REGION",
+      "id": "/american_football/nfl_preseason",
+      "termKey": "nfl_preseason",
+      "localizedName": "NFL Preseason",
+      "parentId": "/american_football",
+      "englishName": "NFL Preseason"
+    },
+    {
+      "type": "ATTRIBUTE",
+      "id": "/matches",
+      "termKey": "matches",
+      "localizedName": "matches",
+      "parentId": "",
+      "englishName": "matches"
+    }
+  ],
+  "activeTermIds": [
+    "/american_football/nfl_preseason",
+    "/matches"
+  ],
+  "soonMode": "DAILY",
+  "categoryGroups": [
+    {
+      "categoryGroupName": "combined_layout",
+      "categories": [
+        {
+          "id": 17459,
+          "englishName": "Spread",
+          "localizedName": "Spread"
+        },
+        {
+          "id": 17461,
+          "englishName": "Moneyline",
+          "localizedName": "Moneyline"
+        },
+        {
+          "id": 17460,
+          "englishName": "Total Points",
+          "localizedName": "Total Points"
+        }
+      ],
+      "localizedName": "Spread, Total & Moneyline"
+    }
+  ],
+  "activeCategories": [
+    "17460",
+    "17461",
+    "17459"
+  ],
+  "activeEventTypes": [
+    "matches"
+  ],
+  "eventTypes": [
+    "matches"
+  ],
+  "defaultEventType": "matches"
+}

@@ -1,5 +1,5 @@
 using FantasyPros;
-using HtmlAgilityPack;
+using FantasyPros.Projections;
 using MathNet.Numerics.Distributions;
 using System;
 using System.Collections.Concurrent;
@@ -17,15 +17,13 @@ namespace FantasyFootball.Terminal.Daily
     {
         private readonly SQLiteConnection connection;
         private readonly TextWriter output;
-        private readonly string dataDirectory;
         private readonly FantasyProsClient fantasyPros;
 
-        public DailyModel2(SQLiteConnection connection, TextWriter output, string dataDirectory)
+        public DailyModel2(SQLiteConnection connection, TextWriter output, FantasyProsClient fantasyProsClient)
         {
             this.connection = connection;
             this.output = output;
-            this.dataDirectory = dataDirectory;
-            this.fantasyPros = new FantasyProsClient(dataDirectory);
+            this.fantasyPros = fantasyProsClient;
         }
 
         static Dictionary<float, double> Combine(IReadOnlyDictionary<float, double> A, IReadOnlyDictionary<float, double> B)
@@ -54,79 +52,72 @@ namespace FantasyFootball.Terminal.Daily
 
         IReadOnlyDictionary<float, double> ExpectedPoints(DailyPlayer player, DateTime at)
         {
-            var row = fantasyPros.GetPlayerRow(player, at);
+            var playerId = fantasyPros.TempGetPlayerId(player.Name);
 
-            if (row == null)
+            if (playerId == null)
             {
-                output.WriteLine("Can't find " + player.Name);
+                output.WriteLine($"Can't find {player.Name} {player.Salary:C}");
                 return new Dictionary<float, double> { { 0, 1 } };
             }
 
             switch (player.Position)
             {
-                case "QB": return ParseForQB(row);
-                case "WR": return ParseForWR(row);
-                case "RB": return ParseForRB(row);
-                case "TE": return ParseForTE(row);
-                case "DEF": return ParseForDST(row);
+                case "QB": return EstimateForQB(fantasyPros.GetQbProjection(playerId.Value, at));
+                case "WR": return EstimateForWr(fantasyPros.GetWrProjection(playerId.Value, at));
+                case "RB": return EstimateForRB(fantasyPros.GetRbProjection(playerId.Value, at));
+                case "TE": return EstimateForTE(fantasyPros.GetTeProjection(playerId.Value, at));
+                case "DEF": return EstimateForDST(fantasyPros.GetDstProjection(playerId.Value, at));
                 default: throw new ArgumentOutOfRangeException();
             }
         }
 
-        private static Dictionary<float, double> ParseForQB(HtmlNode row)
+        private static IReadOnlyDictionary<float, double> EstimateForQB(QbProjection projection)
         {
-            var tds = row.Elements("td").ToArray();
             var outcome = new Dictionary<float, double> { { 0, 1 } };
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[3].InnerText)), 0.04f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[4].InnerText)), 4f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[5].InnerText)), -1f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[7].InnerText)), 0.1f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[8].InnerText)), 6f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[9].InnerText)), -2f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.PassingYards), 0.04f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.PassingTouchdowns), 4f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.Interceptions), -1f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.RushingYards), 0.1f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.RushingTouchdowns), 6f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.Fumbles), -2f));
             return outcome;
         }
 
-        private static Dictionary<float, double> ParseForWR(HtmlNode row)
+        private static IReadOnlyDictionary<float, double> EstimateForWr(WrProjection projection)
         {
-            var tds = row.Elements("td").ToArray();
             var outcome = new Dictionary<float, double> { { 0, 1 } };
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[2].InnerText)), 0.1f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[3].InnerText)), 6.0f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[4].InnerText)), 0.5f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[5].InnerText)), 0.1f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[6].InnerText)), 6.0f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[7].InnerText)), -2f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.ReceivingYards), 0.1f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.ReceivingTouchdowns), 6.0f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.Receptions), 0.5f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.RushingYards), 0.1f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.RushingTouchdowns), 6.0f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.Fumbles), -2f));
             return outcome;
         }
 
-        private static Dictionary<float, double> ParseForRB(HtmlNode row)
+        private static IReadOnlyDictionary<float, double> EstimateForRB(RbProjection projection)
         {
-            var tds = row.Elements("td").ToArray();
             var outcome = new Dictionary<float, double> { { 0, 1 } };
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[2].InnerText)), 0.1f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[3].InnerText)), 6.0f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[4].InnerText)), 0.5f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[5].InnerText)), 0.1f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[6].InnerText)), 6.0f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[7].InnerText)), -2f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.ReceivingYards), 0.1f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.ReceivingTouchdowns), 6.0f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.Receptions), 0.5f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.RushingYards), 0.1f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.RushingTouchdowns), 6.0f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.Fumbles), -2f));
             return outcome;
         }
 
-        private static Dictionary<float, double> ParseForTE(HtmlNode row)
+        private static IReadOnlyDictionary<float, double> EstimateForTE(TeProjection projection)
         {
-            var tds = row.Elements("td").ToArray();
             var outcome = new Dictionary<float, double> { { 0, 1 } };
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[1].InnerText)), 0.5f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[2].InnerText)), 0.1f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[3].InnerText)), 6.0f));
-            outcome = Combine(outcome, Multiply(Estimate(float.Parse(tds[4].InnerText)), -2f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.Receptions), 0.5f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.ReceivingYards), 0.1f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.ReceivingTouchdowns), 6.0f));
+            outcome = Combine(outcome, Multiply(Estimate(projection.Fumbles), -2f));
             return outcome;
         }
 
-        private static Dictionary<float, double> ParseForDST(HtmlNode row)
-        {
-            return Estimate(float.Parse(row.Elements("td").ToArray()[10].InnerText));
-        }
+        private static IReadOnlyDictionary<float, double> EstimateForDST(DstProjection projection) => Estimate(projection.FantasyPoints);
 
         private static Dictionary<float, double> Estimate(float mean)
         {

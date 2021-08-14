@@ -29,7 +29,7 @@ namespace FantasyFootball.Core.Modeling.ScoreModelers
 
         protected IEnumerable<Situation> GetHistoricalSituations()
         {
-            return Players.All().CrossJoin(Enumerable.Range(1, ProbabilityDistributionAnalysis.CurrentWeek - 1),
+            return Players.All().CrossJoin(Enumerable.Range(1, SeasonWeek.ChampionshipWeek),
                 (p, w) => new Situation(p.Id, w)).Where(CanBeTestedOn);
         }
 

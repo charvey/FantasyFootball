@@ -1,14 +1,22 @@
-﻿using FantasyFootball.Core.Data;
-using FantasyFootball.Data.Yahoo;
+﻿using FantasyFootball.Data.Yahoo;
 using System.IO;
 using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Terminal.Experiments
 {
-    public static class PopularNames
+    public class PopularNames
     {
-        public static void Analyze(FantasySportsService service, TextWriter output, LeagueKey leagueKey)
+        private readonly TextWriter output;
+        private readonly FantasySportsService service;
+
+        public PopularNames(TextWriter output, FantasySportsService service)
+        {
+            this.output = output;
+            this.service = service;
+        }
+
+        public void Analyze(LeagueKey leagueKey)
 		{
             var players = service.LeaguePlayers(leagueKey);
             var firstNames = players.Select(p => p.name.first);

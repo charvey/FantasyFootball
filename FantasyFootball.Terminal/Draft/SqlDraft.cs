@@ -2,7 +2,6 @@
 using FantasyFootball.Core.Draft;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Terminal.Database;
-using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;

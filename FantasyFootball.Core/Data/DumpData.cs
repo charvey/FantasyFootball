@@ -11,19 +11,6 @@ namespace FantasyFootball.Core.Data
     {
         private const string filename = "dump.csv";
 
-        public static double GetScore(Player p, int week)
-        {
-            if (week < SeasonWeek.Current)
-                return GetActualScore(p.Id, week).Value;
-            else
-                return GetPrediction(p.Id, SeasonWeek.Current, week).Value;
-        }
-
-        public static double GetSeasonTotalScore(Player p)
-        {
-            return Enumerable.Range(1, SeasonWeek.Maximum).Select(w => GetScore(p, w)).Sum();
-        }
-
         public static double? GetActualScore(string player, int week)
         {
             return GetValue(player, $"A-{week}");

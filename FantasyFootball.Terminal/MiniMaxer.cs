@@ -1,9 +1,9 @@
 ﻿using Dapper;
+using FantasyFootball.Core;
 using FantasyFootball.Core.Data;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Database;
 using Hangfire;
-using Hangfire.MemoryStorage;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,9 +21,8 @@ namespace FantasyFootball.Terminal
 
         public static void Testminimax(FantasySportsService service, ILatestPredictionRepository predictionRepository, SQLiteConnection connection, LeagueKey leagueKey)
         {
-            playerScores = service.LeaguePlayers(leagueKey).ToDictionary(p => p.player_id.ToString(), p => new SqlPredictionRepository(connection).GetPredictions(leagueKey, p.player_id.ToString(), Enumerable.Range(1, 17)));
+            playerScores = service.LeaguePlayers(leagueKey).ToDictionary(p => p.player_id.ToString(), p => new SqlPredictionRepository(connection).GetPredictions(leagueKey, p.player_id.ToString(), Enumerable.Range(1, SeasonWeek.Maximum)));
             strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service,leagueKey,connection, predictionRepository, playerScores.Keys);
-            GlobalConfiguration.Configuration.UseMemoryStorage();
 
             var server = new BackgroundJobServer();
             var origin = new Node

@@ -8,6 +8,13 @@ namespace FantasyFootball.Terminal.Draft
 {
     public class DraftWriter
     {
+        private readonly TextWriter writer;
+
+        public DraftWriter(TextWriter writer)
+        {
+            this.writer = writer;
+        }
+
         private int ColumnWidth
         {
             get
@@ -17,7 +24,7 @@ namespace FantasyFootball.Terminal.Draft
             }
         }
 
-        public void WriteDraft(TextWriter writer, IDraft draft)
+        public void WriteDraft(IDraft draft)
         {
             writer.WriteLine(BuildRow("Round", draft.Participants.Select(t => t.Owner)));
             writer.WriteLine(BuildRow(string.Empty, draft.Participants.Select(t => t.Name)));

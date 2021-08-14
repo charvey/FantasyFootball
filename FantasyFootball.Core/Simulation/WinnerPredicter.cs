@@ -13,6 +13,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Yahoo;
 
@@ -37,12 +38,12 @@ namespace FantasyFootball.Core.Simulation
 
     public class WinnerPredicter
     {
-        private int CurrentWeek = SeasonWeek.Current;
         private readonly FantasySportsService service;
         private readonly ILatestPredictionRepository predictionRepository;
         private readonly CandidateScoreProvider scoreProvider;
+        private readonly TextWriter writer;
 
-        public WinnerPredicter(FantasySportsService service)
+        public WinnerPredicter(FantasySportsService service, ILatestPredictionRepository predictionRepository, TextWriter writer)
         {
             this.service = service;
             var candidate = new ComplexScoreCandidate(
@@ -50,6 +51,8 @@ namespace FantasyFootball.Core.Simulation
                 new ByPlayerHistoricalGroupSpecifier(),
                 new RawScoreModel());
             scoreProvider = new CandidateScoreProvider(candidate);
+            this.predictionRepository = predictionRepository;
+            this.writer = writer;
         }
 
         public void PredictWinners(LeagueKey leagueKey)
@@ -66,28 +69,28 @@ namespace FantasyFootball.Core.Simulation
             Action<int> printProgress = (int t) =>
               {
                   var average = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / t);
-                  Console.WriteLine($"\n{t} trials ran in {stopwatch.Elapsed} (average {average} each)");
-                  Console.WriteLine("\nChampionships Wins");
+                  writer.WriteLine($"\n{t} trials ran in {stopwatch.Elapsed} (average {average} each)");
+                  writer.WriteLine("\nChampionships Wins");
                   foreach (var team in winners.OrderByDescending(x => x.Value))
-                      Console.WriteLine($"{team.Key.Owner} {team.Value} {1.0 * team.Value / t:P}");
-                  Console.WriteLine("\nPlayoff Appearances");
+                      writer.WriteLine($"{team.Key.Owner} {team.Value} {1.0 * team.Value / t:P}");
+                  writer.WriteLine("\nPlayoff Appearances");
                   foreach (var team in playoffAppearances.OrderByDescending(x => x.Value))
-                      Console.WriteLine($"{team.Key.Owner} {team.Value} {1.0 * team.Value / t:P}");
-                  Console.WriteLine("\nFinal Rankings");
+                      writer.WriteLine($"{team.Key.Owner} {team.Value} {1.0 * team.Value / t:P}");
+                  writer.WriteLine("\nFinal Rankings");
                   foreach (var team in universe.GetTeams().OrderBy(team => team.Owner))
                   {
-                      Console.Write(team.Owner);
+                      writer.Write(team.Owner);
                       foreach (var standing in Enumerable.Range(1, 12))
                       {
-                          Console.Write($",{1.0 * finalStandings.GetOrAdd(Tuple.Create(team, standing), 0) / t:P}");
+                          writer.Write($",{1.0 * finalStandings.GetOrAdd(Tuple.Create(team, standing), 0) / t:P}");
                       }
-                      Console.WriteLine();
+                      writer.WriteLine();
                   }
               };
 
             Enumerable.Range(1, trials).AsParallel().ForAll(_ =>
             {
-                Console.WriteLine($"Starting Trial #{_}");
+                writer.WriteLine($"Starting Trial #{_}");
                 var runUniverse = universe.Clone();
                 FinishSeason(runUniverse, leagueKey);
                 winners.AddOrUpdate(runUniverse.GetChampionshipResult().Winner, 1, (k, c) => c + 1);
@@ -109,7 +112,7 @@ namespace FantasyFootball.Core.Simulation
                 }
             });
 
-            Console.WriteLine("\nFinal Results:\n");
+            writer.WriteLine("\nFinal Results:\n");
             printProgress(trials);
         }
 
@@ -118,7 +121,7 @@ namespace FantasyFootball.Core.Simulation
             var universe = new Universe();
             StartSeason(universe, leagueKey);
             FinishSeason(universe, leagueKey);
-            Console.WriteLine(universe.GetChampionshipResult().Winner.Owner);
+            writer.WriteLine(universe.GetChampionshipResult().Winner.Owner);
         }
 
         private ConcurrentDictionary<Tuple<int, int>, Player[]> pastPlayers = new ConcurrentDictionary<Tuple<int, int>, Player[]>();
@@ -143,26 +146,26 @@ namespace FantasyFootball.Core.Simulation
             foreach (var team in service.Teams(leagueKey).Select(Teams.From))
                 universe.AddFact(new AddTeam { Team = team });
 
-            for (int week = 1; week < CurrentWeek; week++)
+            for (int week = 1; week < service.League(leagueKey).current_week; week++)
             {
-                Console.WriteLine($"Recording Week #{week}");
+                writer.WriteLine($"Recording Week #{week}");
                 RecordWeek(universe, leagueKey, week);
             }
         }
 
         private void FinishSeason(Universe universe, LeagueKey leagueKey)
         {
-            for (int week = CurrentWeek; week <= SeasonWeek.RegularSeasonEnd; week++)
+            for (int week = service.League(leagueKey).current_week; week < service.LeagueSettings(leagueKey).playoff_start_week; week++)
             {
-                Console.WriteLine($"Predicting Week #{week}");
+                writer.WriteLine($"Predicting Week #{week}");
                 PredictWeek(universe, leagueKey, week);
             }
 
-            Console.WriteLine($"Predicting Quarterfinals");
+            writer.WriteLine($"Predicting Quarterfinals");
             PredictQuarterfinals(universe, leagueKey);
-            Console.WriteLine($"Predicting Semifinals");
+            writer.WriteLine($"Predicting Semifinals");
             PredictSemifinals(universe, leagueKey);
-            Console.WriteLine($"Predicting Championship");
+            writer.WriteLine($"Predicting Championship");
             PredictChampionship(universe, leagueKey);
         }
 
@@ -174,7 +177,7 @@ namespace FantasyFootball.Core.Simulation
                 {
                     Player = player,
                     Week = week,
-                    Score = DumpData.GetActualScore(player.Id, week).Value
+                    Score = predictionRepository.GetPrediction(leagueKey, player.Id, week)
                 });
             }
 
@@ -229,17 +232,17 @@ namespace FantasyFootball.Core.Simulation
 
         private void PredictQuarterfinals(Universe universe, LeagueKey leagueKey)
         {
-            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), SeasonWeek.QuarterFinalWeek);
+            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), service.League(leagueKey).end_week - 2);
         }
 
         private void PredictSemifinals(Universe universe, LeagueKey leagueKey)
         {
-            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), SeasonWeek.SemifinalWeek);
+            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), service.League(leagueKey).end_week - 1);
         }
 
         private void PredictChampionship(Universe universe, LeagueKey leagueKey)
         {
-            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), SeasonWeek.ChampionshipWeek);
+            PredictTeamsForWeek(universe, leagueKey, universe.GetTeams(), service.League(leagueKey).end_week);
         }
     }
 }

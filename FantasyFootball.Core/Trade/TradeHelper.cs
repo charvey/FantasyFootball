@@ -27,7 +27,18 @@ namespace FantasyFootball.Core.Trade
             public TeamPlayers TeamB { get; set; }
         }
 
-        public void Help(FantasySportsService service, TextWriter output, LeagueKey leagueKey, int myTeamId)
+        private readonly FantasySportsService service;
+        private readonly ILatestPredictionRepository predictionRepository;
+        private readonly TextWriter output;
+
+        public TradeHelper(FantasySportsService service, ILatestPredictionRepository predictionRepository, TextWriter output)
+        {
+            this.service = service;
+            this.predictionRepository = predictionRepository;
+            this.output = output;
+        }
+
+        public void Help(LeagueKey leagueKey, int myTeamId)
         {
             var week = service.League(leagueKey).current_week;
             var teams = service.Teams(leagueKey)
@@ -44,60 +55,60 @@ namespace FantasyFootball.Core.Trade
 
             output.WriteLine(trades.Count + " total possible trades");
 
-            trades = trades.AsParallel().Where(TheyWouldDoIt).ToList();
+            trades = trades.Where(t => TheyWouldDoIt(leagueKey, t)).ToList();
 
             output.WriteLine(trades.Count + " trades that would happen");
 
-            trades = trades.AsParallel().Where(IShouldDoIt).ToList();
+            trades = trades.Where(t => IShouldDoIt(leagueKey, t)).ToList();
 
             output.WriteLine(trades.Count + " trades found");
 
-            foreach (var trade in trades.OrderByDescending(TeamAValueToTrade).ThenByDescending(TeamBValueToTrade))
+            foreach (var trade in trades.OrderByDescending(t => TeamAValueToTrade(leagueKey, t)).ThenByDescending(t => TeamBValueToTrade(leagueKey, t)))
             {
                 output.WriteLine(
                     "Trading " + trade.PlayerA.Name +
                     " to " + trade.TeamB.Team.Owner +
                     " for " + trade.PlayerB.Name +
-                    " would benefit me " + TeamAValueToTrade(trade) +
-                    " and them " + TeamBValueToTrade(trade));
+                    " would benefit me " + TeamAValueToTrade(leagueKey, trade) +
+                    " and them " + TeamBValueToTrade(leagueKey, trade));
             }
         }
 
-        private bool TheyWouldDoIt(Trade trade)
+        private bool TheyWouldDoIt(LeagueKey leagueKey, Trade trade)
         {
-            return TeamBValueToTrade(trade) > 0;
+            return TeamBValueToTrade(leagueKey, trade) > 0;
         }
 
-        private bool IShouldDoIt(Trade trade)
+        private bool IShouldDoIt(LeagueKey leagueKey, Trade trade)
         {
-            return TeamAValueToTrade(trade) > 0;
+            return TeamAValueToTrade(leagueKey, trade) > 0;
         }
 
-        private static double TeamAValueToTrade(Trade trade)
+        private double TeamAValueToTrade(LeagueKey leagueKey, Trade trade)
         {
-            return ValueToTrade(trade.TeamA.Players, trade.PlayerA, trade.PlayerB);
+            return ValueToTrade(leagueKey, trade.TeamA.Players, trade.PlayerA, trade.PlayerB);
         }
 
-        private static double TeamBValueToTrade(Trade trade)
+        private double TeamBValueToTrade(LeagueKey leagueKey, Trade trade)
         {
-            return ValueToTrade(trade.TeamB.Players, trade.PlayerB, trade.PlayerA);
+            return ValueToTrade(leagueKey, trade.TeamB.Players, trade.PlayerB, trade.PlayerA);
         }
 
-        private static double ValueToTrade(IEnumerable<Player> current, Player losingPlayer, Player newPlayer)
+        private double ValueToTrade(LeagueKey leagueKey, IEnumerable<Player> current, Player losingPlayer, Player newPlayer)
         {
             var playersBeforeTrade = current;
             var playersAfterTrade = newPlayer.cons(current.Except(losingPlayer));
-            return GetTotalScore(playersAfterTrade) - GetTotalScore(playersBeforeTrade);
+            return GetTotalScore(leagueKey, playersAfterTrade) - GetTotalScore(leagueKey, playersBeforeTrade);
         }
 
-        private static double GetTotalScore(IEnumerable<Player> players)
+        private double GetTotalScore(LeagueKey leagueKey, IEnumerable<Player> players)
         {
-            return Enumerable.Range(1, SeasonWeek.ChampionshipWeek).Select(w => GetWeekScore(players, w)).Sum();
+            return Enumerable.Range(1, service.League(leagueKey).end_week).Select(w => GetWeekScore(leagueKey, players, w)).Sum();
         }
 
-        private static double GetWeekScore(IEnumerable<Player> players, int week)
+        private double GetWeekScore(LeagueKey leagueKey, IEnumerable<Player> players, int week)
         {
-            var scoreProvider = new RealityScoreModeler(DumpData.GetScore);
+            var scoreProvider = new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(leagueKey, p.Id, week));
 			return new MostLikelyScoreRosterModeler(scoreProvider)
 				.Model(new Modeling.RosterSituation(players.ToArray(), week))
 				.Outcomes.Single().Players.Sum(p => scoreProvider.Model(new ScoreSituation(p, week)).Outcomes.Single());

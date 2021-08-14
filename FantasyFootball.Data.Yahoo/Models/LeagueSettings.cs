@@ -4,6 +4,7 @@ namespace FantasyFootball.Data.Yahoo.Models
 {
     public class LeagueSettings
     {
+        public int playoff_start_week;
         public RosterPosition[] roster_positions;
     }
 

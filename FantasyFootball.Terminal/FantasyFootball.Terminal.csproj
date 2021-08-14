@@ -1,30 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.5" />
-    <PackageReference Include="Hangfire.Core" Version="1.6.20" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.24" />
     <PackageReference Include="Hangfire.MemoryStorage" Version="1.5.2" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.7" />
+    <PackageReference Include="HangFire.Ninject" Version="1.2.0" />
     <PackageReference Include="MathNet.Numerics" Version="4.5.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Polly" Version="6.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Ninject" Version="3.3.4" />
+    <PackageReference Include="Polly" Version="7.2.2" />
     <PackageReference Include="Selenium.Support" Version="3.14.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.14.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="2.41.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.109.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.113.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="Terminal.Gui" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bovada\Bovada.csproj" />
+    <ProjectReference Include="..\ClickyDraft\ClickyDraft.csproj" />
     <ProjectReference Include="..\FantasyFootball.Core\FantasyFootball.Core.csproj" />
     <ProjectReference Include="..\FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj" />
+    <ProjectReference Include="..\Preseason\FantasyFootball.Preseason.BsbOddsClient\FantasyFootball.Preseason.BsbOddsClient.csproj" />
+    <ProjectReference Include="..\Preseason\FantasyFootball.Preseason\FantasyFootball.Preseason.csproj" />
     <ProjectReference Include="..\ProFootballReference\ProFootballReference.csproj" />
     <ProjectReference Include="..\YahooDailyFantasy\YahooDailyFantasy.csproj" />
     <ProjectReference Include="..\Yahoo\Yahoo.csproj" />

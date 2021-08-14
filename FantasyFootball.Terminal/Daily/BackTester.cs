@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using YahooDailyFantasy;
+﻿using YahooDailyFantasy;
 
 namespace FantasyFootball.Terminal.Daily
 {

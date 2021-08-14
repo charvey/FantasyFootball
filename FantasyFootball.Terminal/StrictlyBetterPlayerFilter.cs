@@ -2,11 +2,7 @@
 using FantasyFootball.Core;
 using FantasyFootball.Core.Data;
 using FantasyFootball.Data.Yahoo;
-using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.IO;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Terminal
@@ -64,7 +60,7 @@ namespace FantasyFootball.Terminal
             File.Delete("sbpi.csv");
             for (var t = 0.00; t <= 1.00; t += 0.01)
             {
-                var strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service,leagueKey,connection, predictionRepository, players, t);
+                var strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service, leagueKey, connection, predictionRepository, players, t);
                 var options = strictlyBetterPlayers.Filter(players);
                 Console.WriteLine($"{t:p} {options.Count() - previous.Count}");
                 File.AppendAllText("sbpi.csv", $"{t},{options.Count() - previous.Count},{previous.Count}\n");

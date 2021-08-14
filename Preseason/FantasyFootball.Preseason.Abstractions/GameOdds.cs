@@ -1,4 +1,4 @@
 ﻿namespace FantasyFootball.Preseason.Abstractions
 {
-    public record GameOdds (TeamOdds[] Teams);
+    public record GameOdds(TeamOdds[] Teams);
 }

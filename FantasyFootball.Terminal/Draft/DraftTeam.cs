@@ -1,14 +1,11 @@
 ﻿using FantasyFootball.Core.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace FantasyFootball.Terminal.Draft
 {
     public class DraftTeam : Team
     {
         public IEnumerable<Player> Players { get; set; } = Enumerable.Empty<Player>();
-        
+
         public DraftTeam() { }
 
         public DraftTeam(Team team)

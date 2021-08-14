@@ -15,7 +15,7 @@ namespace FantasyFootball.Core.Objects
             if (new FileInfo(filename).LastWriteTime > lastModified)
             {
                 var lines = File.ReadAllLines(filename).Select(l => l.Split(','));
-                
+
                 all = lines.Select(l => new Player
                 {
                     Id = l[0],

@@ -1,8 +1,3 @@
-using FantasyPros;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace FantasyFootball.Terminal.Daily
 {
     public static class LineupGenerator

@@ -8,7 +8,7 @@ namespace FantasyFootball.Core.Analysis
     {
         public void EvaluateAll(TextWriter @out, IEnumerable<Candidate> candidates)
         {
-            foreach(var candidate in candidates)
+            foreach (var candidate in candidates)
             {
                 @out.WriteLine(candidate.Name + "\t" + Evaluate(candidate));
             }

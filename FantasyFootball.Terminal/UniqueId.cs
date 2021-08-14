@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FantasyFootball.Terminal
+﻿namespace FantasyFootball.Terminal
 {
     public static class UniqueId
     {

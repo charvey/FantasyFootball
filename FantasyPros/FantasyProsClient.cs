@@ -3,7 +3,6 @@ using Hangfire;
 using Hangfire.Common;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace FantasyPros
@@ -20,7 +19,7 @@ namespace FantasyPros
                 {
                     var newData = new Dictionary<string, FantasyProsPlayerId>();
                     //TODO remove hardcoded year
-                    foreach (var document in fileClient.GetDocuments().Where(x=>x.Item1>=DateTime.Now.AddDays(-4)))
+                    foreach (var document in fileClient.GetDocuments().Where(x => x.Item1 >= DateTime.Now.AddDays(-4)))
                     {
                         foreach (var player in ProjectionPageParser.ParsePlayers(document.Item2))
                         {
@@ -45,7 +44,7 @@ namespace FantasyPros
                 if (projectionCache == null)
                 {
                     var newData = new Dictionary<FantasyProsPlayerId, List<Tuple<DateTime, Projection>>>();
-                    foreach(var document in fileClient.GetDocuments())
+                    foreach (var document in fileClient.GetDocuments())
                     {
                         foreach (var projection in ProjectionPageParser.ParseProjections(document.Item2))
                         {

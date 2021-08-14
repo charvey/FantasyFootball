@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FantasyFootball.Terminal
+﻿namespace FantasyFootball.Terminal
 {
     public class MenuState
     {

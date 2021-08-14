@@ -1,11 +1,8 @@
 ﻿using Dapper;
 using FantasyFootball.Core.Data;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Terminal.Database

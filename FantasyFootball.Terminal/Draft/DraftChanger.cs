@@ -1,7 +1,4 @@
 ﻿using FantasyFootball.Core.Draft;
-using System;
-using System.IO;
-using System.Linq;
 
 namespace FantasyFootball.Terminal.Draft
 {
@@ -34,7 +31,7 @@ namespace FantasyFootball.Terminal.Draft
             }
             var player = players.Single();
             output.WriteLine(team.Owner + " picks " + player.Name + " from " + player.Team + " as " + string.Join(",", player.Positions));
-            draft.Pick(team, draft.GetNextDraftRound().Value, player);            
+            draft.Pick(team, draft.GetNextDraftRound().Value, player);
         }
     }
 }

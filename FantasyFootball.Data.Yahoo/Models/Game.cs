@@ -26,7 +26,7 @@ namespace FantasyFootball.Data.Yahoo.Models
         public int stat_id;
         public string name;
         public string display_name;
-        public StatCategoryPositionTypes position_types; 
+        public StatCategoryPositionTypes position_types;
     }
 
     [XmlType("position_types")]

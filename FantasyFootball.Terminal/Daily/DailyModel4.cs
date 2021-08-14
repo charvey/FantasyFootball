@@ -1,14 +1,9 @@
 using FantasyPros;
 using FantasyPros.Projections;
 using MathNet.Numerics.Distributions;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using YahooDailyFantasy;
 
 namespace FantasyFootball.Terminal.Daily
@@ -73,7 +68,7 @@ namespace FantasyFootball.Terminal.Daily
         private static Normal EstimateForRB(RbProjection projection)
         {
             return new Normal(projection.FantasyPoints + 0.639215686, 5.866557879);
-            
+
         }
 
         private static Normal EstimateForTE(TeProjection projection)
@@ -135,7 +130,7 @@ namespace FantasyFootball.Terminal.Daily
 
             new Thread(() => producer.Start(queue)).Start();
 
-            var consumers = new Thread[Environment.ProcessorCount*3/4];
+            var consumers = new Thread[Environment.ProcessorCount * 3 / 4];
             for (var i = 0; i < consumers.Length; i++)
             {
                 consumers[i] = new Thread(() =>

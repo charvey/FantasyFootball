@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace FantasyFootball.Terminal
+﻿namespace FantasyFootball.Terminal
 {
     public class JinglePlayer
     {

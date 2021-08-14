@@ -48,7 +48,7 @@ public class PreseasonOddsRecommenderTests
             new GameOdds(new[]
             {
                 new TeamOdds("Eagles",1.95,0m,1.90),
-                new TeamOdds("Patriots",1.95,0m,1.95)                
+                new TeamOdds("Patriots",1.95,0m,1.95)
             })
         });
 

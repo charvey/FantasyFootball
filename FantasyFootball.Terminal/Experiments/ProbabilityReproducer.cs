@@ -1,11 +1,4 @@
-﻿using MathNet.Numerics;
-using MathNet.Numerics.Distributions;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MathNet.Numerics.Distributions;
 
 namespace FantasyFootball.Terminal.Experiments
 {
@@ -41,7 +34,7 @@ namespace FantasyFootball.Terminal.Experiments
                 Mean(new[]{input })
             };
 
-            foreach(var player in input.Keys)
+            foreach (var player in input.Keys)
             {
                 writer.WriteLine($"{player} ({input[player].Score}):  {string.Join(",", outputs.Select(d => d[player].Score))}");
             }
@@ -102,7 +95,7 @@ namespace FantasyFootball.Terminal.Experiments
         }
 
         private void Bar()
-        { 
+        {
             const double mean = 1.7;
             for (var v = 0.5; v <= 1.5; v += 0.25)
             {

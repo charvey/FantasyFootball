@@ -57,7 +57,7 @@ namespace FantasyFootball.Terminal
             GlobalConfiguration.Configuration.UseActivator(new NinjectJobActivator(kernel));
 
             using (var connection = new SQLiteConnection(connectionString))
-            new Menu("Main Menu", new List<Menu>
+                new Menu("Main Menu", new List<Menu>
             {
                 new Menu("Preseason", new List<Menu>
                 {

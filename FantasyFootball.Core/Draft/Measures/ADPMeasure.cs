@@ -1,6 +1,6 @@
-﻿using System;
-using FantasyFootball.Core.Objects;
+﻿using FantasyFootball.Core.Objects;
 using FantasyPros;
+using System;
 
 namespace FantasyFootball.Core.Draft.Measures
 {

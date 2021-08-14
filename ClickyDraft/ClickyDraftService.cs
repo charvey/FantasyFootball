@@ -10,7 +10,7 @@ namespace ClickyDraft
     internal class ClickyDraftService
     {
         private static MemoryCache memoryCache = new MemoryCache(new MemoryCacheOptions());
-        private static HttpClient httpClient = new HttpClient();        
+        private static HttpClient httpClient = new HttpClient();
         private const string ROOT_URL = "https://clickydraft.com/draftapp";
 
         internal Pick[] Picks(int leagueId, int leagueInstanceId)

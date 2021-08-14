@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace FantasyFootball.Terminal.Preseason
+﻿namespace FantasyFootball.Terminal.Preseason
 {
     public class PreseasonPicksClient
     {

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -62,7 +62,7 @@ namespace FantasyFootball.Data.Yahoo
                 return apiConfig.RefreshToken;
             }
         }
-                
+
         private string AccessToken
         {
             get

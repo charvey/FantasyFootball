@@ -39,7 +39,7 @@ namespace Yahoo.Tests
             Assert.Contains(LeagueKey.Parse(value.Substring(0)), collection);
         }
 
-        [Theory]        
+        [Theory]
         [InlineData("123.l.12345", 12345)]
         [InlineData("123.l.67890", 67890)]
         public void LeagueId_ParsedCorrectly(string value, int leagueId)

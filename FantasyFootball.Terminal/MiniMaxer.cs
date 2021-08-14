@@ -4,12 +4,9 @@ using FantasyFootball.Core.Data;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Terminal.Database;
 using Hangfire;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Terminal
@@ -22,7 +19,7 @@ namespace FantasyFootball.Terminal
         public static void Testminimax(FantasySportsService service, ILatestPredictionRepository predictionRepository, SQLiteConnection connection, LeagueKey leagueKey)
         {
             playerScores = service.LeaguePlayers(leagueKey).ToDictionary(p => p.player_id.ToString(), p => new SqlPredictionRepository(connection).GetPredictions(leagueKey, p.player_id.ToString(), Enumerable.Range(1, SeasonWeek.Maximum)));
-            strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service,leagueKey,connection, predictionRepository, playerScores.Keys);
+            strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service, leagueKey, connection, predictionRepository, playerScores.Keys);
 
             var server = new BackgroundJobServer();
             var origin = new Node

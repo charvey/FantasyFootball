@@ -109,18 +109,18 @@ namespace FantasyFootball.Core.Trade
         private double GetWeekScore(LeagueKey leagueKey, IEnumerable<Player> players, int week)
         {
             var scoreProvider = new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(leagueKey, p.Id, week));
-			return new MostLikelyScoreRosterModeler(scoreProvider)
-				.Model(new Modeling.RosterSituation(players.ToArray(), week))
-				.Outcomes.Single().Players.Sum(p => scoreProvider.Model(new ScoreSituation(p, week)).Outcomes.Single());
+            return new MostLikelyScoreRosterModeler(scoreProvider)
+                .Model(new Modeling.RosterSituation(players.ToArray(), week))
+                .Outcomes.Single().Players.Sum(p => scoreProvider.Model(new ScoreSituation(p, week)).Outcomes.Single());
         }
 
         private IEnumerable<Trade> GetAllPossibleTrades(TeamPlayers source, IEnumerable<TeamPlayers> otherTeams)
         {
-            foreach(var player in source.Players)
+            foreach (var player in source.Players)
             {
-                foreach(var otherTeam in otherTeams)
+                foreach (var otherTeam in otherTeams)
                 {
-                    foreach(var otherPlayer in otherTeam.Players)
+                    foreach (var otherPlayer in otherTeam.Players)
                     {
                         yield return new Trade
                         {

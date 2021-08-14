@@ -1,8 +1,4 @@
 ﻿using FantasyFootball.Core.Draft;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace FantasyFootball.Terminal.Draft
 {
@@ -42,7 +38,7 @@ namespace FantasyFootball.Terminal.Draft
             return string.Join("|", new[] { PadAndCut(leftColumn, 5) }.Concat(otherColumns.Select(x => PadAndCut(x, ColumnWidth))));
         }
 
-        private string PadAndCut(string source,int length)
+        private string PadAndCut(string source, int length)
         {
             return source.PadRight(length).Substring(0, length);
         }

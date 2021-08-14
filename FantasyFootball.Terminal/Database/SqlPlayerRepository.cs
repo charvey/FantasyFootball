@@ -2,7 +2,6 @@
 using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Objects;
 using System.Data.SQLite;
-using System.Linq;
 
 namespace FantasyFootball.Terminal.Database
 {

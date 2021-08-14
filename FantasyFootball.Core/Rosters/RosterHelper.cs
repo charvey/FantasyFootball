@@ -1,5 +1,4 @@
-﻿using FantasyFootball.Core.Data;
-using FantasyFootball.Core.Modeling;
+﻿using FantasyFootball.Core.Modeling;
 using FantasyFootball.Core.Modeling.RosterModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;

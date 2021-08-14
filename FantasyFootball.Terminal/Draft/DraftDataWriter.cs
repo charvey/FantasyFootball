@@ -1,6 +1,4 @@
 ﻿using FantasyFootball.Core.Draft;
-using System;
-using System.Linq;
 
 namespace FantasyFootball.Terminal.Draft
 {
@@ -26,5 +24,5 @@ namespace FantasyFootball.Terminal.Draft
         {
             return source.PadRight(length).Substring(0, length);
         }
-    }    
+    }
 }

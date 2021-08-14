@@ -1,9 +1,5 @@
 ﻿using ProFootballReference;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 
 namespace FantasyFootball.Terminal.Preseason
 {
@@ -73,7 +69,7 @@ namespace FantasyFootball.Terminal.Preseason
             }
 
             var orderedPlayers = expectedPoints.OrderByDescending(x => x.Value).ToList();
-            for(var i = 0; i < orderedPlayers.Count(); i++)
+            for (var i = 0; i < orderedPlayers.Count(); i++)
             {
                 textWriter.WriteLine($"{i + 1} {orderedPlayers[i].Key} {1.0 * orderedPlayers[i].Value / finalWinners.Count}");
             }

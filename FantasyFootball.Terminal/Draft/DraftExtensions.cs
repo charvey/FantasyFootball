@@ -1,5 +1,4 @@
 ﻿using FantasyFootball.Core.Draft;
-using System.Linq;
 
 namespace FantasyFootball.Terminal.Draft
 {

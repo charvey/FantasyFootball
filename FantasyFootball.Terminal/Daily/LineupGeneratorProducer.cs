@@ -1,9 +1,4 @@
-using FantasyPros;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 namespace FantasyFootball.Terminal.Daily
 {
@@ -26,7 +21,7 @@ namespace FantasyFootball.Terminal.Daily
 
         public void Start(ConcurrentQueue<DailyPlayer[]> output, int buffer = 1000000)
         {
-            foreach(var lineup in Generate())
+            foreach (var lineup in Generate())
             {
                 while (output.Count > buffer) Thread.Yield();
                 output.Enqueue(lineup);
@@ -41,7 +36,7 @@ namespace FantasyFootball.Terminal.Daily
             var rbPairs = RBPairs(playersByPosition["RB"]).ToArray();
             var wrSets = WRSets(playersByPosition["WR"]).ToArray();
 
-            foreach(var x in playersByPosition)
+            foreach (var x in playersByPosition)
             {
                 Console.WriteLine($"{x.Key}:{x.Value.Length}");
             }

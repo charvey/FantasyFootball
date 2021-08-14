@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using System.Data.SQLite;
-using System.Linq;
 
 namespace FantasyFootball.Terminal.Database
 {

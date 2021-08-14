@@ -118,7 +118,7 @@ namespace FantasyFootball.Data.Yahoo
             return MakeCall(url, "xml").Result;
         }
 
-        public string LeaguePlayersWeekStats(LeagueKey league_key, int week, int start=0)
+        public string LeaguePlayersWeekStats(LeagueKey league_key, int week, int start = 0)
         {
             var url = $"{BaseUrl}/league/{league_key}/players;start={start}/stats;type=week;week={week}";
 

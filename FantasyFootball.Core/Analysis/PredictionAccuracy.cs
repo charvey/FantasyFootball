@@ -18,7 +18,7 @@ namespace FantasyFootball.Core.Analysis
         private readonly TextReader textReader;
         private readonly TextWriter textWriter;
 
-        public PredictionAccuracy(FantasySportsService fantasySportsService,IFullPredictionRepository fullPredictionRepository,TextReader textReader, TextWriter textWriter)
+        public PredictionAccuracy(FantasySportsService fantasySportsService, IFullPredictionRepository fullPredictionRepository, TextReader textReader, TextWriter textWriter)
         {
             this.fantasySportsService = fantasySportsService;
             this.predictionRepository = fullPredictionRepository;

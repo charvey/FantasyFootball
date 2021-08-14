@@ -1,5 +1,4 @@
-﻿using FantasyFootball.Core.Data;
-using FantasyFootball.Core.Modeling.ScoreModelers;
+﻿using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
 using System;

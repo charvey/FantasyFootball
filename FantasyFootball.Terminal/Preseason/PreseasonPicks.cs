@@ -14,7 +14,7 @@ namespace FantasyFootball.Terminal.Preseason
         public void Do(TextWriter @out)
         {
             @out.WriteLine("Recommendations are:");
-            foreach(var recommendation in recommender.GetRecommendations())
+            foreach (var recommendation in recommender.GetRecommendations())
             {
                 @out.WriteLine(recommendation);
             }

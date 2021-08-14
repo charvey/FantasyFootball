@@ -8,11 +8,8 @@ using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using Polly;
-using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Threading;
 using Yahoo;
 
 namespace FantasyFootball.Terminal.Scraping
@@ -90,9 +87,9 @@ namespace FantasyFootball.Terminal.Scraping
                     var password = Console.ReadLine();
                     var leagueId = leagueKey.LeagueId;
                     webDriver.Navigate().GoToUrl($"https://football.fantasysports.yahoo.com/f1/{leagueId}/players");
-                    webDriver.FindElementById("login-username").SendKeys(username + Keys.Return);                    
+                    webDriver.FindElementById("login-username").SendKeys(username + Keys.Return);
                     Thread.Sleep(TimeSpan.FromSeconds(3));
-                    webDriver.FindElementById("login-passwd").SendKeys(password + Keys.Return);                    
+                    webDriver.FindElementById("login-passwd").SendKeys(password + Keys.Return);
 
                     payload(webDriver);
                 }
@@ -126,7 +123,8 @@ namespace FantasyFootball.Terminal.Scraping
 					SELECT TeamId AS Team, Positions AS Position, w.Week FROM Player
 					CROSS JOIN(SELECT DISTINCT Week FROM Predictions WHERE Week >= @week) w
 					LEFT JOIN Predictions ON Predictions.LeagueKey = @leagueKey AND Predictions.PlayerId = Player.Id AND Predictions.Week = w.Week
-					WHERE Predictions.Value IS NULL AND Player.Id IN ({string.Join(",", playerIds)})", new {
+					WHERE Predictions.Value IS NULL AND Player.Id IN ({string.Join(",", playerIds)})", new
+                {
                     week = service.League(leagueKey).current_week,
                     leagueKey = leagueKey
                 }).FirstOrDefault();

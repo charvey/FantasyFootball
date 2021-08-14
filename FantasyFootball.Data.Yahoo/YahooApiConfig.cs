@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace FantasyFootball.Data.Yahoo
 {
@@ -22,7 +22,7 @@ namespace FantasyFootball.Data.Yahoo
         {
             File.WriteAllText(filepath, JsonConvert.SerializeObject(this));
         }
-        
+
         public string AccessToken;
         public int AccessTokenCalls;
         public DateTime AccessTokenExpires;

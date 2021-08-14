@@ -1,14 +1,9 @@
 using FantasyPros;
 using FantasyPros.Projections;
 using MathNet.Numerics.Distributions;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using YahooDailyFantasy;
 
 namespace FantasyFootball.Terminal.Daily

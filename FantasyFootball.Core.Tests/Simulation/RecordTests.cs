@@ -2,7 +2,7 @@
 using Xunit;
 
 namespace FantasyFootball.Core.Simulation
-{    
+{
     public class RecordTests
     {
         [Fact]
@@ -26,7 +26,7 @@ namespace FantasyFootball.Core.Simulation
             var records = new[]
             {
                 new StandingsExtensions.Record(1,0,0),
-                new StandingsExtensions.Record(0,1,0),                
+                new StandingsExtensions.Record(0,1,0),
                 new StandingsExtensions.Record(0,0,1)
             };
 

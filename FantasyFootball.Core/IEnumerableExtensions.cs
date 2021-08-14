@@ -9,9 +9,9 @@ namespace FantasyFootball.Core
     {
         public static IEnumerable<TResult> CrossJoin<T1, T2, TResult>(this IEnumerable<T1> source, IEnumerable<T2> second, Func<T1, T2, TResult> elementSelector)
         {
-            foreach(var i1 in source)
+            foreach (var i1 in source)
             {
-                foreach(var i2 in second)
+                foreach (var i2 in second)
                 {
                     yield return elementSelector(i1, i2);
                 }

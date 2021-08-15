@@ -3,9 +3,7 @@ using FantasyFootball.Core;
 using FantasyFootball.Core.Data;
 using FantasyFootball.Data.Yahoo;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using Polly;
 using System.Data;
@@ -75,7 +73,7 @@ namespace FantasyFootball.Terminal.Scraping
             }
         }
 
-        private void GetPredictions(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, Action<RemoteWebDriver> payload)
+        private void GetPredictions(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, Action<WebDriver> payload)
         {
             using (var webDriver = new EdgeDriver())
             {
@@ -87,9 +85,9 @@ namespace FantasyFootball.Terminal.Scraping
                     var password = Console.ReadLine();
                     var leagueId = leagueKey.LeagueId;
                     webDriver.Navigate().GoToUrl($"https://football.fantasysports.yahoo.com/f1/{leagueId}/players");
-                    webDriver.FindElementById("login-username").SendKeys(username + Keys.Return);
+                    webDriver.FindElement(By.Id("login-username")).SendKeys(username + Keys.Return);
                     Thread.Sleep(TimeSpan.FromSeconds(3));
-                    webDriver.FindElementById("login-passwd").SendKeys(password + Keys.Return);
+                    webDriver.FindElement(By.Id("login-passwd")).SendKeys(password + Keys.Return);
 
                     payload(webDriver);
                 }
@@ -100,7 +98,7 @@ namespace FantasyFootball.Terminal.Scraping
             }
         }
 
-        private void ScrapeAll(SQLiteConnection connection, IFullPredictionRepository predictionRepository, ChromeDriver webDriver, LeagueKey leagueKey)
+        private void ScrapeAll(SQLiteConnection connection, IFullPredictionRepository predictionRepository, WebDriver webDriver, LeagueKey leagueKey)
         {
             foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
                 foreach (var week in Enumerable.Range(1, SeasonWeek.Maximum))
@@ -114,7 +112,7 @@ namespace FantasyFootball.Terminal.Scraping
             public int Week { get; set; }
         }
 
-        private void ScrapeMissing(SQLiteConnection connection, IFullPredictionRepository predictionRepository, LeagueKey leagueKey, FantasySportsService service, RemoteWebDriver webDriver)
+        private void ScrapeMissing(SQLiteConnection connection, IFullPredictionRepository predictionRepository, LeagueKey leagueKey, FantasySportsService service, WebDriver webDriver)
         {
             var playerIds = service.LeaguePlayers(leagueKey).Select(p => p.player_id).ToArray();
             while (true)
@@ -146,7 +144,7 @@ namespace FantasyFootball.Terminal.Scraping
             }
         }
 
-        private void ScrapeOld(SQLiteConnection connection, IFullPredictionRepository predictionRepository, LeagueKey leagueKey, FantasySportsService service, RemoteWebDriver webDriver)
+        private void ScrapeOld(SQLiteConnection connection, IFullPredictionRepository predictionRepository, LeagueKey leagueKey, FantasySportsService service, WebDriver webDriver)
         {
             while (true)
             {
@@ -187,20 +185,20 @@ namespace FantasyFootball.Terminal.Scraping
             }
         }
 
-        private void Scrape(SQLiteConnection connection, IFullPredictionRepository predictionRepository, RemoteWebDriver webDriver, LeagueKey leagueKey, int? team, string position, int week)
+        private void Scrape(SQLiteConnection connection, IFullPredictionRepository predictionRepository, WebDriver webDriver, LeagueKey leagueKey, int? team, string position, int week)
         {
             Console.WriteLine($"Scraping {team} {position} {week}");
 
             if (team.HasValue)
-                new SelectElement(webDriver.FindElementById("statusselect")).SelectByValue($"ET_{team}");
+                new SelectElement(webDriver.FindElement(By.Id("statusselect"))).SelectByValue($"ET_{team}");
             else
-                new SelectElement(webDriver.FindElementById("statusselect")).SelectByText("All Players");
-            new SelectElement(webDriver.FindElementById("posselect")).SelectByText(position);
-            new SelectElement(webDriver.FindElementById("statselect")).SelectByText($"Week {week} (proj)");
+                new SelectElement(webDriver.FindElement(By.Id("statusselect"))).SelectByText("All Players");
+            new SelectElement(webDriver.FindElement(By.Id("posselect"))).SelectByText(position);
+            new SelectElement(webDriver.FindElement(By.Id("statselect"))).SelectByText($"Week {week} (proj)");
 
-            var playersTable = webDriver.FindElementById("players-table");
+            var playersTable = webDriver.FindElement(By.Id("players-table"));
             var lastRequest = DateTime.Now;
-            webDriver.FindElementById("playerfilter").FindElement(By.ClassName("Btn-primary")).Click();
+            webDriver.FindElement(By.Id("playerfilter")).FindElement(By.ClassName("Btn-primary")).Click();
             do
             {
                 while (true)
@@ -216,7 +214,7 @@ namespace FantasyFootball.Terminal.Scraping
                         break;
                     }
                 }
-                playersTable = webDriver.FindElementById("players-table");
+                playersTable = webDriver.FindElement(By.Id("players-table"));
 
                 Func<int, bool> isPredictionColumn =
                     column => playersTable
@@ -268,7 +266,7 @@ namespace FantasyFootball.Terminal.Scraping
                     if (timeWaited < waitTime)
                         Thread.Sleep(waitTime - timeWaited);
                     lastRequest = DateTime.Now;
-                    webDriver.FindElementByClassName("pagingnav").FindElement(By.ClassName("last")).FindElement(By.TagName("a")).Click();
+                    webDriver.FindElement(By.ClassName("pagingnav")).FindElement(By.ClassName("last")).FindElement(By.TagName("a")).Click();
                 }
                 catch (NoSuchElementException) { break; }
             } while (true);

@@ -1,5 +1,4 @@
 ﻿using FantasyFootball.Core.Preseason;
-using System.Linq;
 using Xunit;
 
 namespace FantasyFootball.Core.Tests.Preseason

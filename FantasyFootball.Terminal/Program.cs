@@ -47,8 +47,8 @@ namespace FantasyFootball.Terminal
             kernel.Bind<YahooApiConfig>().ToConstant(YahooApiConfig.FromFile(Path.Combine(dataDirectory, "Yahoo.json")));
             kernel.Bind<FantasySportsService>().ToSelf().InSingletonScope();
             kernel.Bind<FantasyProsClient>().ToSelf().InSingletonScope().WithConstructorArgument("dataDirectory", dataDirectory);
-            kernel.Bind<PreseasonPicksClient>().ToSelf().InSingletonScope();
             kernel.Bind<ProFootballReferenceClient>().ToSelf().InSingletonScope();
+            kernel.Bind<PreseasonPicksClient>().ToSelf().WithConstructorArgument("dataDirectory", dataDirectory);
             kernel.Bind<IPlayerRepository>().To<SqlPlayerRepository>();
             kernel.Bind<TextReader>().ToConstant(Console.In);
             kernel.Bind<TextWriter>().ToConstant(Console.Out);

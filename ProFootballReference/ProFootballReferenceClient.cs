@@ -13,7 +13,9 @@ namespace ProFootballReference
             var document = web.Load(new Uri($"https://www.pro-football-reference.com/years/{year}/preseason.htm"));
             var table = document.GetElementbyId("preseason");
             var rows = table.Descendants("tbody").Single().Descendants("tr");
-            return rows.Select(tr =>
+            return rows
+                .Where(tr => !string.IsNullOrEmpty(tr.SelectSingleNode("th").InnerText))
+                .Select(tr =>
             {
                 var week = int.Parse(tr.SelectSingleNode("th").InnerText);
                 var columns = tr.SelectNodes("td");

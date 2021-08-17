@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Draft\FantasyFootball.Draft.Abstractions\FantasyFootball.Draft.Abstractions.csproj" />
     <ProjectReference Include="..\FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj" />
     <ProjectReference Include="..\FantasyPros\FantasyPros.csproj" />
   </ItemGroup>

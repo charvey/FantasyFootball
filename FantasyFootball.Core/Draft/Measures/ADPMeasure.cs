@@ -1,4 +1,4 @@
-﻿using FantasyFootball.Core.Objects;
+﻿using FantasyFootball.Draft.Abstractions;
 using FantasyPros;
 using System;
 

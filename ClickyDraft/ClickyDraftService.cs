@@ -7,23 +7,23 @@ using System.Net.Http;
 
 namespace ClickyDraft
 {
-    internal class ClickyDraftService
+    public class ClickyDraftService
     {
         private static MemoryCache memoryCache = new MemoryCache(new MemoryCacheOptions());
         private static HttpClient httpClient = new HttpClient();
         private const string ROOT_URL = "https://clickydraft.com/draftapp";
 
-        internal Pick[] Picks(int leagueId, int leagueInstanceId)
+        public Pick[] Picks(int leagueId, int leagueInstanceId)
         {
             return Get<Pick[]>($"{LeageUrl(leagueId, leagueInstanceId)}/picks");
         }
 
-        internal League League(int leagueId, int leagueInstanceId)
+        public League League(int leagueId, int leagueInstanceId)
         {
             return Get<League>(LeageUrl(leagueId, leagueInstanceId));
         }
 
-        internal DraftablePlayer[] DraftablePlayers(int leagueId, int leagueInstanceId)
+        public DraftablePlayer[] DraftablePlayers(int leagueId, int leagueInstanceId)
         {
             return Get<DraftablePlayer[]>($"{LeageUrl(leagueId, leagueInstanceId)}/draftable-players");
         }

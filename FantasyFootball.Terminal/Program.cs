@@ -7,6 +7,7 @@ using FantasyFootball.Core.Rosters;
 using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
+using FantasyFootball.Draft.Abstractions;
 using FantasyFootball.Preseason.Abstractions;
 using FantasyFootball.Preseason.BsbOddsClient;
 using FantasyFootball.Terminal.Daily;

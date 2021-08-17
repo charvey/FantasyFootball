@@ -1,7 +1,6 @@
-﻿using FantasyFootball.Core.Objects;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace FantasyFootball.Core.Draft
+namespace FantasyFootball.Draft.Abstractions
 {
     public interface IDraft
     {
@@ -13,13 +12,5 @@ namespace FantasyFootball.Core.Draft
         IReadOnlyList<Player> PickedPlayers { get; }
         IReadOnlyList<Player> PickedPlayersByParticipant(DraftParticipant t);
         IReadOnlyList<Player> UnpickedPlayers { get; }
-    }
-
-    public class DraftParticipant
-    {
-        public string Id;
-        public string Name;
-        public string Owner;
-        public int Order;
     }
 }

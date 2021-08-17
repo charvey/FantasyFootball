@@ -17,7 +17,7 @@ namespace FantasyFootball.Terminal.Scraping
         public void Scrape(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, IFullPredictionRepository predictionRepository)
         {
             UpdatePlayers(leagueKey, service, connection);
-            GetPredictions(leagueKey, service, connection, webDriver =>
+            GetPredictions(leagueKey, webDriver =>
              {
                  ScrapeMissing(connection, predictionRepository, leagueKey, service, webDriver);
                  ScrapeOld(connection, predictionRepository, leagueKey, service, webDriver);
@@ -28,7 +28,7 @@ namespace FantasyFootball.Terminal.Scraping
         public void ScrapeCurrentWeek(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, IFullPredictionRepository predictionRepository)
         {
             UpdatePlayers(leagueKey, service, connection);
-            GetPredictions(leagueKey, service, connection, webDriver =>
+            GetPredictions(leagueKey, webDriver =>
              {
                  var league = service.League(leagueKey);
                  foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
@@ -73,7 +73,7 @@ namespace FantasyFootball.Terminal.Scraping
             }
         }
 
-        private void GetPredictions(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, Action<WebDriver> payload)
+        private void GetPredictions(LeagueKey leagueKey, Action<WebDriver> payload)
         {
             using (var webDriver = new EdgeDriver())
             {
@@ -159,7 +159,7 @@ namespace FantasyFootball.Terminal.Scraping
 						GROUP BY Team.Id, Positions, Week
 					)
 					WHERE AsOf < @before AND Week >= @week
-					ORDER BY AsOF",
+					ORDER BY AsOf",
                     new
                     {
                         leagueKey = leagueKey.ToString(),

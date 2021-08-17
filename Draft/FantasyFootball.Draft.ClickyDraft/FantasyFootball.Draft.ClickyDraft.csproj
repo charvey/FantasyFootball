@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ClickyDraft\ClickyDraft.csproj" />
+    <ProjectReference Include="..\FantasyFootball.Draft.Abstractions\FantasyFootball.Draft.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

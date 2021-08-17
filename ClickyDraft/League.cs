@@ -1,19 +1,20 @@
 ﻿namespace ClickyDraft
 {
-    internal class League
+    public class League
     {
+        public string DisplayName;
         public FantasyTeam[] FantasyTeams;
         public LeagueUser[] LeagueUsers;
     }
 
-    internal class LeagueUser
+    public class LeagueUser
     {
         public int Id;
         public string UserName;
         public string DisplayName;
     }
 
-    internal class FantasyTeam
+    public class FantasyTeam
     {
         public int Id;
         public int LeagueUserId;

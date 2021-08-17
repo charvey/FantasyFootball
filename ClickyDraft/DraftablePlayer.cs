@@ -1,6 +1,6 @@
 ﻿namespace ClickyDraft
 {
-    internal class DraftablePlayer
+    public class DraftablePlayer
     {
         public int Id;
         public string FirstName;

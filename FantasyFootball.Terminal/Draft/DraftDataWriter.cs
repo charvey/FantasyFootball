@@ -1,4 +1,5 @@
 ﻿using FantasyFootball.Core.Draft;
+using FantasyFootball.Draft.Abstractions;
 
 namespace FantasyFootball.Terminal.Draft
 {

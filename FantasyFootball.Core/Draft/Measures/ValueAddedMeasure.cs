@@ -2,8 +2,8 @@
 using FantasyFootball.Core.Modeling;
 using FantasyFootball.Core.Modeling.RosterModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers;
-using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
+using FantasyFootball.Draft.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +55,13 @@ namespace FantasyFootball.Core.Draft.Measures
         private double GetWeekScore(LeagueKey leagueKey, IEnumerable<Player> players, int week)
         {
             return new MostLikelyScoreRosterModeler(new RealityScoreModeler((p, w) => predictionRepository.GetPrediction(leagueKey, p.Id, week)))
-                .Model(new RosterSituation(players.ToArray(), week))
+                .Model(new RosterSituation(players.Select(p => new Core.Objects.Player
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Positions = p.Positions,
+                    Team = p.Team
+                }).ToArray(), week))
                 .Outcomes.Single().Players
                 .Sum(p => predictionRepository.GetPrediction(leagueKey, p.Id, week));
         }

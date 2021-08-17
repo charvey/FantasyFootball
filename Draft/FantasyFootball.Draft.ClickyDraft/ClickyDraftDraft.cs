@@ -1,11 +1,11 @@
-﻿using FantasyFootball.Core.Draft;
-using FantasyFootball.Core.Objects;
+﻿using ClickyDraft;
+using FantasyFootball.Draft.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ClickyDraft
+namespace FantasyFootball.Draft.ClickyDraft
 {
     public class ClickyDraftDraft : IDraft
     {
@@ -29,12 +29,12 @@ namespace ClickyDraft
                 var league = clickyDraftService.League(leagueId, leagueInstanceId);
 
                 return league.FantasyTeams.Select(ft => new DraftParticipant
-                {
-                    Id = ft.Id.ToString(),
-                    Owner = league.LeagueUsers.Single(lu => lu.Id == ft.LeagueUserId).DisplayName,
-                    Name = ft.TeamName,
-                    Order = ft.DraftPosition
-                }).ToList();
+                (
+                    Id: ft.Id.ToString(),
+                    Owner: league.LeagueUsers.Single(lu => lu.Id == ft.LeagueUserId).DisplayName,
+                    Name: ft.TeamName,
+                    Order: ft.DraftPosition
+                )).ToList();
             }
         }
 
@@ -45,12 +45,12 @@ namespace ClickyDraft
                 var players = clickyDraftService.DraftablePlayers(leagueId, leagueInstanceId);
 
                 return players.Select(p => new Player
-                {
-                    Id = playerIdConverter.Convert(p.Id),
-                    Name = HttpUtility.HtmlDecode((p.FirstName + " " + p.LastName).Trim()),
-                    Positions = p.Positions,
-                    Team = p.TeamFullName.Replace("Redskins", "Football Team")
-                }).ToList();
+                (
+                    Id: playerIdConverter.Convert(p.Id),
+                    Name: HttpUtility.HtmlDecode((p.FirstName + " " + p.LastName).Trim()),
+                    Positions: p.Positions,
+                    Team: p.TeamFullName
+                )).ToList();
             }
         }
 

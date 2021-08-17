@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace ClickyDraft
+namespace FantasyFootball.Draft.ClickyDraft
 {
+    [Obsolete]
     internal class PlayerIdConverter
     {
         private static Dictionary<int, int> idMap = new Dictionary<int, int>

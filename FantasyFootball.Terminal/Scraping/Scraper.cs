@@ -131,7 +131,10 @@ namespace FantasyFootball.Terminal.Scraping
                     break;
 
                 if (nextGroup.Position.Contains(","))
-                    throw new InvalidOperationException();
+                {
+                    Console.WriteLine($"Multiple positions {nextGroup.Position}");
+                    nextGroup.Position = nextGroup.Position.Split(',').First();
+                }
 
                 var team = new[] { "QB", "K", "DEF" }.Contains(nextGroup.Position)
                     ? null

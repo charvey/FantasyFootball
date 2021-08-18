@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Hangfire" Version="1.7.24" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.7" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.36" />
   </ItemGroup>
 
 </Project>

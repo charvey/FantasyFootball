@@ -1,4 +1,0 @@
-before_build:
-  - nuget restore FantasyFootball.sln
-
-image: Visual Studio 2019

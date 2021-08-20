@@ -43,9 +43,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Preseason.B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Draft", "Draft", "{030EBAD2-1BA5-450A-B43B-B79ABBE1AED8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Draft.Abstractions", "Draft\FantasyFootball.Draft.Abstractions\FantasyFootball.Draft.Abstractions.csproj", "{B17731CE-BAA6-4F8B-9E6F-F77797DFF290}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Draft.Abstractions", "Draft\FantasyFootball.Draft.Abstractions\FantasyFootball.Draft.Abstractions.csproj", "{B17731CE-BAA6-4F8B-9E6F-F77797DFF290}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFootball.Draft.ClickyDraft", "Draft\FantasyFootball.Draft.ClickyDraft\FantasyFootball.Draft.ClickyDraft.csproj", "{4B334E2B-A56A-437B-A826-C983B6946162}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFootball.Draft.ClickyDraft", "Draft\FantasyFootball.Draft.ClickyDraft\FantasyFootball.Draft.ClickyDraft.csproj", "{4B334E2B-A56A-437B-A826-C983B6946162}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8130B6E6-5DEC-4C11-98D0-A3864B13C2BF}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

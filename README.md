@@ -1,5 +1,6 @@
 # FantasyFootball
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/charvey/FantasyFootball?svg=true)](https://ci.appveyor.com/project/charvey/FantasyFootball)
+![Build status](https://github.com/charvey/FantasyFootball/actions/workflows/main.yml/badge.svg)]
 
 FantasyFootball is used to gather and analyze fantasy football data to enable better decision making.
+

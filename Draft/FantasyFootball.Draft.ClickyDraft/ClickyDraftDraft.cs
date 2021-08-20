@@ -44,19 +44,35 @@ namespace FantasyFootball.Draft.ClickyDraft
             {
                 var players = clickyDraftService.DraftablePlayers(leagueId, leagueInstanceId);
 
-                return players.Select(p => new Player
-                (
-                    Id: playerIdConverter.Convert(p.Id),
-                    Name: HttpUtility.HtmlDecode((p.FirstName + " " + p.LastName).Trim()),
-                    Positions: p.Positions,
-                    Team: p.TeamFullName
-                )).ToList();
+                return players.Select(ToPlayer).ToList();
             }
+        }
+
+        private Player ToPlayer(DraftablePlayer p)
+        {
+            return new Player
+                            (
+                                Id: playerIdConverter.Convert(p.Id),
+                                Name: HttpUtility.HtmlDecode((p.FirstName + " " + p.LastName).Trim()),
+                                Positions: p.Positions,
+                                Team: p.TeamFullName
+                            );
         }
 
         public IReadOnlyList<Player> PickedPlayers => throw new NotImplementedException();
 
-        public IReadOnlyList<Player> UnpickedPlayers => throw new NotImplementedException();
+        public IReadOnlyList<Player> UnpickedPlayers
+        {
+            get
+            {
+                var picks = clickyDraftService.Picks(leagueId, leagueInstanceId);
+                var pickedIds = new HashSet<int>(picks.Select(p => p.DraftablePlayer.Id));
+
+                var players = clickyDraftService.DraftablePlayers(leagueId, leagueInstanceId);
+
+                return players.Where(p => !pickedIds.Contains(p.Id)).Select(ToPlayer).ToList();
+            }
+        }
 
         public DraftParticipant ParticipantByPlayer(Player player)
         {
@@ -70,7 +86,15 @@ namespace FantasyFootball.Draft.ClickyDraft
 
         public Player Pick(DraftParticipant t, int r)
         {
-            throw new NotImplementedException();
+            var pick = clickyDraftService.Picks(leagueId, leagueInstanceId)
+                .Where(p => p.FantasyTeamId.ToString() == t.Id)
+                .Where(p => p.Round == r)
+                .SingleOrDefault();
+
+            if (pick == null)
+                return null;
+            else
+                return ToPlayer(pick.DraftablePlayer);
         }
 
         public void Pick(DraftParticipant t, int r, Player p)

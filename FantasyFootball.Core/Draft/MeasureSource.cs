@@ -19,7 +19,7 @@ namespace FantasyFootball.Core.Draft
                 new NameMeasure(),
                 new TeamMeasure(),
                 new PositionMeasure(),
-                new ByeMeasure(byeRepository,service.League(leagueKey).season)
+                //new ByeMeasure(byeRepository,service.League(leagueKey).season)
              });
         }
 
@@ -38,7 +38,7 @@ namespace FantasyFootball.Core.Draft
         {
             return predictionMeasures.GetOrAdd(leagueKey, l_k =>
               new[] { new NameMeasure() }.Cast<Measure>()
-                 .Concat(Enumerable.Range(1, service.League(leagueKey).end_week).Select(w => new WeekScoreMeasure(service, leagueKey, predictionRepository, w)))
+                 .Concat(Enumerable.Range(1, service.League(leagueKey).end_week).Select(w => new WeekScoreMeasure(leagueKey, predictionRepository, w)))
                  .Concat(new[] { new TotalScoreMeasure(service, leagueKey, predictionRepository) })
                  .ToArray());
         }
@@ -76,7 +76,7 @@ namespace FantasyFootball.Core.Draft
         private readonly LeagueKey league_key;
         private readonly int week;
 
-        public WeekScoreMeasure(FantasySportsService service, LeagueKey league_key, ILatestPredictionRepository predictionRepository, int week)
+        public WeekScoreMeasure(LeagueKey league_key, ILatestPredictionRepository predictionRepository, int week)
         {
             this.predictionRepository = predictionRepository;
             this.league_key = league_key;

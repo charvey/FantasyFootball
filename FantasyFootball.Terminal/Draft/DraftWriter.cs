@@ -22,20 +22,21 @@ namespace FantasyFootball.Terminal.Draft
 
         public void WriteDraft(IDraft draft)
         {
-            writer.WriteLine(BuildRow("Round", draft.Participants.Select(t => t.Owner)));
-            writer.WriteLine(BuildRow(string.Empty, draft.Participants.Select(t => t.Name)));
+            var participants = draft.Participants.OrderBy(p => p.Order);
+            writer.WriteLine(BuildRow("Round", participants.Select(t => t.Owner)));
+            writer.WriteLine(BuildRow(string.Empty, participants.Select(t => t.Name)));
 
             for (int r = 1; r <= 15; r++)
             {
-                writer.WriteLine(BuildRow(string.Empty, draft.Participants.Select(t => (draft.Pick(t, r)?.Id ?? ""))));
-                writer.WriteLine(BuildRow(" #" + r.ToString(), draft.Participants.Select(t => (draft.Pick(t, r)?.Name ?? ""))));
-                writer.WriteLine(BuildRow(string.Empty, draft.Participants.Select(t => string.Join("/", draft.Pick(t, r)?.Positions ?? new string[0]) + " " + (draft.Pick(t, r)?.Team ?? ""))));
+                writer.WriteLine(BuildRow(string.Empty, participants.Select(t => (draft.Pick(t, r)?.Id ?? ""))));
+                writer.WriteLine(BuildRow(" #" + r.ToString(), participants.Select(t => (draft.Pick(t, r)?.Name ?? ""))));
+                writer.WriteLine(BuildRow(string.Empty, participants.Select(t => string.Join("/", draft.Pick(t, r)?.Positions ?? new string[0]) + " " + (draft.Pick(t, r)?.Team ?? ""))));
             }
         }
 
         private string BuildRow(string leftColumn, IEnumerable<string> otherColumns)
         {
-            return string.Join("|", new[] { PadAndCut(leftColumn, 5) }.Concat(otherColumns.Select(x => PadAndCut(x, ColumnWidth))));
+            return string.Join("|", new[] { PadAndCut(leftColumn, 5) }.Concat(otherColumns.Select(x => PadAndCut(x ?? string.Empty, ColumnWidth))));
         }
 
         private string PadAndCut(string source, int length)

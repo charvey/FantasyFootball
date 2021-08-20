@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClickyDraft\ClickyDraft.csproj" />
+    <ProjectReference Include="..\Draft\FantasyFootball.Draft.ClickyDraft\FantasyFootball.Draft.ClickyDraft.csproj" />
     <ProjectReference Include="..\FantasyFootball.Core\FantasyFootball.Core.csproj" />
     <ProjectReference Include="..\FantasyFootball.Data.Yahoo\FantasyFootball.Data.Yahoo.csproj" />
     <ProjectReference Include="..\Preseason\FantasyFootball.Preseason.BsbOddsClient\FantasyFootball.Preseason.BsbOddsClient.csproj" />

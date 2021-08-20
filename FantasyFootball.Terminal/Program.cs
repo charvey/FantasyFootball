@@ -8,6 +8,7 @@ using FantasyFootball.Core.Simulation;
 using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Draft.Abstractions;
+using FantasyFootball.Draft.ClickyDraft;
 using FantasyFootball.Preseason.Abstractions;
 using FantasyFootball.Preseason.BsbOddsClient;
 using FantasyFootball.Terminal.Daily;
@@ -111,7 +112,7 @@ namespace FantasyFootball.Terminal
                         draftIds.Select(id=>Tuple.Create<string,Func<IDraft>>(id, ()=>new SqlDraft(connection,id)))
                         .Concat(new Tuple<string,Func<IDraft>>[]
                         {
-                            //Tuple.Create<string,Func<IDraft>>("NAME",()=>new ClickyDraftDraft(leagueId,leagueInstanceId))
+                            Tuple.Create<string,Func<IDraft>>("Demo Clicky Draft", ()=>new ClickyDraftDraft(68,66))
                         })
                         .ToArray();
 
@@ -163,7 +164,7 @@ namespace FantasyFootball.Terminal
                             new NameMeasure(), new TeamMeasure(), new PositionMeasure(),new DraftedTeamMeasure(draft),
                             new ADPMeasure(kernel.Get<FantasyProsClient>()),
                             new ByeMeasure(new SqlByeRepository(connection), service.League(league_key).season)
-                        }.Concat(Enumerable.Range(1,service.League(league_key).end_week).Select(w=>new WeekScoreMeasure(service,league_key,predictionRepository,w) as Measure))
+                        }.Concat(Enumerable.Range(1,service.League(league_key).end_week).Select(w=>new WeekScoreMeasure(league_key,predictionRepository,w) as Measure))
                         .Concat(new Measure[]{
                             new TotalScoreMeasure(service,league_key,predictionRepository),new VBDMeasure(service, new SqlPlayerRepository(connection),predictionRepository, league_key)
                         })

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace FantasyFootball.Draft.Abstractions
 {
@@ -9,6 +10,7 @@ namespace FantasyFootball.Draft.Abstractions
         void Pick(DraftParticipant t, int r, Player p);
         IReadOnlyList<Player> AllPlayers { get; }
         DraftParticipant ParticipantByPlayer(Player p);
+        [Obsolete]
         IReadOnlyList<Player> PickedPlayers { get; }
         IReadOnlyList<Player> PickedPlayersByParticipant(DraftParticipant t);
         IReadOnlyList<Player> UnpickedPlayers { get; }

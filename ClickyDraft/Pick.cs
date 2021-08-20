@@ -4,14 +4,7 @@
     {
         public int Id;
         public int FantasyTeamId;
-        public PickDraftablePlayer DraftablePlayer;
+        public DraftablePlayer DraftablePlayer;
         public int Round;
-    }
-
-    public class PickDraftablePlayer
-    {
-        public int Id;
-        public string FirstName;
-        public string LastName;
     }
 }

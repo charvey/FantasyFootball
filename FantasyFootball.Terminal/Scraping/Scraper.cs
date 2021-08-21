@@ -5,7 +5,6 @@ using FantasyFootball.Data.Yahoo;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support.UI;
-using Polly;
 using System.Data;
 using System.Data.SQLite;
 using Yahoo;
@@ -14,15 +13,120 @@ namespace FantasyFootball.Terminal.Scraping
 {
     public class Scraper
     {
-        public void Scrape(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, IFullPredictionRepository predictionRepository)
+        enum Status
+        {
+            Unknown,
+            Incomplete,
+            Stale,
+            Good
+        }
+
+        public void ScrapeInfo(LeagueKey leagueKey, FantasySportsService service, IFullPredictionRepository predictionRepository)
+        {
+            var info = GetScrapeInfo(leagueKey, service, predictionRepository);
+
+            Print(info);
+        }
+
+        private static void Print(Dictionary<int, Dictionary<string, Dictionary<int, Status>>> info)
+        {
+            foreach (var w in info.Keys)
+            {
+                Console.Write($"{w} ".PadLeft(3));
+
+                foreach (var pos in info[w].Keys)
+                {
+                    Console.Write(pos[0]);
+
+                    foreach (var team in info[w][pos].Keys)
+                    {
+                        char c;
+                        switch (info[w][pos][team])
+                        {
+                            case Status.Unknown: c = '░'; break;
+                            case Status.Incomplete: c = '▒'; break;
+                            case Status.Stale: c = '▓'; break;
+                            case Status.Good: c = '█'; break;
+                            default: throw new ArgumentOutOfRangeException();
+                        }
+                        Console.Write(c);
+                    }
+                }
+                Console.WriteLine();
+            }
+        }
+
+        private int TeamKeyToId(string team_key) => int.Parse(team_key.Split('.')[2]);
+
+        private Dictionary<int,Dictionary<string,Dictionary<int,Status>>> GetScrapeInfo(LeagueKey leagueKey, FantasySportsService service, IFullPredictionRepository predictionRepository)
+        {
+            var predictions = predictionRepository.GetAll(leagueKey)
+                .ToGroupDictionary(p => (p.Week, p.PlayerId));
+
+            var playersByPositionTeam = service.LeaguePlayers(leagueKey).ToGroupDictionary(
+                p => p.primary_position,
+                pp => pp.ToGroupDictionary(
+                    p => TeamKeyToId(p.editorial_team_key),
+                    pt => pt.Select(p => p.player_id)
+                )
+            );
+
+            return Enumerable.Range(1, service.League(leagueKey).end_week)
+                .ToDictionary(
+                    w => w,
+                    w => playersByPositionTeam.Keys.ToDictionary(
+                        p => p,
+                        p => playersByPositionTeam[p].ToDictionary(
+                            t => t.Key,
+                            t =>
+                            {
+                                var playerPredictions = t.Value.Select(pid =>
+                                {
+                                    if (predictions.TryGetValue((w, pid.ToString()), out var preds))
+                                        return preds.MaxBy(p => p.AsOf);
+                                    else
+                                        return null;
+                                });
+
+                                if (!playerPredictions.Any())
+                                    return Status.Unknown;
+                                else if (playerPredictions.Any(p => p == null))
+                                    return Status.Incomplete;
+                                else if (playerPredictions.Any(p => p.AsOf <= DateTime.Now.AddDays(-2)))
+                                    return Status.Stale;
+                                else
+                                    return Status.Good;
+                            }
+                        )
+                    )
+                );
+        }
+
+        public void ScrapeSmart(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, IFullPredictionRepository predictionRepository)
         {
             UpdatePlayers(leagueKey, service, connection);
             GetPredictions(leagueKey, webDriver =>
-             {
-                 ScrapeMissing(connection, predictionRepository, leagueKey, service, webDriver);
-                 ScrapeOld(connection, predictionRepository, leagueKey, service, webDriver);
-                 ScrapeMissing(connection, predictionRepository, leagueKey, service, webDriver);
-             });
+            {
+                var info = GetScrapeInfo(leagueKey, service, predictionRepository);
+                var league = service.League(leagueKey);
+
+                Print(info);
+
+                for(var w = league.current_week; w <= league.end_week; w++)
+                {
+                    foreach (var p in info[w].Keys)
+                    {
+
+                        if (info[w][p].Values.All(s => s == Status.Good))
+                            continue;
+                        else if (info[w][p].Values.Count(s => s == Status.Good) <= info[w][p].Count / 2)
+                            Scrape(connection, predictionRepository, webDriver, leagueKey, null, p, w);
+                        else
+                            foreach (var t in info[w][p].Where(s => s.Value != Status.Good))
+                                Scrape(connection, predictionRepository, webDriver, leagueKey, t.Key, p, w);
+                    }
+                }
+            });
         }
 
         public void ScrapeCurrentWeek(LeagueKey leagueKey, FantasySportsService service, SQLiteConnection connection, IFullPredictionRepository predictionRepository)
@@ -95,96 +199,6 @@ namespace FantasyFootball.Terminal.Scraping
                 {
                     webDriver.Quit();
                 }
-            }
-        }
-
-        private void ScrapeAll(SQLiteConnection connection, IFullPredictionRepository predictionRepository, WebDriver webDriver, LeagueKey leagueKey)
-        {
-            foreach (var pos in new[] { "QB", "WR", "RB", "TE", "K", "DEF" })
-                foreach (var week in Enumerable.Range(1, SeasonWeek.Maximum))
-                    Scrape(connection, predictionRepository, webDriver, leagueKey, null, pos, week);
-        }
-
-        private class ScrapeGroup
-        {
-            public int Team { get; set; }
-            public string Position { get; set; }
-            public int Week { get; set; }
-        }
-
-        private void ScrapeMissing(SQLiteConnection connection, IFullPredictionRepository predictionRepository, LeagueKey leagueKey, FantasySportsService service, WebDriver webDriver)
-        {
-            var playerIds = service.LeaguePlayers(leagueKey).Select(p => p.player_id).ToArray();
-            while (true)
-            {
-                var nextGroup = connection.Query<ScrapeGroup>($@"
-					SELECT TeamId AS Team, Positions AS Position, w.Week FROM Player
-					CROSS JOIN(SELECT DISTINCT Week FROM Predictions WHERE Week >= @week) w
-					LEFT JOIN Predictions ON Predictions.LeagueKey = @leagueKey AND Predictions.PlayerId = Player.Id AND Predictions.Week = w.Week
-					WHERE Predictions.Value IS NULL AND Player.Id IN ({string.Join(",", playerIds)})", new
-                {
-                    week = service.League(leagueKey).current_week,
-                    leagueKey = leagueKey
-                }).FirstOrDefault();
-
-                if (nextGroup == null)
-                    break;
-
-                if (nextGroup.Position.Contains(","))
-                {
-                    Console.WriteLine($"Multiple positions {nextGroup.Position}");
-                    nextGroup.Position = nextGroup.Position.Split(',').First();
-                }
-
-                var team = new[] { "QB", "K", "DEF" }.Contains(nextGroup.Position)
-                    ? null
-                    : (int?)nextGroup.Team;
-
-                Policy.
-                    Handle<WebDriverException>()
-                    .Retry()
-                    .Execute(() => Scrape(connection, predictionRepository, webDriver, leagueKey, team, nextGroup.Position, nextGroup.Week));
-            }
-        }
-
-        private void ScrapeOld(SQLiteConnection connection, IFullPredictionRepository predictionRepository, LeagueKey leagueKey, FantasySportsService service, WebDriver webDriver)
-        {
-            while (true)
-            {
-                var nextGroups = connection.Query<ScrapeGroup>(@"
-					SELECT Team, Position, Week
-					FROM(
-						SELECT Team.Id AS Team, Positions AS Position, Week, MAX(AsOf) AS AsOf
-						FROM Predictions
-						JOIN Player ON Predictions.PlayerId = Player.Id
-						JOIN Team ON Player.TeamId = Team.Id
-						WHERE LeagueKey = @leagueKey AND Positions NOT LIKE '%,%'
-						GROUP BY Team.Id, Positions, Week
-					)
-					WHERE AsOf < @before AND Week >= @week
-					ORDER BY AsOf",
-                    new
-                    {
-                        leagueKey = leagueKey.ToString(),
-                        before = DateTime.Now.AddDays(-2).ToString("O"),
-                        week = service.League(leagueKey).current_week
-                    });
-
-                if (!nextGroups.Any())
-                    break;
-
-                var nextGroup = nextGroups.First();
-
-                int? team;
-                if (nextGroups.Count(g => g.Position == nextGroup.Position && g.Week == nextGroup.Week) > 16)
-                    team = null;
-                else
-                    team = nextGroup.Team;
-
-                Policy.
-                    Handle<WebDriverException>()
-                    .Retry()
-                    .Execute(() => Scrape(connection, predictionRepository, webDriver, leagueKey, team, nextGroup.Position, nextGroup.Week));
             }
         }
 

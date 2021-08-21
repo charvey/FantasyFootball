@@ -35,6 +35,8 @@ namespace FantasyFootball.Data.Yahoo
         private Task<string> MakeFileCacheCall(string url)
         {
             var filename = "cache\\" + new string(url.Where(char.IsLetterOrDigit).ToArray());
+            if (!Directory.Exists(Path.GetDirectoryName(filename)))
+                Directory.CreateDirectory(Path.GetDirectoryName(filename));
             if (!File.Exists(filename) || (DateTime.Now - new FileInfo(filename).LastWriteTime) > TimeSpan.FromHours(2))
                 File.WriteAllText(filename, MakeWebCall(url).Result);
             return Task.FromResult(File.ReadAllText(filename));

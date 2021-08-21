@@ -15,6 +15,7 @@ namespace FantasyFootball.Data.Yahoo.Models
         public string editorial_team_full_name;
         public string editorial_team_abbr;
         public string display_position;
+        public string primary_position;
         public PlayerPoints player_points;
         public PlayerStats player_stats;
         public Position[] eligible_positions;

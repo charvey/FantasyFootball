@@ -195,8 +195,9 @@ namespace FantasyFootball.Terminal
                 new Menu("Play Jingle",_=>JinglePlayer.Play()),
                 new Menu("Scrape Data", new List<Menu>
                 {
-                    new Menu("All", _ => new Scraper().Scrape(league_key, kernel.Get<FantasySportsService>(), connection, new SqlPredictionRepository(connection))),
-                    new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, kernel.Get<FantasySportsService>(), connection, new SqlPredictionRepository(connection)))
+                    new Menu("All", _ => new Scraper().ScrapeSmart(league_key, kernel.Get<FantasySportsService>(), connection, new SqlPredictionRepository(connection))),
+                    new Menu("Current Week", _ => new Scraper().ScrapeCurrentWeek(league_key, kernel.Get<FantasySportsService>(), connection, new SqlPredictionRepository(connection))),
+                    new Menu("Info", _ => new Scraper().ScrapeInfo(league_key, kernel.Get<FantasySportsService>(), new SqlPredictionRepository(connection)))
                 }),
                 new Menu("Midseason",new List<Menu>{
                     new Menu("Roster Helper",_=>new RosterHelper().Help(kernel.Get<FantasySportsService>(),Console.Out,(p,w)=>new SqlPredictionRepository(connection).GetPrediction(league_key,p.Id,w), league_key,team_id)),

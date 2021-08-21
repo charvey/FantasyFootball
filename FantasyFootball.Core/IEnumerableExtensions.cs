@@ -41,5 +41,15 @@ namespace FantasyFootball.Core
         {
             return source.Where(x => x != item);
         }
+
+        public static IDictionary<TKey, IEnumerable<TSource>> ToGroupDictionary<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            return source.ToGroupDictionary(keySelector, x => x);
+        }
+
+        public static IDictionary<TKey, TValue> ToGroupDictionary<TSource, TKey, TValue>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<IEnumerable<TSource>, TValue> valueSelector)
+        {
+            return source.GroupBy(keySelector).ToDictionary(x => x.Key, x => valueSelector(x));
+        }
     }
 }

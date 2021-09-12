@@ -36,7 +36,9 @@ namespace ClickyDraft.Tests
         [Fact]
         public void GetsAllPlayers()
         {
-            Assert.InRange(DemoDraftablePlayers.Length, 2900, 3100);
+            var teams = 32;
+
+            Assert.InRange(DemoDraftablePlayers.Length, teams * 53, teams * 90);
         }
 
         [Theory]

@@ -24,7 +24,7 @@ namespace FantasyFootball.Core.Draft.Measures
             this.predictionRepository = predictionRepository;
             this.draftParticipant = participant;
             this.currentPlayersFactory = () => draft.PickedPlayersByParticipant(participant);
-            this.weeks = Enumerable.Range(1, SeasonWeek.ChampionshipWeek);
+            this.weeks = Enumerable.Range(1, service.League(leagueKey).end_week);
             this.leagueKey = leagueKey;
         }
 

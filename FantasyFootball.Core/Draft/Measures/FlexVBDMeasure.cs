@@ -13,11 +13,13 @@ namespace FantasyFootball.Core.Draft.Measures
         private readonly ConcurrentDictionary<string, double> values = new ConcurrentDictionary<string, double>();
         private readonly double replacement;
         private readonly ILatestPredictionRepository predictionRepository;
+        private readonly FantasySportsService service;
         private readonly LeagueKey leagueKey;
 
         public FlexVBDMeasure(FantasySportsService service, IPlayerRepository playerRepository, ILatestPredictionRepository predictionRepository, LeagueKey leagueKey)
         {
             this.predictionRepository = predictionRepository;
+            this.service = service;
             this.leagueKey = leagueKey;
             replacement = service.LeaguePlayers(leagueKey)
                 .Select(p => playerRepository.GetPlayer(p.player_id.ToString()))
@@ -28,7 +30,7 @@ namespace FantasyFootball.Core.Draft.Measures
 
         private double GetScore(ILatestPredictionRepository predictionRepository, string playerId)
         {
-            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, SeasonWeek.ChampionshipWeek)).Sum();
+            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, service.League(leagueKey).end_week)).Sum();
         }
 
         public override string Name => "Flex VBD";

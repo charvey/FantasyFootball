@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.90" />
-    <PackageReference Include="Hangfire.Core" Version="1.7.24" />
-    <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.25" />
+    <PackageReference Include="Hangfire.InMemory" Version="0.3.4" />
     <PackageReference Include="HangFire.Ninject" Version="1.2.0" />
     <PackageReference Include="MathNet.Numerics" Version="4.15.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
@@ -23,9 +23,9 @@
     <PackageReference Include="Selenium.Support" Version="4.0.0-beta4" />
     <PackageReference Include="Selenium.WebDriver" Version="4.0.0-beta4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.114.4" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.115" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="Terminal.Gui" Version="1.1.1" />
+    <PackageReference Include="Terminal.Gui" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>

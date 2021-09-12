@@ -11,11 +11,9 @@ namespace ClickyDraft.Tests
             this.subject = new ClickyDraftService();
         }
 
-        private (int leagueId, int leagueInstanceId) demoIds = (68, 66);
-
-        private League DemoLeague => subject.League(demoIds.leagueId, demoIds.leagueInstanceId);
-        private DraftablePlayer[] DemoDraftablePlayers => subject.DraftablePlayers(demoIds.leagueId, demoIds.leagueInstanceId);
-        private Pick[] DemoPicks => subject.Picks(demoIds.leagueId, demoIds.leagueInstanceId);
+        private League DemoLeague => subject.League(DemoLeagueIds.LeagueId, DemoLeagueIds.LeagueInstanceId);
+        private DraftablePlayer[] DemoDraftablePlayers => subject.DraftablePlayers(DemoLeagueIds.LeagueId, DemoLeagueIds.LeagueInstanceId);
+        private Pick[] DemoPicks => subject.Picks(DemoLeagueIds.LeagueId, DemoLeagueIds.LeagueInstanceId);
 
         [Fact]
         public void GetsAllParticipants()

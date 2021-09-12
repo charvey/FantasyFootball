@@ -42,7 +42,8 @@ namespace FantasyFootball.Draft.ClickyDraft
         {
             get
             {
-                var players = clickyDraftService.DraftablePlayers(leagueId, leagueInstanceId);
+                var players = clickyDraftService.DraftablePlayers(leagueId, leagueInstanceId)
+                    .Where(p => p.TeamFullName != "Rookie");
 
                 return players.Select(ToPlayer).ToList();
             }
@@ -55,9 +56,12 @@ namespace FantasyFootball.Draft.ClickyDraft
                                 Id: playerIdConverter.Convert(p.Id),
                                 Name: HttpUtility.HtmlDecode((p.FirstName + " " + p.LastName).Trim()),
                                 Positions: p.Positions,
-                                Team: p.TeamFullName
+                                Team: p.TeamFullName.Replace(OLD_WASHINGTON_NAME, "Football Team")
                             );
         }
+
+        [Obsolete]
+        private const string OLD_WASHINGTON_NAME = "Redskins";
 
         public IReadOnlyList<Player> PickedPlayers => throw new NotImplementedException();
 
@@ -76,7 +80,7 @@ namespace FantasyFootball.Draft.ClickyDraft
 
         public DraftParticipant ParticipantByPlayer(Player player)
         {
-            var pick = clickyDraftService.Picks(leagueId, leagueInstanceId).SingleOrDefault(p => playerIdConverter.Convert(p.DraftablePlayer.Id) == player.Id);
+            var pick = clickyDraftService.Picks(leagueId, leagueInstanceId).SingleOrDefault(p => ToPlayer(p.DraftablePlayer).Id == player.Id);
 
             if (pick == null)
                 return null;
@@ -106,7 +110,7 @@ namespace FantasyFootball.Draft.ClickyDraft
         {
             var picks = clickyDraftService.Picks(leagueId, leagueInstanceId).Where(p => p.FantasyTeamId.ToString() == t.Id);
 
-            return picks.Select(pi => AllPlayers.Single(pl => pl.Id == playerIdConverter.Convert(pi.DraftablePlayer.Id))).ToList();
+            return picks.Select(pi => ToPlayer(pi.DraftablePlayer)).ToList();
         }
     }
 }

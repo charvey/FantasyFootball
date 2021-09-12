@@ -133,6 +133,7 @@ namespace FantasyPros
             return playerName;
         }
 
+        [Obsolete]
         public double GetADP(string playerName)
         {
             throw new NotImplementedException();

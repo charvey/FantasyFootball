@@ -38,7 +38,7 @@ namespace FantasyFootball.Core.Draft.Measures
             var players = service.LeaguePlayers(leagueKey)
                 .Select(p => playerRepository.GetPlayer(p.player_id.ToString()));
             var scores = players
-                .ToDictionary(p => p.Id, p => GetScore(predictionRepository, leagueKey, p.Id));
+                .ToDictionary(p => p.Id, p => GetScore(service, predictionRepository, leagueKey, p.Id));
             var replacementScores = players
                 .SelectMany(p => p.Positions.Select(pos => Tuple.Create(pos, p)))
                 .GroupBy(p => p.Item1, p => scores[p.Item2.Id])
@@ -47,9 +47,9 @@ namespace FantasyFootball.Core.Draft.Measures
                 .ToDictionary(p => p.Id, p => scores[p.Id] - p.Positions.Min(pos => replacementScores[pos]));
         }
 
-        private double GetScore(ILatestPredictionRepository predictionRepository, LeagueKey leagueKey, string playerId)
+        private double GetScore(FantasySportsService service, ILatestPredictionRepository predictionRepository, LeagueKey leagueKey, string playerId)
         {
-            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, SeasonWeek.ChampionshipWeek)).Sum();
+            return predictionRepository.GetPredictions(leagueKey, playerId, Enumerable.Range(1, service.League(leagueKey).end_week)).Sum();
         }
 
         public override string Name => "VBD";

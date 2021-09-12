@@ -58,7 +58,7 @@ namespace FantasyFootball.Terminal.Scraping
 
         private int TeamKeyToId(string team_key) => int.Parse(team_key.Split('.')[2]);
 
-        private Dictionary<int,Dictionary<string,Dictionary<int,Status>>> GetScrapeInfo(LeagueKey leagueKey, FantasySportsService service, IFullPredictionRepository predictionRepository)
+        private Dictionary<int, Dictionary<string, Dictionary<int, Status>>> GetScrapeInfo(LeagueKey leagueKey, FantasySportsService service, IFullPredictionRepository predictionRepository)
         {
             var predictions = predictionRepository.GetAll(leagueKey)
                 .ToGroupDictionary(p => (p.Week, p.PlayerId));
@@ -112,7 +112,7 @@ namespace FantasyFootball.Terminal.Scraping
 
                 Print(info);
 
-                for(var w = league.current_week; w <= league.end_week; w++)
+                for (var w = league.current_week; w <= league.end_week; w++)
                 {
                     foreach (var p in info[w].Keys)
                     {

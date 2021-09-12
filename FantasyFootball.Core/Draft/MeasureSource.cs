@@ -19,7 +19,7 @@ namespace FantasyFootball.Core.Draft
                 new NameMeasure(),
                 new TeamMeasure(),
                 new PositionMeasure(),
-                //new ByeMeasure(byeRepository,service.League(leagueKey).season)
+                new ByeMeasure(byeRepository,service.League(leagueKey).season)
              });
         }
 

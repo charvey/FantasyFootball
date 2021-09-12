@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using ClickyDraft;
+using Dapper;
 using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Data;
 using FantasyFootball.Core.Draft;
@@ -20,7 +21,6 @@ using FantasyFootball.Terminal.Preseason;
 using FantasyFootball.Terminal.Scraping;
 using FantasyPros;
 using Hangfire;
-using Hangfire.MemoryStorage;
 using Ninject;
 using ProFootballReference;
 using System.Configuration;
@@ -55,7 +55,7 @@ namespace FantasyFootball.Terminal
             kernel.Bind<TextReader>().ToConstant(Console.In);
             kernel.Bind<TextWriter>().ToConstant(Console.Out);
             kernel.Bind<IRecurringJobManager>().To<RecurringJobManager>();
-            GlobalConfiguration.Configuration.UseMemoryStorage();
+            GlobalConfiguration.Configuration.UseInMemoryStorage();
             GlobalConfiguration.Configuration.UseActivator(new NinjectJobActivator(kernel));
 
             using (var connection = new SQLiteConnection(connectionString))
@@ -112,7 +112,7 @@ namespace FantasyFootball.Terminal
                         draftIds.Select(id=>Tuple.Create<string,Func<IDraft>>(id, ()=>new SqlDraft(connection,id)))
                         .Concat(new Tuple<string,Func<IDraft>>[]
                         {
-                            Tuple.Create<string,Func<IDraft>>("Demo Clicky Draft", ()=>new ClickyDraftDraft(68,66))
+                            Tuple.Create<string,Func<IDraft>>("Demo Clicky Draft", ()=>new ClickyDraftDraft(DemoLeagueIds.LeagueId,DemoLeagueIds.LeagueInstanceId))
                         })
                         .ToArray();
 
@@ -224,7 +224,8 @@ namespace FantasyFootball.Terminal
                     new Menu("Game Keys",_=> kernel.Get<GameKeys>().Show()),
                     new Menu("Predict Winners",_=> kernel.Get<WinnerPredicter>().PredictWinners(league_key)),
                     new Menu("Strictly Better Players",_=> StrictlyBetterPlayerFilter.RunTest(kernel.Get<FantasySportsService>(), connection, league_key, new SqlPredictionRepository(connection))),
-                    new Menu("Probability Reproducer",_=>kernel.Get<ProbabilityReproducer>().Run())
+                    new Menu("Probability Reproducer",_=>kernel.Get<ProbabilityReproducer>().Run()),
+                    new Menu("Check IDs",_=>kernel.Get<CheckIds>().Run(league_key,kernel.Get<FantasySportsService>(),new SqlPredictionRepository(connection)))
                 })
             }).Display(new MenuState());
         }

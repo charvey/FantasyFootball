@@ -1,6 +1,4 @@
 ﻿using FantasyFootball.Draft.Abstractions;
-using System;
-using System.Linq;
 
 namespace FantasyFootball.Core.Draft
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FantasyFootball.Draft.ClickyDraft
+﻿namespace FantasyFootball.Draft.ClickyDraft
 {
     [Obsolete]
     internal class PlayerIdConverter

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ProFootballReference
+﻿namespace ProFootballReference
 {
     public class PreseasonGame
     {

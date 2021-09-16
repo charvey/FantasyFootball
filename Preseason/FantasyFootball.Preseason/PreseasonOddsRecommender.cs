@@ -1,6 +1,4 @@
 ﻿using FantasyFootball.Preseason.Abstractions;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace FantasyFootball.Preseason
 {

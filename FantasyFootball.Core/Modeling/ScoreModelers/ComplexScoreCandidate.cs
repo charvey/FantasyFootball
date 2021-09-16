@@ -1,8 +1,6 @@
 ﻿using FantasyFootball.Core.Analysis;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate;
 using FantasyFootball.Core.Objects;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace FantasyFootball.Core.Modeling.ScoreModelers
 {

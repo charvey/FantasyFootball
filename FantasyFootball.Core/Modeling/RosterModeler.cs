@@ -1,6 +1,4 @@
 ﻿using FantasyFootball.Core.Objects;
-using System;
-using System.Linq;
 
 namespace FantasyFootball.Core.Modeling
 {

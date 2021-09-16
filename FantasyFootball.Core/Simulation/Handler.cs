@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FantasyFootball.Core.Simulation
+﻿namespace FantasyFootball.Core.Simulation
 {
     public abstract class Handler
     {

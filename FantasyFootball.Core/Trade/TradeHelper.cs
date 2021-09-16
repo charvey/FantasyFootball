@@ -4,9 +4,6 @@ using FantasyFootball.Core.Modeling.RosterModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Data.Yahoo;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Core.Trade

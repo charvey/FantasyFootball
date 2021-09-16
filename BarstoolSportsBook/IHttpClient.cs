@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace BarstoolSportsBook
+﻿namespace BarstoolSportsBook
 {
     public interface IHttpClient
     {

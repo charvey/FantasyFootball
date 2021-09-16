@@ -1,9 +1,6 @@
 ﻿using BarstoolSportsBook;
 using FantasyFootball.Preseason.Abstractions;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FantasyFootball.Preseason.BsbOddsClient
 {

@@ -1,7 +1,5 @@
 ﻿using FantasyFootball.Core.Modeling.ProbabilityDistributions;
 using FantasyFootball.Core.Objects;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace FantasyFootball.Core.Modeling.RosterModelers
 {

@@ -1,8 +1,6 @@
 ﻿using FantasyFootball.Core.Simulation.Facts;
 using FantasyFootball.Core.Simulation.Handlers;
 using FantasyFootball.Core.Simulation.Projections;
-using System;
-using System.Collections.Generic;
 
 namespace FantasyFootball.Core.Simulation
 {

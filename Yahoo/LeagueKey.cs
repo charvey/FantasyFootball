@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Yahoo
+﻿namespace Yahoo
 {
     public struct LeagueKey
     {

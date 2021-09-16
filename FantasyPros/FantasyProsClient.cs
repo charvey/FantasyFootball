@@ -1,9 +1,6 @@
 ﻿using FantasyPros.Projections;
 using Hangfire;
 using Hangfire.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace FantasyPros
 {

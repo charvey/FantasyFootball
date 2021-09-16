@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Yahoo;
+﻿using Yahoo;
 
 namespace FantasyFootball.Core.Data
 {

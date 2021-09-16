@@ -1,7 +1,5 @@
 ﻿using FantasyFootball.Core.Objects;
 using FantasyFootball.Core.Simulation.Projections;
-using System;
-using System.Linq;
 
 namespace FantasyFootball.Core.Simulation
 {

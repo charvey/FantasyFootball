@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FantasyFootball.Core.Objects
+﻿namespace FantasyFootball.Core.Objects
 {
     public class Matchup
     {

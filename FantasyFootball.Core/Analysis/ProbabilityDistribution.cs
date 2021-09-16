@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace FantasyFootball.Core.Analysis
+﻿namespace FantasyFootball.Core.Analysis
 {
     public interface ProbabilityDistribution
     {

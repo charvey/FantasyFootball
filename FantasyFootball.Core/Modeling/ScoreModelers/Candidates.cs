@@ -4,8 +4,6 @@ using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.FooModels;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalDataFilters;
 using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalGroupSpecifiers;
-using System;
-using System.Collections.Generic;
 
 namespace FantasyFootball.Core.Modeling.ScoreModelers
 {

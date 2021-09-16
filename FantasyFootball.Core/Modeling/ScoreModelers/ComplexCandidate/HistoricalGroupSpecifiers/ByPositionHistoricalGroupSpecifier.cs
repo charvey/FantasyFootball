@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalGroupSpecifiers
+﻿namespace FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalGroupSpecifiers
 {
     public class ByPositionHistoricalGroupSpecifier : HistoricalGroupSpecifier
     {

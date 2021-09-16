@@ -2,8 +2,6 @@
 using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
-using System;
-using System.Net.Http;
 
 namespace ClickyDraft
 {

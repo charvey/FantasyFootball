@@ -1,9 +1,6 @@
 ﻿using FantasyPros.Projections;
 using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace FantasyPros
 {

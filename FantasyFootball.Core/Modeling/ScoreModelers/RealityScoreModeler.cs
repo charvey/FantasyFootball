@@ -1,6 +1,5 @@
 ﻿using FantasyFootball.Core.Modeling.ProbabilityDistributions;
 using FantasyFootball.Core.Objects;
-using System;
 
 namespace FantasyFootball.Core.Modeling.ScoreModelers
 {

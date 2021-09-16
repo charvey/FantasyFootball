@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace FantasyFootball.Core.Objects
+﻿namespace FantasyFootball.Core.Objects
 {
     public static class Teams
     {

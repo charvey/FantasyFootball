@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace FantasyFootball.Core.Data
+﻿namespace FantasyFootball.Core.Data
 {
     [Obsolete]
     public static class DumpData

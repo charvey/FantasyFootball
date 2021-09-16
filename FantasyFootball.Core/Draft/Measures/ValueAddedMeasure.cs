@@ -4,9 +4,6 @@ using FantasyFootball.Core.Modeling.RosterModelers;
 using FantasyFootball.Core.Modeling.ScoreModelers;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Draft.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Core.Draft.Measures

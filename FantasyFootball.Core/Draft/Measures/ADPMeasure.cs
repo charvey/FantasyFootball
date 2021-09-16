@@ -1,6 +1,5 @@
 ﻿using FantasyFootball.Draft.Abstractions;
 using FantasyPros;
-using System;
 
 namespace FantasyFootball.Core.Draft.Measures
 {

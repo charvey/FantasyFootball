@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FantasyFootball.Core.Modeling.ProbabilityDistributions
+﻿namespace FantasyFootball.Core.Modeling.ProbabilityDistributions
 {
     public class GuaranteedProbabilityDistribution<T> : ProbabilityDistribution<T> where T : IEquatable<T>
     {

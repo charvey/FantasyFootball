@@ -1,10 +1,6 @@
 ﻿using FantasyFootball.Data.Yahoo.Actions;
 using FantasyFootball.Data.Yahoo.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Yahoo;

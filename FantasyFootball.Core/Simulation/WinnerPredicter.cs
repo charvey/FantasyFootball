@@ -9,12 +9,8 @@ using FantasyFootball.Core.Modeling.ScoreModelers.ComplexCandidate.HistoricalGro
 using FantasyFootball.Core.Objects;
 using FantasyFootball.Core.Simulation.Facts;
 using FantasyFootball.Data.Yahoo;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Core.Simulation

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FantasyFootball.Draft.Abstractions
+﻿namespace FantasyFootball.Draft.Abstractions
 {
     public interface IDraft
     {

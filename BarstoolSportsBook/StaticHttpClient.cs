@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace BarstoolSportsBook
+﻿namespace BarstoolSportsBook
 {
     public class StaticHttpClient : IHttpClient
     {

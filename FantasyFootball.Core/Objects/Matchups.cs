@@ -1,7 +1,5 @@
 ﻿using FantasyFootball.Data.Yahoo;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Core.Objects

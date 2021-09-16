@@ -2,11 +2,7 @@
 using FantasyFootball.Data.Yahoo;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Core.Analysis

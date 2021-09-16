@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace FantasyFootball.Core.Analysis
+﻿namespace FantasyFootball.Core.Analysis
 {
     public abstract class CandidateEvaluator
     {

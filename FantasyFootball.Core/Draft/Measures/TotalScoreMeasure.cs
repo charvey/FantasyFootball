@@ -1,9 +1,7 @@
 ﻿using FantasyFootball.Core.Data;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Draft.Abstractions;
-using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using Yahoo;
 
 namespace FantasyFootball.Core.Draft.Measures

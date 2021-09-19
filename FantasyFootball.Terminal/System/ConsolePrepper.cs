@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace FantasyFootball.Terminal
+namespace FantasyFootball.Terminal.System
 {
     public class ConsolePrepper
     {

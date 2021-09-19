@@ -2,6 +2,7 @@
 using FantasyFootball.Core;
 using FantasyFootball.Core.Data;
 using FantasyFootball.Data.Yahoo;
+using FantasyFootball.Terminal.System;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support.UI;
@@ -205,6 +206,7 @@ namespace FantasyFootball.Terminal.Scraping
         private void Scrape(SQLiteConnection connection, IFullPredictionRepository predictionRepository, WebDriver webDriver, LeagueKey leagueKey, int? team, string position, int week)
         {
             Console.WriteLine($"Scraping {team} {position} {week}");
+            SleepManager.PreventSleep();
 
             if (team.HasValue)
                 new SelectElement(webDriver.FindElement(By.Id("statusselect"))).SelectByValue($"ET_{team}");

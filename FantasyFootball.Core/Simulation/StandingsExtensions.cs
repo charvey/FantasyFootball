@@ -35,7 +35,7 @@ namespace FantasyFootball.Core.Simulation
         private static ConcurrentDictionary<Guid, Team[]> standingsCache = new ConcurrentDictionary<Guid, Team[]>();
         public static Team[] GetStandingsAtEndOfSeason(this Universe universe)
         {
-            return standingsCache.GetOrAdd(universe.Id, _ => universe.GetStandingsAfterWeek(SeasonWeek.RegularSeasonEnd));
+            return standingsCache.GetOrAdd(universe.Id, _ => universe.GetStandingsAfterWeek(universe.GetRegularSeasonEnd()));
         }
 
         public static Record GetRecordAfterWeek(this Universe universe, Team team, int week)

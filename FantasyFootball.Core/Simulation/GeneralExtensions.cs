@@ -25,7 +25,7 @@ namespace FantasyFootball.Core.Simulation
                 else if (teamAScore < teamBScore) return new MatchupResult { Winner = matchup.TeamB, Loser = matchup.TeamA };
             }
             {
-                var regularSeasonMatchups = SeasonWeek.RegularSeasonWeeks
+                var regularSeasonMatchups = universe.GetRegularSeasonWeeks()
                     .SelectMany(w => MatchupProjection.GetMatchups(universe, w))
                     .Where(m => (m.TeamA == matchup.TeamA && m.TeamB == matchup.TeamB) || (m.TeamA == matchup.TeamB && m.TeamB == matchup.TeamA));
                 var regularSeasonWinners = regularSeasonMatchups.Select(m => universe.GetRegularSeasonResult(m).Winner);

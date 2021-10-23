@@ -10,7 +10,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetSemifinalAResult().Winner,
                 TeamB = universe.GetSemifinalBResult().Winner,
-                Week = SeasonWeek.ChampionshipWeek
+                Week = universe.GetChampionshipWeek()
             });
         }
 
@@ -20,7 +20,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetSemifinalAResult().Loser,
                 TeamB = universe.GetSemifinalBResult().Loser,
-                Week = SeasonWeek.ChampionshipWeek
+                Week = universe.GetChampionshipWeek()
             });
         }
 
@@ -30,7 +30,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetQuarterfinalAResult().Loser,
                 TeamB = universe.GetQuarterfinalBResult().Loser,
-                Week = SeasonWeek.SemifinalWeek
+                Week = universe.GetSemifinalWeek()
             });
         }
 
@@ -40,7 +40,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(1),
                 TeamB = universe.GetQuarterfinalAResult().Winner,
-                Week = SeasonWeek.SemifinalWeek
+                Week = universe.GetSemifinalWeek()
             });
         }
 
@@ -50,7 +50,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(2),
                 TeamB = universe.GetQuarterfinalBResult().Winner,
-                Week = SeasonWeek.SemifinalWeek
+                Week = universe.GetSemifinalWeek()
             });
         }
 
@@ -60,7 +60,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(4),
                 TeamB = universe.GetTeamInPlaceAtEndOfSeason(5),
-                Week = SeasonWeek.QuarterFinalWeek
+                Week = universe.GetQuarterFinalWeek()
             });
         }
 
@@ -70,7 +70,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(3),
                 TeamB = universe.GetTeamInPlaceAtEndOfSeason(6),
-                Week = SeasonWeek.QuarterFinalWeek
+                Week = universe.GetQuarterFinalWeek()
             });
         }
 
@@ -80,7 +80,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetConsolationSemifinalAResult().Winner,
                 TeamB = universe.GetConsolationSemifinalBResult().Winner,
-                Week = SeasonWeek.ChampionshipWeek
+                Week = universe.GetChampionshipWeek()
             });
         }
 
@@ -90,7 +90,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetConsolationSemifinalAResult().Loser,
                 TeamB = universe.GetConsolationSemifinalBResult().Loser,
-                Week = SeasonWeek.ChampionshipWeek
+                Week = universe.GetChampionshipWeek()
             });
         }
 
@@ -100,7 +100,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetConsolationQuarterfinalAResult().Loser,
                 TeamB = universe.GetConsolationQuarterfinalBResult().Loser,
-                Week = SeasonWeek.ChampionshipWeek
+                Week = universe.GetChampionshipWeek()
             });
         }
 
@@ -110,7 +110,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(7),
                 TeamB = universe.GetConsolationQuarterfinalAResult().Winner,
-                Week = SeasonWeek.SemifinalWeek
+                Week = universe.GetSemifinalWeek()
             });
         }
 
@@ -120,7 +120,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(8),
                 TeamB = universe.GetConsolationQuarterfinalBResult().Winner,
-                Week = SeasonWeek.SemifinalWeek
+                Week = universe.GetSemifinalWeek()
             });
         }
 
@@ -130,7 +130,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(10),
                 TeamB = universe.GetTeamInPlaceAtEndOfSeason(11),
-                Week = SeasonWeek.QuarterFinalWeek
+                Week = universe.GetQuarterFinalWeek()
             });
         }
 
@@ -140,7 +140,7 @@ namespace FantasyFootball.Core.Simulation
             {
                 TeamA = universe.GetTeamInPlaceAtEndOfSeason(9),
                 TeamB = universe.GetTeamInPlaceAtEndOfSeason(12),
-                Week = SeasonWeek.QuarterFinalWeek
+                Week = universe.GetQuarterFinalWeek()
             });
         }
     }

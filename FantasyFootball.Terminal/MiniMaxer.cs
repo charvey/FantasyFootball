@@ -18,7 +18,8 @@ namespace FantasyFootball.Terminal
 
         public static void Testminimax(FantasySportsService service, ILatestPredictionRepository predictionRepository, SQLiteConnection connection, LeagueKey leagueKey)
         {
-            playerScores = service.LeaguePlayers(leagueKey).ToDictionary(p => p.player_id.ToString(), p => new SqlPredictionRepository(connection).GetPredictions(leagueKey, p.player_id.ToString(), Enumerable.Range(1, SeasonWeek.Maximum)));
+            var weeks = Enumerable.Range(1, service.League(leagueKey).end_week);
+            playerScores = service.LeaguePlayers(leagueKey).ToDictionary(p => p.player_id.ToString(), p => new SqlPredictionRepository(connection).GetPredictions(leagueKey, p.player_id.ToString(), weeks));
             strictlyBetterPlayers = new StrictlyBetterPlayerFilter(service, leagueKey, connection, predictionRepository, playerScores.Keys);
 
             var server = new BackgroundJobServer();

@@ -2,6 +2,7 @@
 {
     public class JinglePlayer
     {
+#pragma warning disable CA1416 // Validate platform compatibility
         public static void Play()
         {
             const int BPM = 360;
@@ -60,5 +61,6 @@
 
             Console.Beep(1175, 2 * WHOLE);
         }
+#pragma warning restore CA1416 // Validate platform compatibility
     }
 }

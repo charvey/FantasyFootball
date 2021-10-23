@@ -25,6 +25,7 @@ using Hangfire;
 using Ninject;
 using ProFootballReference;
 using System.Configuration;
+using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Text;
@@ -71,7 +72,7 @@ namespace FantasyFootball.Terminal
                 new Menu("Draft", new List<Menu>
                 {
                     new Menu("Create Mock Draft",_=>{
-                        if(connection.State!=System.Data.ConnectionState.Open)connection.Open();
+                        if(connection.State!=ConnectionState.Open)connection.Open();
                         var service=kernel.Get<FantasySportsService>();
                         using(var transaction=connection.BeginTransaction())
                         {

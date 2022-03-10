@@ -42,7 +42,7 @@ namespace ClickyDraft.Tests
         }
 
         [Theory]
-        [InlineData("Tom Brady", 546, "QB")]
+        [InlineData("Nick Foles", 188, "QB")]
         [InlineData("PHI DEF", 276, "DEF")]
         public void GetPlayerDetails(string name, int playerId, params string[] positions)
         {

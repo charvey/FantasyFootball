@@ -37,8 +37,11 @@ namespace ClickyDraft.Tests
         public void GetsAllPlayers()
         {
             var teams = 32;
+            var rosterSize = 53;
+            var preseasonRosterSize = 90;
+            var wiggleRoom = 0.1 * rosterSize;
 
-            Assert.InRange(DemoDraftablePlayers.Length, teams * 53, teams * 90);
+            Assert.InRange(DemoDraftablePlayers.Length, teams * (rosterSize - wiggleRoom), teams * (preseasonRosterSize + wiggleRoom));
         }
 
         [Theory]

@@ -1,24 +1,21 @@
 ﻿using Dapper;
 using FantasyFootball.Draft.Abstractions;
-using FantasyFootball.Terminal.Database;
 using System.Data.SQLite;
 
-namespace FantasyFootball.Terminal.Draft
+namespace FantasyFootball.Draft.SqlLite
 {
-    public class SqlDraft : IDraft
+    internal class SqlLiteDraft : IDraft
     {
         private readonly SQLiteConnection connection;
-        private readonly SqlPlayerRepository playerRepository;
         private readonly string draftId;
 
-        public SqlDraft(SQLiteConnection connection, string draftId)
+        public SqlLiteDraft(SQLiteConnection connection, string draftId)
         {
             this.connection = connection;
-            this.playerRepository = new SqlPlayerRepository(connection);
             this.draftId = draftId;
         }
 
-        public IReadOnlyList<DraftParticipant> Participants => connection.Query<DraftParticipant>("SELECT * FROM DraftParticipant WHERE DraftId=@draftId ORDER BY [Order]", new { draftId = draftId }).ToList();
+        public IReadOnlyList<DraftParticipant> Participants => connection.Query<DraftParticipant>("SELECT * FROM DraftParticipant WHERE DraftId=@draftId ORDER BY [Order]", new { draftId }).ToList();
         public DraftParticipant ParticipantByPlayer(Player player) =>
             connection.Query<DraftParticipant>(@"
                 SELECT DraftParticipant.*
@@ -26,7 +23,7 @@ namespace FantasyFootball.Terminal.Draft
                 JOIN DraftPick ON DraftPick.DraftParticipantId=DraftParticipant.Id
                 JOIN DraftOption ON DraftPick.DraftOptionId = DraftOption.Id
                 WHERE DraftOption.DraftId=@draftId AND DraftOption.PlayerId=@playerId",
-                new { draftId = draftId, playerId = player.Id })
+                new { draftId, playerId = player.Id })
             .SingleOrDefault();
 
         public IReadOnlyList<Player> AllPlayers => connection.Query<PlayerDto>(@"
@@ -34,7 +31,7 @@ namespace FantasyFootball.Terminal.Draft
             FROM DraftOption
             JOIN Player ON Player.Id = DraftOption.PlayerId
             WHERE DraftOption.DraftId=@draftId",
-            new { draftId = draftId })
+            new { draftId })
             .Select(FromPlayerDto).ToList();
         public IReadOnlyList<Player> PickedPlayers => connection.Query<PlayerDto>(@"
             SELECT Player.*
@@ -42,7 +39,7 @@ namespace FantasyFootball.Terminal.Draft
             JOIN DraftOption ON DraftPick.DraftOptionId = DraftOption.Id
             JOIN Player ON Player.Id = DraftOption.PlayerId
             WHERE DraftPick.DraftId=@draftId",
-            new { draftId = draftId })
+            new { draftId })
             .Select(FromPlayerDto).ToList();
         public IReadOnlyList<Player> PickedPlayersByParticipant(DraftParticipant t) => connection.Query<PlayerDto>(@"
             SELECT Player.*
@@ -50,7 +47,7 @@ namespace FantasyFootball.Terminal.Draft
             JOIN DraftOption ON DraftPick.DraftOptionId = DraftOption.Id
             JOIN Player ON Player.Id = DraftOption.PlayerId
             WHERE DraftPick.DraftId=@draftId AND DraftPick.DraftParticipantId=@draftParticipantId",
-            new { draftId = draftId, draftParticipantId = t.Id })
+            new { draftId, draftParticipantId = t.Id })
             .Select(FromPlayerDto).ToList();
         public IReadOnlyList<Player> UnpickedPlayers => connection.Query<PlayerDto>(@"
             SELECT Player.*
@@ -58,7 +55,7 @@ namespace FantasyFootball.Terminal.Draft
             JOIN Player ON Player.Id = DraftOption.PlayerId
             LEFT JOIN DraftPick ON DraftPick.DraftOptionId = DraftOption.Id
             WHERE DraftPick.DraftId IS NULL AND DraftOption.DraftId=@draftId",
-            new { draftId = draftId })
+            new { draftId })
                 .Select(FromPlayerDto).ToList();
 
         public class PlayerDto
@@ -73,24 +70,20 @@ namespace FantasyFootball.Terminal.Draft
         {
             var draftOptionId = connection.QuerySingleOrDefault<string>("SELECT DraftOptionId FROM DraftPick WHERE DraftId=@draftId AND DraftParticipantId=@draftParticipantId AND Round=@round", new
             {
-                draftId = draftId,
+                draftId,
                 draftParticipantId = t.Id,
                 round = r
             });
 
             if (draftOptionId == null) return null;
 
-            var playerId = connection.QuerySingle<string>("SELECT PlayerId FROM DraftOption WHERE Id=@id", new { id = draftOptionId });
-
-            var player = playerRepository.GetPlayer(playerId);
-
-            return new Player
-            (
-                Id: player.Id,
-                Name: player.Name,
-                Positions: player.Positions,
-                Team: player.Team
-            );
+            return connection.Query<PlayerDto>(@"
+                SELECT Player.*
+                FROM DraftOption
+                JOIN Player ON Player.Id = DraftOption.PlayerId
+                WHERE DraftOption.Id=@id AND DraftOption.DraftId=@draftId",
+            new { draftId, id = draftOptionId })
+                .Select(FromPlayerDto).Single();
         }
 
         private Player FromPlayerDto(PlayerDto playerDto)
@@ -108,8 +101,8 @@ namespace FantasyFootball.Terminal.Draft
         {
             connection.Execute("INSERT INTO DraftPick (DraftId,DraftOptionId,DraftParticipantId,Round) VALUES (@draftId,@draftOptionId,@draftParticipantId,@round)", new
             {
-                draftId = draftId,
-                draftOptionId = connection.QuerySingle<string>("SELECT Id FROM DraftOption WHERE DraftId=@draftId AND PlayerId=@playerId", new { draftId = draftId, playerId = p.Id }),
+                draftId,
+                draftOptionId = connection.QuerySingle<string>("SELECT Id FROM DraftOption WHERE DraftId=@draftId AND PlayerId=@playerId", new { draftId, playerId = p.Id }),
                 draftParticipantId = t.Id,
                 round = r
             });

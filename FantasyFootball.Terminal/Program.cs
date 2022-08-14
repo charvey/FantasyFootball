@@ -10,6 +10,7 @@ using FantasyFootball.Core.Trade;
 using FantasyFootball.Data.Yahoo;
 using FantasyFootball.Draft.Abstractions;
 using FantasyFootball.Draft.ClickyDraft;
+using FantasyFootball.Draft.SqlLite;
 using FantasyFootball.Preseason.Abstractions;
 using FantasyFootball.Preseason.BsbOddsClient;
 using FantasyFootball.Terminal.Daily;
@@ -109,22 +110,21 @@ namespace FantasyFootball.Terminal
                         }
                     }),
                     new Menu("Open Draft",_=>{
-                        var draftIds = connection.GetDraftIds();
-                        Tuple<string,Func<IDraft>>[] drafts=
-                        draftIds.Select(id=>Tuple.Create<string,Func<IDraft>>(id, ()=>new SqlDraft(connection,id)))
-                        .Concat(new Tuple<string,Func<IDraft>>[]
+                        var providers = new IDraftProvider[]
                         {
-                            Tuple.Create<string,Func<IDraft>>("Demo Clicky Draft", ()=>new ClickyDraftDraft(DemoLeagueIds.LeagueId,DemoLeagueIds.LeagueInstanceId))
-                        })
-                        .ToArray();
+                            new SqlLiteDraftProvider(connection),
+                            new ClickyDraftProvider()
+                        };
 
-                        var option = Menu.Options("Pick Draft", drafts.Select(x=>x.Item1).ToArray());
+                        var drafts=providers.SelectMany(p=>p.GetDrafts()).ToArray();
 
-                        _.Store("CurrentDraft", drafts[option-1].Item2());
+                        var option = Menu.Options("Pick Draft", drafts.Select(d=>d.Name).ToArray());
+
+                        _.Store("CurrentDraft", drafts[option-1].Factory());
                     }),
                     new Menu("Delete Draft", _ =>
                     {
-                        var draftIds = connection.GetDraftIds();
+                        var draftIds = new SqlLiteDraftProvider( connection).GetDrafts().Select(d=>d.Name).ToArray();
                         var option = Menu.Options("Pick Draft", draftIds);
                         var id = draftIds[option-1];
                         if(Menu.Prompt("Type DELETE to delete:")=="DELETE")

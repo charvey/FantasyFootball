@@ -5,14 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IsExternalInit" Version="1.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.116" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ClickyDraft\ClickyDraft.csproj" />
     <ProjectReference Include="..\FantasyFootball.Draft.Abstractions\FantasyFootball.Draft.Abstractions.csproj" />
   </ItemGroup>
 

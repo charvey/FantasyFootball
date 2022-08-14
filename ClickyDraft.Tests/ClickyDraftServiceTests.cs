@@ -23,7 +23,8 @@ namespace ClickyDraft.Tests
 
         [Theory]
         [InlineData("RG 3PO", 1, "clickyadmin")]
-        [InlineData("Dez Dispenser", 10, "Clicky User")]
+        [InlineData("Jersey Leshoure", 5, "Clicky contact")]
+        [InlineData("Dez Dispenser", 10, "TempName")]
         public void GetsParticipantDetails(string name, int order, string owner)
         {
             var team = DemoLeague.FantasyTeams.Single(t => t.TeamName == name);

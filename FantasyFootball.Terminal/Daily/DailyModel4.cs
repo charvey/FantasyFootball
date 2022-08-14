@@ -46,11 +46,11 @@ namespace FantasyFootball.Terminal.Daily
 
             switch (player.Position)
             {
-                case "QB": return EstimateForQB(fantasyPros.GetQbProjection(playerId.Value, at));
-                case "WR": return EstimateForWr(fantasyPros.GetWrProjection(playerId.Value, at));
-                case "RB": return EstimateForRB(fantasyPros.GetRbProjection(playerId.Value, at));
-                case "TE": return EstimateForTE(fantasyPros.GetTeProjection(playerId.Value, at));
-                case "DEF": return EstimateForDST(fantasyPros.GetDstProjection(playerId.Value, at));
+                case "QB": return EstimateForQB(fantasyPros.GetQbProjection(playerId, at));
+                case "WR": return EstimateForWr(fantasyPros.GetWrProjection(playerId, at));
+                case "RB": return EstimateForRB(fantasyPros.GetRbProjection(playerId, at));
+                case "TE": return EstimateForTE(fantasyPros.GetTeProjection(playerId, at));
+                case "DEF": return EstimateForDST(fantasyPros.GetDstProjection(playerId, at));
                 default: throw new ArgumentOutOfRangeException();
             }
         }

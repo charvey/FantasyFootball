@@ -16,10 +16,5 @@ namespace FantasyFootball.Terminal.Database
                 transaction.Commit();
             }
         }
-
-        public static string[] GetDraftIds(this SQLiteConnection connection)
-        {
-            return connection.Query<string>("SELECT Id FROM Draft").ToArray();
-        }
     }
 }

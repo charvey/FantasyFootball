@@ -1,17 +1,6 @@
 ﻿namespace FantasyPros
 {
-    public struct FantasyProsPlayerId
-    {
-        private int value;
-
-        public FantasyProsPlayerId(int value)
-        {
-            this.value = value;
-        }
-
-        public static bool operator ==(FantasyProsPlayerId a, FantasyProsPlayerId b) => a.value == b.value;
-        public static bool operator !=(FantasyProsPlayerId a, FantasyProsPlayerId b) => a.value != b.value;
-    }
+    public record FantasyProsPlayerId(int Value);
 
     public class FantasyProsPlayer
     {
